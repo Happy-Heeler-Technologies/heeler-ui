@@ -41,14 +41,18 @@ A flexible button component with multiple variants, colors, and sizes.
 
 #### Props
 
-| Prop          | Type                                                                         | Default     | Description                                                                              |
-| ------------- | ---------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
-| `variant`     | `"primary" \| "secondary" \| "tertiary"`                                     | `"primary"` | The visual style variant of the button                                                   |
-| `color`       | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"` | `"blue"`    | Rainbow color scheme. Applies to primary and tertiary variants                           |
-| `customColor` | `string`                                                                     | `undefined` | Custom hex color to override the rainbow color. Applies to primary and tertiary variants |
-| `size`        | `"sm" \| "md" \| "lg"`                                                       | `"lg"`      | Size of the button                                                                       |
-| `rounded`     | `boolean`                                                                    | `false`     | Whether the button has fully rounded (pill-shaped) corners                               |
-| `children`    | `ReactNode`                                                                  | -           | Button content                                                                           |
+| Prop           | Type                                                                         | Default     | Description                                                                              |
+| -------------- | ---------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| `variant`      | `"primary" \| "secondary" \| "tertiary"`                                     | `"primary"` | The visual style variant of the button                                                   |
+| `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"` | `"blue"`    | Rainbow color scheme. Applies to primary and tertiary variants                           |
+| `customColor`  | `string`                                                                     | `undefined` | Custom hex color to override the rainbow color. Applies to primary and tertiary variants |
+| `size`         | `"sm" \| "md" \| "lg"`                                                       | `"lg"`      | Size of the button                                                                       |
+| `rounded`      | `boolean`                                                                    | `false`     | Whether the button has fully rounded (pill-shaped) corners                               |
+| `loading`      | `boolean`                                                                    | `false`     | Shows a spinner and disables the button during loading states                            |
+| `icon`         | `ReactNode`                                                                  | `undefined` | Optional icon element to display (works with any icon library)                           |
+| `iconPosition` | `"left" \| "right"`                                                          | `"left"`    | Position of the icon relative to the button text                                         |
+| `disabled`     | `boolean`                                                                    | `false`     | Disables the button and prevents interaction                                             |
+| `children`     | `ReactNode`                                                                  | -           | Button content                                                                           |
 
 #### Usage
 
@@ -72,6 +76,16 @@ import { Button } from "@heeler/ui";
 
 // Custom hex color (overrides color prop)
 <Button customColor="#FF1493">Custom Pink</Button>
+
+// Loading state
+<Button loading>Processing...</Button>
+
+// With icon (works with any icon library)
+<Button icon={<HeartIcon />}>Like</Button>
+<Button icon={<ArrowRightIcon />} iconPosition="right">Next</Button>
+
+// Disabled state
+<Button disabled>Disabled</Button>
 ```
 
 #### Variants
@@ -109,4 +123,124 @@ For custom colors outside the rainbow palette, use the `customColor` prop:
 // Custom colors
 <Button customColor="#8B5CF6">Custom Purple</Button>
 <Button variant="tertiary" customColor="#10B981">Custom Green Outline</Button>
+
+// Loading states
+<Button loading color="blue">Loading...</Button>
+<Button variant="secondary" loading>Processing...</Button>
+
+// With icons (use any icon library: lucide-react, heroicons, react-icons, etc.)
+import { Heart, ArrowRight, Plus } from "lucide-react";
+
+<Button icon={<Heart />}>Favorite</Button>
+<Button icon={<ArrowRight />} iconPosition="right">Continue</Button>
+<Button variant="secondary" icon={<Plus />}>Add Item</Button>
+
+// Combined features
+<Button
+  variant="primary"
+  color="violet"
+  size="md"
+  rounded
+  icon={<Heart />}
+>
+  Love It
+</Button>
+
+// Disabled state
+<Button disabled>Cannot Click</Button>
+<Button disabled loading>Still Loading</Button>
 ```
+
+---
+
+## Installation
+
+### 1. Install the component library
+
+```bash
+npm install @heeler/ui
+# or
+yarn add @heeler/ui
+# or
+pnpm add @heeler/ui
+```
+
+### 2. Install and configure Tailwind CSS v4
+
+This library requires **Tailwind CSS v4** to be installed in your project. Follow these steps:
+
+#### Install Tailwind CSS
+
+```bash
+npm install tailwindcss@next @tailwindcss/postcss@next
+# or
+yarn add tailwindcss@next @tailwindcss/postcss@next
+# or
+pnpm add tailwindcss@next @tailwindcss/postcss@next
+```
+
+#### Configure PostCSS
+
+Create or update `postcss.config.js` in your project root:
+
+```javascript
+export default {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+```
+
+**Note:** If your `package.json` has `"type": "module"`, use ES module syntax (`export default`) as shown above. Otherwise, use CommonJS syntax (`module.exports = { ... }`).
+
+#### Import Tailwind in your CSS
+
+Add this to your main CSS file (e.g., `src/index.css` or `app/globals.css`):
+
+```css
+@import "tailwindcss";
+```
+
+#### Start your dev server
+
+The Tailwind CSS v4 engine will automatically scan your files and generate styles.
+
+**For complete Tailwind CSS v4 setup instructions and troubleshooting, visit the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation).**
+
+### Requirements
+
+- **React**: 18 or higher
+- **Tailwind CSS**: v4 (using `@tailwindcss/postcss`)
+- **Node.js**: 16 or higher
+
+---
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start Storybook (interactive component playground)
+npm run storybook
+
+# Build the library
+npm run build
+
+# Lint the code
+npm run lint
+```
+
+---
+
+## License
+
+MIT © Happy Heeler Technologies
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+For major changes, please open an issue first to discuss what you would like to change.
