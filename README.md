@@ -153,6 +153,166 @@ import { Heart, ArrowRight, Plus } from "lucide-react";
 
 ---
 
+### Input
+
+A text input component with consistent labeling, error handling, and support for multiple input types. Built with accessibility in mind, featuring proper ARIA attributes and keyboard navigation support.
+
+#### Props
+
+| Prop                     | Type                                                                                                                | Default     | Description                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
+| `type`                   | `"text" \| "email" \| "password" \| "number" \| "tel" \| "url" \| "search" \| "date" \| "time" \| "datetime-local"` | `"text"`    | The HTML input type                                    |
+| `value`                  | `string \| number`                                                                                                  | `undefined` | Input value (controlled component)                     |
+| `onChange`               | `(event: React.ChangeEvent<HTMLInputElement>) => void`                                                              | `undefined` | Change handler for controlled component                |
+| `label`                  | `string`                                                                                                            | `undefined` | Label text for the input                               |
+| `placeholder`            | `string`                                                                                                            | `undefined` | Placeholder text                                       |
+| `helperText`             | `string`                                                                                                            | `undefined` | Helper text to display below the input (when no error) |
+| `errorMessage`           | `string`                                                                                                            | `undefined` | Error message to display below the input               |
+| `disabled`               | `boolean`                                                                                                           | `false`     | Whether the input is disabled                          |
+| `required`               | `boolean`                                                                                                           | `false`     | Whether the input is required                          |
+| `color`                  | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"`                                        | `undefined` | Rainbow color for focus ring and border                |
+| `customColor`            | `string`                                                                                                            | `undefined` | Custom hex color override for focus ring and border    |
+| `applyCustomColorToText` | `boolean`                                                                                                           | `false`     | Apply the color selection to the input text            |
+| `size`                   | `"sm" \| "md" \| "lg"`                                                                                              | `"md"`      | Size of the input                                      |
+| `className`              | `string`                                                                                                            | `undefined` | Additional CSS classes for the container div           |
+
+#### Usage
+
+```tsx
+import { Input } from "@heeler/ui";
+
+// Basic text input
+<Input label="Username" placeholder="Enter your username" />
+
+// Email input with helper text
+<Input
+  type="email"
+  label="Email Address"
+  placeholder="you@example.com"
+  helperText="We'll never share your email"
+/>
+
+// Password input (required)
+<Input
+  type="password"
+  label="Password"
+  placeholder="Enter password"
+  required
+/>
+
+// Controlled input with error
+const [email, setEmail] = useState("");
+const [error, setError] = useState("");
+
+<Input
+  type="email"
+  label="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  errorMessage={error}
+/>
+
+// With rainbow color theme
+<Input
+  label="Favorite Color"
+  color="violet"
+  placeholder="Type here..."
+/>
+
+// Small size
+<Input
+  label="Small Input"
+  size="sm"
+  placeholder="Small size"
+/>
+
+// Custom focus color
+<Input
+  label="Custom Focus"
+  customColor="#FF1493"
+  placeholder="Focus to see pink"
+/>
+
+// Colored text
+<Input
+  label="Colorful Input"
+  color="indigo"
+  applyCustomColorToText
+  placeholder="Text will be indigo"
+/>
+```
+
+#### Accessibility Features
+
+The Input component is built with WCAG 2.1 AA compliance:
+
+- **Keyboard Navigation**: Full keyboard support with `focus-visible` rings
+- **Screen Reader Support**: Proper ARIA attributes including `aria-required`, `aria-invalid`, `aria-errormessage`, and `aria-describedby`
+- **Error Handling**: Dynamic error announcements with `aria-live="polite"`
+- **Label Association**: Automatic ID generation and proper `htmlFor` linking
+- **Required Fields**: Visual indicator with screen reader support
+- **Disabled States**: Proper `aria-disabled` attribute with visual feedback
+
+#### Examples
+
+```tsx
+// Different input types
+<Input type="email" label="Email" placeholder="you@example.com" />
+<Input type="password" label="Password" required />
+<Input type="number" label="Age" placeholder="25" />
+<Input type="date" label="Birth Date" />
+
+// Different sizes
+<Input label="Small Input" size="sm" placeholder="Small" />
+<Input label="Medium Input" size="md" placeholder="Medium (default)" />
+<Input label="Large Input" size="lg" placeholder="Large" />
+
+// Rainbow colors
+<Input label="Violet Theme" color="violet" placeholder="Focus to see color" />
+<Input label="Green Theme" color="green" placeholder="Type here..." />
+
+// Custom focus color
+<Input label="Custom Pink" customColor="#FF1493" placeholder="Custom focus color" />
+
+// Colored text
+<Input
+  label="Colored Input"
+  color="indigo"
+  applyCustomColorToText
+  placeholder="Text matches color"
+/>
+
+// With helper text and errors
+<Input
+  label="Email"
+  type="email"
+  helperText="We'll never share your email"
+  placeholder="you@example.com"
+/>
+
+<Input
+  label="Username"
+  errorMessage="This username is already taken"
+  placeholder="Choose a username"
+/>
+
+// Form validation example
+const [email, setEmail] = useState("");
+const [error, setError] = useState("");
+
+<Input
+  type="email"
+  label="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  errorMessage={error}
+  color="violet"
+  required
+/>
+```
+
+---
+
 ## Installation
 
 ### 1. Install the component library
