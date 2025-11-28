@@ -122,13 +122,18 @@ export const Input: React.FC<InputProps> = ({
 
   // Rainbow color classes for focus rings and borders
   const colorClasses = {
-    red: "border-red-500 focus:border-red-600 focus:ring-red-500",
-    orange: "border-orange-500 focus:border-orange-600 focus:ring-orange-500",
-    yellow: "border-yellow-500 focus:border-yellow-600 focus:ring-yellow-500",
-    green: "border-green-500 focus:border-green-600 focus:ring-green-500",
-    blue: "border-blue-500 focus:border-blue-600 focus:ring-blue-500",
-    indigo: "border-indigo-500 focus:border-indigo-600 focus:ring-indigo-500",
-    violet: "border-violet-500 focus:border-violet-600 focus:ring-violet-500",
+    red: "border-red-500 focus-visible:border-red-600 focus-visible:ring-red-500",
+    orange:
+      "border-orange-500 focus-visible:border-orange-600 focus-visible:ring-orange-500",
+    yellow:
+      "border-yellow-500 focus-visible:border-yellow-600 focus-visible:ring-yellow-500",
+    green:
+      "border-green-500 focus-visible:border-green-600 focus-visible:ring-green-500",
+    blue: "border-blue-500 focus-visible:border-blue-600 focus-visible:ring-blue-500",
+    indigo:
+      "border-indigo-500 focus-visible:border-indigo-600 focus-visible:ring-indigo-500",
+    violet:
+      "border-violet-500 focus-visible:border-violet-600 focus-visible:ring-violet-500",
   };
 
   // Text color classes
@@ -145,17 +150,18 @@ export const Input: React.FC<InputProps> = ({
   // Base input classes
   const baseClasses =
     "w-full rounded-md border bg-white transition-colors duration-200";
-  const focusClasses = "focus:outline-none focus:ring-2 focus:ring-offset-2";
+  const focusClasses =
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
   const disabledClasses = disabled
     ? "opacity-50 cursor-not-allowed bg-gray-50"
     : "";
   const errorClasses = hasError
-    ? "border-red-500 focus:border-red-600 focus:ring-red-500"
+    ? "border-red-500 focus-visible:border-red-600 focus-visible:ring-red-500"
     : "";
 
   // Standard gray border when no color is specified
   const standardClasses =
-    "border-gray-300 focus:border-gray-400 focus:ring-gray-400";
+    "border-gray-300 focus-visible:border-gray-400 focus-visible:ring-gray-400";
 
   // Determine which color classes to use
   const selectedColorClasses = hasError
@@ -184,7 +190,7 @@ export const Input: React.FC<InputProps> = ({
 
   const customFocusClasses =
     customColor && !hasError
-      ? "focus:!border-[var(--focus-color)] focus:!ring-[var(--focus-color)]"
+      ? "focus-visible:!border-[var(--focus-color)] focus-visible:!ring-[var(--focus-color)]"
       : "";
 
   return (
@@ -192,7 +198,11 @@ export const Input: React.FC<InputProps> = ({
       {label && (
         <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && (
+            <span className="text-red-500 ml-1" aria-hidden="true">
+              *
+            </span>
+          )}
         </label>
       )}
 
@@ -204,17 +214,23 @@ export const Input: React.FC<InputProps> = ({
         disabled={disabled}
         placeholder={placeholder}
         required={required}
+        aria-required={required}
+        aria-disabled={disabled}
         aria-invalid={hasError}
-        aria-describedby={
-          hasError ? errorId : helperText ? helperId : undefined
-        }
+        aria-errormessage={hasError ? errorId : undefined}
+        aria-describedby={helperText ? helperId : undefined}
         className={`${inputClasses} ${customFocusClasses}`}
         style={customFocusStyle}
         {...rest}
       />
 
       {hasError && (
-        <p id={errorId} className="text-sm text-red-600" role="alert">
+        <p
+          id={errorId}
+          className="text-sm text-red-600"
+          role="alert"
+          aria-live="polite"
+        >
           {errorMessage}
         </p>
       )}
