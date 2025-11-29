@@ -1,4 +1,11 @@
-import React from "react";
+import {
+  ChangeEvent,
+  CSSProperties,
+  FC,
+  FocusEvent,
+  KeyboardEvent,
+  useId,
+} from "react";
 
 export interface InputProps {
   /**
@@ -90,7 +97,7 @@ export interface InputProps {
   /**
    * Inline styles for the input element
    */
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 
   /**
    * Text color for the input value (defaults to color prop if not specified)
@@ -128,25 +135,25 @@ export interface InputProps {
   /**
    * Blur event handler
    */
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
 
   /**
    * Change handler for controlled component
    */
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 
   /**
    * Focus event handler
    */
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
 
   /**
    * Key down event handler
    */
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const Input: FC<InputProps> = ({
   className = "",
   autoComplete,
   color,
@@ -174,13 +181,12 @@ export const Input: React.FC<InputProps> = ({
   onKeyDown,
 }) => {
   // Generate a unique ID if not provided
-  const inputId = id || `input-${React.useId()}`;
+  const inputId = id || `input-${useId()}`;
   const errorId = `${inputId}-error`;
   const helperId = `${inputId}-helper`;
 
   const hasError = Boolean(errorMessage);
 
-  // Size classes
   const sizeClasses = {
     sm: "text-sm px-3 py-1.5",
     md: "text-base px-4 py-2",
@@ -203,7 +209,6 @@ export const Input: React.FC<InputProps> = ({
       "border-violet-500 focus-visible:border-violet-600 focus-visible:ring-violet-500",
   };
 
-  // Text color classes
   const textColorClasses = {
     red: "text-red-600",
     orange: "text-orange-600",
@@ -214,7 +219,6 @@ export const Input: React.FC<InputProps> = ({
     violet: "text-violet-600",
   };
 
-  // Base input classes
   const baseClasses =
     "w-full rounded-md border bg-white transition-colors duration-200";
   const focusClasses =

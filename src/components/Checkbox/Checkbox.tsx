@@ -1,4 +1,4 @@
-import React from "react";
+import { ChangeEvent, CSSProperties, FC, FocusEvent, useId } from "react";
 
 export interface CheckboxProps {
   /**
@@ -72,25 +72,25 @@ export interface CheckboxProps {
   /**
    * Inline styles for the checkbox element
    */
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 
   /**
    * Blur event handler
    */
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
 
   /**
    * Change handler for controlled component
    */
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 
   /**
    * Focus event handler
    */
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({
+export const Checkbox: FC<CheckboxProps> = ({
   checked = false,
   className = "",
   color = "blue",
@@ -109,20 +109,18 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   onFocus,
 }) => {
   // Generate a unique ID if not provided
-  const checkboxId = id || `checkbox-${React.useId()}`;
+  const checkboxId = id || `checkbox-${useId()}`;
   const helperId = `${checkboxId}-helper`;
   const errorId = `${checkboxId}-error`;
 
   const hasError = Boolean(errorMessage);
 
-  // Size classes for the checkbox itself
   const sizeClasses = {
     sm: "h-4 w-4",
     md: "h-5 w-5",
     lg: "h-6 w-6",
   };
 
-  // Size classes for label text
   const labelSizeClasses = {
     sm: "text-sm",
     md: "text-base",
@@ -140,7 +138,6 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     violet: "bg-violet-600 border-violet-600",
   };
 
-  // Focus ring colors
   const focusRingClasses = {
     red: "focus-visible:ring-red-500",
     orange: "focus-visible:ring-orange-500",
@@ -151,7 +148,6 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     violet: "focus-visible:ring-violet-500",
   };
 
-  // Checkmark color classes (using labelColor)
   const checkmarkColorClasses = {
     red: "stroke-red-600",
     orange: "stroke-orange-600",
@@ -162,7 +158,6 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     violet: "stroke-violet-600",
   };
 
-  // Label text color classes
   const labelColorClasses = {
     red: "text-red-600",
     orange: "text-orange-600",
