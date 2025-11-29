@@ -171,6 +171,7 @@ A text input component with consistent labeling, error handling, and support for
 | Prop           | Type                                                                                                                | Default     | Description                                                              |
 | -------------- | ------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------ |
 | `className`    | `string`                                                                                                            | `undefined` | Additional CSS classes for the container div                             |
+| `autoComplete` | `string`                                                                                                            | `undefined` | Autocomplete attribute for better form filling UX                        |
 | `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"`                                        | `undefined` | Rainbow color for focus ring and border                                  |
 | `disabled`     | `boolean`                                                                                                           | `false`     | Whether the input is disabled                                            |
 | `errorMessage` | `string`                                                                                                            | `undefined` | Error message to display below the input                                 |
@@ -314,6 +315,17 @@ const [error, setError] = useState("");
   required
 />
 ```
+
+#### Accessibility
+
+The Input component follows WCAG 2.1 AA standards and includes:
+
+- **ARIA Attributes**: `aria-required`, `aria-disabled`, `aria-readonly`, `aria-invalid`, `aria-errormessage`, and `aria-describedby` for screen reader support
+- **Automatic ID Generation**: Uses `React.useId()` to ensure unique, accessible IDs for proper label association
+- **Error Announcements**: Error messages use `role="alert"` and `aria-live="polite"` to announce changes to screen readers
+- **Keyboard Navigation**: Full keyboard support with visible focus indicators
+- **Required Indicators**: Required fields display an asterisk with `aria-hidden="true"` (requirement communicated via `aria-required`)
+- **Form Autocomplete**: Support for `autoComplete` attribute to improve form filling UX
 
 ---
 

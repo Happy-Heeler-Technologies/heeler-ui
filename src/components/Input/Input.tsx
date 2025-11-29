@@ -7,6 +7,11 @@ export interface InputProps {
   className?: string;
 
   /**
+   * Autocomplete attribute for better form filling UX
+   */
+  autoComplete?: string;
+
+  /**
    * Rainbow color for focus ring and border
    */
   color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
@@ -143,6 +148,7 @@ export interface InputProps {
 
 export const Input: React.FC<InputProps> = ({
   className = "",
+  autoComplete,
   color,
   disabled = false,
   errorMessage,
@@ -244,6 +250,12 @@ export const Input: React.FC<InputProps> = ({
   const inputClasses =
     `${baseClasses} ${sizeClasses[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} ${selectedTextColor}`.trim();
 
+  // Build aria-describedby with both helper and error IDs
+  const ariaDescribedBy =
+    [helperText && !hasError ? helperId : null, hasError ? errorId : null]
+      .filter(Boolean)
+      .join(" ") || undefined;
+
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
@@ -274,11 +286,13 @@ export const Input: React.FC<InputProps> = ({
         max={max}
         minLength={minLength}
         maxLength={maxLength}
+        autoComplete={autoComplete}
         aria-required={required}
         aria-disabled={disabled}
+        aria-readonly={readOnly}
         aria-invalid={hasError}
         aria-errormessage={hasError ? errorId : undefined}
-        aria-describedby={helperText ? helperId : undefined}
+        aria-describedby={ariaDescribedBy}
         className={inputClasses}
         style={style}
       />
