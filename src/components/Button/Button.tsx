@@ -1,31 +1,35 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ReactNode } from "react";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  variant?: "primary" | "secondary" | "tertiary";
+export interface ButtonProps {
+  text: ReactNode;
+  className?: string;
   color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
-  customColor?: string;
-  size?: "sm" | "md" | "lg";
-  rounded?: boolean;
-  loading?: boolean;
+  disabled?: boolean;
   icon?: ReactNode;
   iconPosition?: "left" | "right";
+  loading?: boolean;
+  rounded?: boolean;
+  size?: "sm" | "md" | "lg";
+  style?: React.CSSProperties;
+  type?: "button" | "submit" | "reset";
+  variant?: "primary" | "secondary" | "tertiary";
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function Button({
-  children,
-  variant = "primary",
+  text,
+  className,
   color = "blue",
-  customColor,
-  size = "lg",
-  rounded = false,
-  loading = false,
+  disabled,
   icon,
   iconPosition = "left",
-  disabled,
-  className,
+  loading = false,
+  rounded = false,
+  size = "lg",
   style,
-  ...props
+  type = "button",
+  variant = "primary",
+  onClick,
 }: ButtonProps) {
   const colorClasses = {
     red: {
@@ -66,28 +70,9 @@ export function Button({
   };
 
   let variantClass = "";
-  let customStyles = { ...style };
 
   if (variant === "secondary") {
     variantClass = "bg-gray-200 text-gray-900 hover:bg-gray-300";
-  } else if (customColor) {
-    // Custom color takes precedence
-    if (variant === "primary") {
-      customStyles = {
-        ...customStyles,
-        backgroundColor: customColor,
-        color: "white",
-      };
-      variantClass = "hover:opacity-90";
-    } else if (variant === "tertiary") {
-      customStyles = {
-        ...customStyles,
-        borderColor: customColor,
-        color: customColor,
-        backgroundColor: "transparent",
-      };
-      variantClass = "border hover:opacity-75";
-    }
   } else {
     // Use preset rainbow color
     variantClass = colorClasses[color][variant];
@@ -113,9 +98,10 @@ export function Button({
 
   return (
     <button
-      {...props}
+      type={type}
+      onClick={onClick}
       disabled={disabled || loading}
-      style={customStyles}
+      style={style}
       className={`inline-flex items-center justify-center font-medium ${variantClass} ${sizeClasses[size]} ${roundedClass} ${a11yClasses} ${
         className ?? ""
       }`}
@@ -151,7 +137,7 @@ export function Button({
           {icon}
         </span>
       )}
-      {children}
+      {text}
       {!loading && icon && iconPosition === "right" && (
         <span
           className={`ml-2 -mr-1 ${iconSizeClasses[size]}`}
