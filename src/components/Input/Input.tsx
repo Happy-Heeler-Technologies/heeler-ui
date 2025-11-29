@@ -9,14 +9,14 @@ import {
 
 export interface InputProps {
   /**
-   * Additional CSS classes for the container div
-   */
-  className?: string;
-
-  /**
    * Autocomplete attribute for better form filling UX
    */
   autoComplete?: string;
+
+  /**
+   * Additional CSS classes for the container div
+   */
+  className?: string;
 
   /**
    * Rainbow color for focus ring and border
@@ -72,6 +72,26 @@ export interface InputProps {
    * Name attribute for the input (useful for forms)
    */
   name?: string;
+
+  /**
+   * Blur event handler
+   */
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+
+  /**
+   * Change handler for controlled component
+   */
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+
+  /**
+   * Focus event handler
+   */
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
+
+  /**
+   * Key down event handler
+   */
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 
   /**
    * Placeholder text
@@ -131,31 +151,11 @@ export interface InputProps {
    * Input value (controlled component)
    */
   value?: string | number;
-
-  /**
-   * Blur event handler
-   */
-  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-
-  /**
-   * Change handler for controlled component
-   */
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-
-  /**
-   * Focus event handler
-   */
-  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-
-  /**
-   * Key down event handler
-   */
-  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const Input: FC<InputProps> = ({
-  className = "",
   autoComplete,
+  className = "",
   color,
   disabled = false,
   errorMessage,
@@ -167,6 +167,10 @@ export const Input: FC<InputProps> = ({
   min,
   minLength,
   name,
+  onBlur,
+  onChange,
+  onFocus,
+  onKeyDown,
   placeholder,
   readOnly,
   required = false,
@@ -175,10 +179,6 @@ export const Input: FC<InputProps> = ({
   textColor,
   type = "text",
   value,
-  onBlur,
-  onChange,
-  onFocus,
-  onKeyDown,
 }) => {
   // Generate a unique ID if not provided
   const inputId = id || `input-${useId()}`;

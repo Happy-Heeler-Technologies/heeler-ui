@@ -59,6 +59,21 @@ export interface CheckboxProps {
   name?: string;
 
   /**
+   * Blur event handler
+   */
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+
+  /**
+   * Change handler for controlled component
+   */
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+
+  /**
+   * Focus event handler
+   */
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
+
+  /**
    * Whether the checkbox is required
    */
   required?: boolean;
@@ -73,21 +88,6 @@ export interface CheckboxProps {
    * Inline styles for the checkbox element
    */
   style?: CSSProperties;
-
-  /**
-   * Blur event handler
-   */
-  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-
-  /**
-   * Change handler for controlled component
-   */
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-
-  /**
-   * Focus event handler
-   */
-  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
 }
 
 export const Checkbox: FC<CheckboxProps> = ({
