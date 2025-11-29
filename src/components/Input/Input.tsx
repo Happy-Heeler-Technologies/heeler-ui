@@ -1,9 +1,6 @@
-import React, { InputHTMLAttributes } from "react";
+import React from "react";
 
-export interface InputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "size"
-> {
+export interface InputProps {
   /**
    * Additional CSS classes for the container div
    */
@@ -30,19 +27,49 @@ export interface InputProps extends Omit<
   helperText?: string;
 
   /**
+   * Unique identifier for the input element
+   */
+  id?: string;
+
+  /**
    * Label text for the input
    */
   label?: string;
 
   /**
-   * Change handler for controlled component
+   * Maximum value (for number, date, time inputs)
    */
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  max?: number | string;
+
+  /**
+   * Maximum length of input value
+   */
+  maxLength?: number;
+
+  /**
+   * Minimum value (for number, date, time inputs)
+   */
+  min?: number | string;
+
+  /**
+   * Minimum length of input value
+   */
+  minLength?: number;
+
+  /**
+   * Name attribute for the input (useful for forms)
+   */
+  name?: string;
 
   /**
    * Placeholder text
    */
   placeholder?: string;
+
+  /**
+   * Whether the input is read-only
+   */
+  readOnly?: boolean;
 
   /**
    * Whether the input is required
@@ -54,6 +81,23 @@ export interface InputProps extends Omit<
    * @default 'md'
    */
   size?: "sm" | "md" | "lg";
+
+  /**
+   * Inline styles for the input element
+   */
+  style?: React.CSSProperties;
+
+  /**
+   * Text color for the input value (defaults to color prop if not specified)
+   */
+  textColor?:
+    | "red"
+    | "orange"
+    | "yellow"
+    | "green"
+    | "blue"
+    | "indigo"
+    | "violet";
 
   /**
    * The HTML input type
@@ -75,23 +119,53 @@ export interface InputProps extends Omit<
    * Input value (controlled component)
    */
   value?: string | number;
+
+  /**
+   * Blur event handler
+   */
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+
+  /**
+   * Change handler for controlled component
+   */
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+
+  /**
+   * Focus event handler
+   */
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+
+  /**
+   * Key down event handler
+   */
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const Input: React.FC<InputProps> = ({
-  type = "text",
-  value,
-  onChange,
-  label,
-  errorMessage,
-  disabled = false,
+  className = "",
   color,
-  size = "md",
-  placeholder,
-  required = false,
+  disabled = false,
+  errorMessage,
   helperText,
   id,
-  className = "",
-  ...rest
+  label,
+  max,
+  maxLength,
+  min,
+  minLength,
+  name,
+  placeholder,
+  readOnly,
+  required = false,
+  size = "md",
+  style,
+  textColor,
+  type = "text",
+  value,
+  onBlur,
+  onChange,
+  onFocus,
+  onKeyDown,
 }) => {
   // Generate a unique ID if not provided
   const inputId = id || `input-${React.useId()}`;
@@ -123,6 +197,17 @@ export const Input: React.FC<InputProps> = ({
       "border-violet-500 focus-visible:border-violet-600 focus-visible:ring-violet-500",
   };
 
+  // Text color classes
+  const textColorClasses = {
+    red: "text-red-600",
+    orange: "text-orange-600",
+    yellow: "text-yellow-600",
+    green: "text-green-600",
+    blue: "text-blue-600",
+    indigo: "text-indigo-600",
+    violet: "text-violet-600",
+  };
+
   // Base input classes
   const baseClasses =
     "w-full rounded-md border bg-white transition-colors duration-200";
@@ -146,9 +231,18 @@ export const Input: React.FC<InputProps> = ({
       ? colorClasses[color]
       : standardClasses;
 
+  // Determine text color (use textColor if specified, otherwise use color, otherwise default gray)
+  const selectedTextColor = hasError
+    ? "text-gray-900"
+    : textColor
+      ? textColorClasses[textColor]
+      : color
+        ? textColorClasses[color]
+        : "text-gray-900";
+
   // Build the final input class string
   const inputClasses =
-    `${baseClasses} ${sizeClasses[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} text-gray-900`.trim();
+    `${baseClasses} ${sizeClasses[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} ${selectedTextColor}`.trim();
 
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
@@ -168,16 +262,25 @@ export const Input: React.FC<InputProps> = ({
         type={type}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
         disabled={disabled}
+        readOnly={readOnly}
         placeholder={placeholder}
         required={required}
+        name={name}
+        min={min}
+        max={max}
+        minLength={minLength}
+        maxLength={maxLength}
         aria-required={required}
         aria-disabled={disabled}
         aria-invalid={hasError}
         aria-errormessage={hasError ? errorId : undefined}
         aria-describedby={helperText ? helperId : undefined}
         className={inputClasses}
-        {...rest}
+        style={style}
       />
 
       {hasError && (

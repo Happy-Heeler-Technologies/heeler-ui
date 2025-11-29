@@ -25,22 +25,47 @@ const meta = {
     },
     errorMessage: {
       control: "text",
-      description: "Error message to display",
+      description: "Error message to display below the input",
     },
     helperText: {
       control: "text",
-      description: "Helper text to display below the input",
+      description: "Helper text to display below the input (when no error)",
+    },
+    id: {
+      control: "text",
+      description: "Unique identifier for the input element",
     },
     label: {
       control: "text",
       description: "Label text for the input",
     },
-    onChange: {
-      description: "Change handler for controlled component",
+    max: {
+      control: "text",
+      description: "Maximum value (for number, date, time inputs)",
+    },
+    maxLength: {
+      control: "number",
+      description: "Maximum length of input value",
+    },
+    min: {
+      control: "text",
+      description: "Minimum value (for number, date, time inputs)",
+    },
+    minLength: {
+      control: "number",
+      description: "Minimum length of input value",
+    },
+    name: {
+      control: "text",
+      description: "Name attribute for the input (useful for forms)",
     },
     placeholder: {
       control: "text",
       description: "Placeholder text",
+    },
+    readOnly: {
+      control: "boolean",
+      description: "Whether the input is read-only",
     },
     required: {
       control: "boolean",
@@ -50,6 +75,16 @@ const meta = {
       control: "select",
       options: ["sm", "md", "lg"],
       description: "Size of the input",
+    },
+    style: {
+      control: "object",
+      description: "Inline styles for the input element",
+    },
+    textColor: {
+      control: "select",
+      options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
+      description:
+        "Text color for the input value (defaults to color prop if not specified)",
     },
     type: {
       control: "select",
@@ -70,6 +105,22 @@ const meta = {
     value: {
       control: "text",
       description: "Input value (controlled component)",
+    },
+    onBlur: {
+      control: false,
+      description: "Blur event handler",
+    },
+    onChange: {
+      control: false,
+      description: "Change handler for controlled component",
+    },
+    onFocus: {
+      control: false,
+      description: "Focus event handler",
+    },
+    onKeyDown: {
+      control: false,
+      description: "Key down event handler",
     },
   },
 } satisfies Meta<typeof Input>;
