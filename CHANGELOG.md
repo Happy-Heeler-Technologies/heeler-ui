@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Badge Component**: New badge component for status indicators and labels with the following features:
+  - 7 configurable props including `text`, `icon`, `color`, `variant`, `ariaLabel`, `className`, `style`
+  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) with solid backgrounds and white text
+  - Optional icon support with proper `aria-hidden` handling
+  - Two semantic variants:
+    - `"label"` (default): Static informational badges without ARIA role
+    - `"status"`: Live status indicators with `role="status"` for screen reader announcements
+  - Smart ARIA labeling: status badges automatically get `aria-label="Status: {text}"` if not provided
+  - Complete accessibility implementation with WCAG AA compliant color contrast ratios
+  - Complete Storybook documentation with stories for all color variants, icon combinations, and both semantic variants
+
+- **Icon Library**: 30 reusable icon components with comprehensive accessibility features:
+  - Icons: ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Bell, Calendar, Cancel, Chart, Check, Clock, Cloud, Cog, Document, Download, Eye, Fire, Heart, Home, Lightning, Lock, LockOpen, Mail, Menu, Pencil, Plus, Refresh, Search, Star, Trash, User
+  - Rainbow color system with 7 variants
+  - Accessibility props: `title` for descriptions, `hideFromScreenReaders`, automatic `role="img"` with `aria-label` when title provided, `focusable="false"`
+  - Consistent 12px default size (w-3 h-3) with customizable `className` for sizing
+  - Individual component files for tree-shaking and optimal bundle size
+
+- **RainbowColor Type**: Centralized type definition (`"red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet"`) exported from `icons/types.ts` and used across Badge, Tabs, and all icon components for consistency
+
 - **Tabs Component**: New tabbed interface component with the following features:
   - 8 configurable props including `tabs`, `color`, `defaultTab`, `activeTab`, `onTabChange`, `solid`, `className`, `style`
   - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for both solid and tertiary styling modes
@@ -28,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **README**: Updated component list format from simple bullets to heading-style entries with emojis for improved visibility and scanning
+- **Tabs Component**: Updated to use centralized `RainbowColor` type from `icons/types.ts`
 
 ## [0.1.0-alpha.8] - 2025-11-29
 
