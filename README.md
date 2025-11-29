@@ -168,20 +168,32 @@ A text input component with consistent labeling, error handling, and support for
 
 #### Props
 
-| Prop           | Type                                                                                                                | Default     | Description                                            |
-| -------------- | ------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
-| `type`         | `"text" \| "email" \| "password" \| "number" \| "tel" \| "url" \| "search" \| "date" \| "time" \| "datetime-local"` | `"text"`    | The HTML input type                                    |
-| `value`        | `string \| number`                                                                                                  | `undefined` | Input value (controlled component)                     |
-| `onChange`     | `(event: React.ChangeEvent<HTMLInputElement>) => void`                                                              | `undefined` | Change handler for controlled component                |
-| `label`        | `string`                                                                                                            | `undefined` | Label text for the input                               |
-| `placeholder`  | `string`                                                                                                            | `undefined` | Placeholder text                                       |
-| `helperText`   | `string`                                                                                                            | `undefined` | Helper text to display below the input (when no error) |
-| `errorMessage` | `string`                                                                                                            | `undefined` | Error message to display below the input               |
-| `disabled`     | `boolean`                                                                                                           | `false`     | Whether the input is disabled                          |
-| `required`     | `boolean`                                                                                                           | `false`     | Whether the input is required                          |
-| `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"`                                        | `undefined` | Rainbow color for focus ring and border                |
-| `size`         | `"sm" \| "md" \| "lg"`                                                                                              | `"md"`      | Size of the input                                      |
-| `className`    | `string`                                                                                                            | `undefined` | Additional CSS classes for the container div           |
+| Prop           | Type                                                                                                                | Default     | Description                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------ |
+| `className`    | `string`                                                                                                            | `undefined` | Additional CSS classes for the container div                             |
+| `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"`                                        | `undefined` | Rainbow color for focus ring and border                                  |
+| `disabled`     | `boolean`                                                                                                           | `false`     | Whether the input is disabled                                            |
+| `errorMessage` | `string`                                                                                                            | `undefined` | Error message to display below the input                                 |
+| `helperText`   | `string`                                                                                                            | `undefined` | Helper text to display below the input (when no error)                   |
+| `id`           | `string`                                                                                                            | `undefined` | Unique identifier for the input element                                  |
+| `label`        | `string`                                                                                                            | `undefined` | Label text for the input                                                 |
+| `max`          | `number \| string`                                                                                                  | `undefined` | Maximum value (for number, date, time inputs)                            |
+| `maxLength`    | `number`                                                                                                            | `undefined` | Maximum length of input value                                            |
+| `min`          | `number \| string`                                                                                                  | `undefined` | Minimum value (for number, date, time inputs)                            |
+| `minLength`    | `number`                                                                                                            | `undefined` | Minimum length of input value                                            |
+| `name`         | `string`                                                                                                            | `undefined` | Name attribute for the input (useful for forms)                          |
+| `placeholder`  | `string`                                                                                                            | `undefined` | Placeholder text                                                         |
+| `readOnly`     | `boolean`                                                                                                           | `false`     | Whether the input is read-only                                           |
+| `required`     | `boolean`                                                                                                           | `false`     | Whether the input is required                                            |
+| `size`         | `"sm" \| "md" \| "lg"`                                                                                              | `"md"`      | Size of the input                                                        |
+| `style`        | `React.CSSProperties`                                                                                               | `undefined` | Inline styles for the input element                                      |
+| `textColor`    | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"`                                        | `undefined` | Text color for the input value (defaults to color prop if not specified) |
+| `type`         | `"text" \| "email" \| "password" \| "number" \| "tel" \| "url" \| "search" \| "date" \| "time" \| "datetime-local"` | `"text"`    | The HTML input type                                                      |
+| `value`        | `string \| number`                                                                                                  | `undefined` | Input value (controlled component)                                       |
+| `onBlur`       | `(event: React.FocusEvent<HTMLInputElement>) => void`                                                               | `undefined` | Blur event handler                                                       |
+| `onChange`     | `(event: React.ChangeEvent<HTMLInputElement>) => void`                                                              | `undefined` | Change handler for controlled component                                  |
+| `onFocus`      | `(event: React.FocusEvent<HTMLInputElement>) => void`                                                               | `undefined` | Focus event handler                                                      |
+| `onKeyDown`    | `(event: React.KeyboardEvent<HTMLInputElement>) => void`                                                            | `undefined` | Key down event handler                                                   |
 
 #### Usage
 
@@ -262,6 +274,17 @@ The Input component is built with WCAG 2.1 AA compliance:
 // Rainbow colors
 <Input label="Violet Theme" color="violet" placeholder="Focus to see color" />
 <Input label="Green Theme" color="green" placeholder="Type here..." />
+
+// Text color (automatically matches border color by default)
+<Input label="Blue Input" color="blue" placeholder="Text will be blue" />
+
+// Override text color
+<Input
+  label="Custom Colors"
+  color="indigo"
+  textColor="orange"
+  placeholder="Indigo border, orange text"
+/>
 
 // With helper text and errors
 <Input
