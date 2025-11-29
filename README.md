@@ -43,15 +43,19 @@ A flexible button component with multiple variants, colors, and sizes.
 
 | Prop           | Type                                                                         | Default     | Description                                                    |
 | -------------- | ---------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------- |
-| `variant`      | `"primary" \| "secondary" \| "tertiary"`                                     | `"primary"` | The visual style variant of the button                         |
+| `text`         | `ReactNode`                                                                  | -           | The text content to display inside the button                  |
+| `className`    | `string`                                                                     | `undefined` | Additional CSS classes to apply to the button                  |
 | `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"` | `"blue"`    | Rainbow color scheme. Applies to primary and tertiary variants |
-| `size`         | `"sm" \| "md" \| "lg"`                                                       | `"lg"`      | Size of the button                                             |
-| `rounded`      | `boolean`                                                                    | `false`     | Whether the button has fully rounded (pill-shaped) corners     |
-| `loading`      | `boolean`                                                                    | `false`     | Shows a spinner and disables the button during loading states  |
+| `disabled`     | `boolean`                                                                    | `false`     | Disables the button and prevents interaction                   |
 | `icon`         | `ReactNode`                                                                  | `undefined` | Optional icon element to display (works with any icon library) |
 | `iconPosition` | `"left" \| "right"`                                                          | `"left"`    | Position of the icon relative to the button text               |
-| `disabled`     | `boolean`                                                                    | `false`     | Disables the button and prevents interaction                   |
-| `text`         | `ReactNode`                                                                  | -           | The text content to display inside the button                  |
+| `loading`      | `boolean`                                                                    | `false`     | Shows a spinner and disables the button during loading states  |
+| `rounded`      | `boolean`                                                                    | `false`     | Whether the button has fully rounded (pill-shaped) corners     |
+| `size`         | `"sm" \| "md" \| "lg"`                                                       | `"lg"`      | Size of the button                                             |
+| `style`        | `React.CSSProperties`                                                        | `undefined` | Inline styles to apply to the button                           |
+| `type`         | `"button" \| "submit" \| "reset"`                                            | `"button"`  | HTML button type attribute                                     |
+| `variant`      | `"primary" \| "secondary" \| "tertiary"`                                     | `"primary"` | The visual style variant of the button                         |
+| `onClick`      | `(event: React.MouseEvent<HTMLButtonElement>) => void`                       | `undefined` | Click event handler                                            |
 
 #### Usage
 
@@ -136,7 +140,25 @@ import { Heart, ArrowRight, Plus } from "lucide-react";
 // Disabled state
 <Button disabled text="Cannot Click" />
 <Button disabled loading text="Still Loading" />
+
+// Form buttons with type attribute
+<form onSubmit={handleSubmit}>
+  <Input label="Email" type="email" />
+  <Button type="submit" text="Submit" />
+  <Button type="reset" variant="secondary" text="Clear" />
+  <Button type="button" variant="tertiary" onClick={handleCancel} text="Cancel" />
+</form>
 ```
+
+#### Accessibility
+
+The Button component includes comprehensive accessibility features:
+
+- **ARIA Attributes**: `aria-disabled`, `aria-busy` for loading states
+- **Keyboard Navigation**: `focus-visible` for keyboard-only focus indicators
+- **Screen Reader Support**: Decorative icons hidden with `aria-hidden="true"`
+- **Visual Feedback**: Clear disabled states with reduced opacity and cursor changes
+- **Semantic HTML**: Proper `<button>` element with `type` attribute
 
 ---
 
