@@ -1,13 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Badge } from "./Badge";
-import {
-  BellIcon,
-  CheckIcon,
-  FireIcon,
-  LightningIcon,
-  StarIcon,
-} from "../../icons";
+import { Bell, Check, Fire, Lightning, Star } from "../../icons";
 
 const meta = {
   title: "Components/Badge",
@@ -108,7 +102,7 @@ export const WithCheckIcon: Story = {
   args: {
     color: "green",
     text: "Verified",
-    icon: <CheckIcon />,
+    icon: <Check />,
   },
 };
 
@@ -116,7 +110,7 @@ export const WithStarIcon: Story = {
   args: {
     color: "yellow",
     text: "Premium",
-    icon: <StarIcon />,
+    icon: <Star />,
   },
 };
 
@@ -124,7 +118,7 @@ export const WithFireIcon: Story = {
   args: {
     color: "orange",
     text: "Hot",
-    icon: <FireIcon />,
+    icon: <Fire />,
   },
 };
 
@@ -132,7 +126,7 @@ export const WithBellIcon: Story = {
   args: {
     color: "blue",
     text: "Notification",
-    icon: <BellIcon />,
+    icon: <Bell />,
   },
 };
 
@@ -140,7 +134,7 @@ export const WithLightningIcon: Story = {
   args: {
     color: "violet",
     text: "Fast",
-    icon: <LightningIcon />,
+    icon: <Lightning />,
   },
 };
 
@@ -151,13 +145,13 @@ export const MultipleVariants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge text="Default" />
-      <Badge color="red" text="Error" icon={<CheckIcon />} />
+      <Badge color="red" text="Error" icon={<Check />} />
       <Badge color="orange" text="Warning" />
-      <Badge color="yellow" text="Pending" icon={<StarIcon />} />
-      <Badge color="green" text="Success" icon={<CheckIcon />} />
+      <Badge color="yellow" text="Pending" icon={<Star />} />
+      <Badge color="green" text="Success" icon={<Check />} />
       <Badge color="blue" text="Info" />
-      <Badge color="indigo" text="New" icon={<BellIcon />} />
-      <Badge color="violet" text="Featured" icon={<LightningIcon />} />
+      <Badge color="indigo" text="New" icon={<Bell />} />
+      <Badge color="violet" text="Featured" icon={<Lightning />} />
     </div>
   ),
 };
@@ -166,7 +160,7 @@ export const WithAriaLabel: Story = {
   args: {
     color: "green",
     text: "Verified",
-    icon: <CheckIcon />,
+    icon: <Check />,
     ariaLabel: "Account verified status badge",
   },
 };

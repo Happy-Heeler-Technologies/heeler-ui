@@ -2,16 +2,41 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { IconProps } from "./types";
 import {
-  BellIcon,
-  CheckIcon,
-  FireIcon,
-  LightningIcon,
-  StarIcon,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  Bell,
+  Calendar,
+  Cancel,
+  Chart,
+  Check,
+  Clock,
+  Cloud,
+  Cog,
+  Document,
+  Download,
+  Eye,
+  Fire,
+  Heart,
+  Home,
+  Lightning,
+  Lock,
+  LockOpen,
+  Mail,
+  Menu,
+  Pencil,
+  Plus,
+  Refresh,
+  Search,
+  Star,
+  Trash,
+  User,
 } from "./index";
 
 const meta = {
   title: "Icons/Overview",
-  component: CheckIcon,
+  component: Check,
   parameters: {
     layout: "centered",
   },
@@ -66,11 +91,36 @@ const IconShowcase = ({
 export const AllIcons: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4 p-8">
-      <IconShowcase icon={BellIcon} name="BellIcon" color="blue" />
-      <IconShowcase icon={CheckIcon} name="CheckIcon" color="green" />
-      <IconShowcase icon={FireIcon} name="FireIcon" color="orange" />
-      <IconShowcase icon={LightningIcon} name="LightningIcon" color="violet" />
-      <IconShowcase icon={StarIcon} name="StarIcon" color="yellow" />
+      <IconShowcase icon={ArrowDown} name="ArrowDown" color="orange" />
+      <IconShowcase icon={ArrowLeft} name="ArrowLeft" color="green" />
+      <IconShowcase icon={ArrowRight} name="ArrowRight" color="violet" />
+      <IconShowcase icon={ArrowUp} name="ArrowUp" color="indigo" />
+      <IconShowcase icon={Bell} name="Bell" color="orange" />
+      <IconShowcase icon={Calendar} name="Calendar" color="blue" />
+      <IconShowcase icon={Cancel} name="Cancel" color="red" />
+      <IconShowcase icon={Chart} name="Chart" color="green" />
+      <IconShowcase icon={Check} name="Check" color="red" />
+      <IconShowcase icon={Clock} name="Clock" color="indigo" />
+      <IconShowcase icon={Cloud} name="Cloud" color="yellow" />
+      <IconShowcase icon={Cog} name="Cog" color="violet" />
+      <IconShowcase icon={Document} name="Document" color="orange" />
+      <IconShowcase icon={Download} name="Download" color="green" />
+      <IconShowcase icon={Eye} name="Eye" color="indigo" />
+      <IconShowcase icon={Fire} name="Fire" color="red" />
+      <IconShowcase icon={Heart} name="Heart" color="red" />
+      <IconShowcase icon={Home} name="Home" color="blue" />
+      <IconShowcase icon={Lightning} name="Lightning" color="yellow" />
+      <IconShowcase icon={Lock} name="Lock" color="indigo" />
+      <IconShowcase icon={LockOpen} name="LockOpen" color="green" />
+      <IconShowcase icon={Mail} name="Mail" color="blue" />
+      <IconShowcase icon={Menu} name="Menu" color="violet" />
+      <IconShowcase icon={Pencil} name="Pencil" color="orange" />
+      <IconShowcase icon={Plus} name="Plus" color="green" />
+      <IconShowcase icon={Refresh} name="Refresh" color="blue" />
+      <IconShowcase icon={Search} name="Search" color="green" />
+      <IconShowcase icon={Star} name="Star" color="yellow" />
+      <IconShowcase icon={Trash} name="Trash" color="red" />
+      <IconShowcase icon={User} name="User" color="indigo" />
     </div>
   ),
 };
@@ -79,19 +129,19 @@ export const SizesExample: Story = {
   render: () => (
     <div className="flex items-center gap-4 p-8">
       <div className="flex flex-col items-center gap-2">
-        <CheckIcon className="w-4 h-4" color="indigo" />
+        <Check className="w-4 h-4" color="indigo" />
         <p className="text-xs text-gray-600">Small (w-4 h-4)</p>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <CheckIcon className="w-6 h-6" color="indigo" />
+        <Check className="w-6 h-6" color="indigo" />
         <p className="text-xs text-gray-600">Medium (w-6 h-6)</p>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <CheckIcon className="w-8 h-8" color="indigo" />
+        <Check className="w-8 h-8" color="indigo" />
         <p className="text-xs text-gray-600">Large (w-8 h-8)</p>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <CheckIcon className="w-12 h-12" color="indigo" />
+        <Check className="w-12 h-12" color="indigo" />
         <p className="text-xs text-gray-600">XL (w-12 h-12)</p>
       </div>
     </div>
