@@ -1,4 +1,5 @@
 import {
+  useId,
   useState,
   type CSSProperties,
   type KeyboardEvent,
@@ -52,6 +53,11 @@ export interface TabsProps {
    */
   style?: CSSProperties;
   /**
+   * Use solid colored background for active tabs with white text instead of border styling
+   * @default false
+   */
+  solid?: boolean;
+  /**
    * Array of tab configurations
    */
   tabs: Tab[];
@@ -63,9 +69,11 @@ export const Tabs = ({
   defaultTab = 0,
   activeTab,
   onTabChange,
+  solid = false,
   style,
   tabs,
 }: TabsProps) => {
+  const baseId = useId();
   const [internalActiveTab, setInternalActiveTab] = useState(defaultTab);
 
   // Use controlled or uncontrolled state
@@ -90,29 +98,29 @@ export const Tabs = ({
         const nextIndex = index === lastIndex ? 0 : index + 1;
         handleTabClick(nextIndex);
         // Focus the next tab button
-        document.getElementById(`tab-${nextIndex}`)?.focus();
+        document.getElementById(`${baseId}-tab-${nextIndex}`)?.focus();
         break;
       case "ArrowLeft":
         event.preventDefault();
         const prevIndex = index === 0 ? lastIndex : index - 1;
         handleTabClick(prevIndex);
         // Focus the previous tab button
-        document.getElementById(`tab-${prevIndex}`)?.focus();
+        document.getElementById(`${baseId}-tab-${prevIndex}`)?.focus();
         break;
       case "Home":
         event.preventDefault();
         handleTabClick(0);
-        document.getElementById(`tab-0`)?.focus();
+        document.getElementById(`${baseId}-tab-0`)?.focus();
         break;
       case "End":
         event.preventDefault();
         handleTabClick(lastIndex);
-        document.getElementById(`tab-${lastIndex}`)?.focus();
+        document.getElementById(`${baseId}-tab-${lastIndex}`)?.focus();
         break;
     }
   };
 
-  // Color mapping for active tab
+  // Color mapping for default style (border + matching text)
   const colorMap: Record<string, string> = {
     red: "border-red-600 text-red-700",
     orange: "border-orange-500 text-orange-700",
@@ -123,39 +131,59 @@ export const Tabs = ({
     violet: "border-violet-600 text-violet-700",
   };
 
+  // Color mapping for solid variant (background + white text)
+  const solidColorMap: Record<string, string> = {
+    red: "bg-red-600 text-white",
+    orange: "bg-orange-500 text-white",
+    yellow: "bg-yellow-500 text-white",
+    green: "bg-green-600 text-white",
+    blue: "bg-blue-600 text-white",
+    indigo: "bg-indigo-600 text-white",
+    violet: "bg-violet-600 text-white",
+  };
+
   return (
     <div className={className} style={style}>
-      {/* Tab List */}
       <div
         role="tablist"
         aria-label="Content tabs"
-        className="flex border-b border-gray-200"
+        aria-orientation="horizontal"
+        className="flex gap-1 border-b border-gray-200"
       >
         {tabs.map((tab, index) => {
           const isActive = currentTab === index;
           const tabColor = tab.color || color;
-          const activeClasses = colorMap[tabColor];
-          const borderColor = activeClasses.split(" ")[0];
-          const textColor = activeClasses.split(" ")[1];
+
+          let activeClasses = "";
+          let inactiveClasses = "";
+
+          if (solid) {
+            activeClasses = solidColorMap[tabColor];
+            inactiveClasses = "bg-gray-100 text-gray-500 hover:bg-gray-200";
+          } else {
+            const tertiaryClasses = colorMap[tabColor];
+            const borderColor = tertiaryClasses.split(" ")[0];
+            const textColor = tertiaryClasses.split(" ")[1];
+            activeClasses = `${borderColor} ${textColor}`;
+            inactiveClasses =
+              "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300";
+          }
 
           return (
             <button
               key={tab.id}
-              id={`tab-${index}`}
+              id={`${baseId}-tab-${index}`}
               role="tab"
               aria-selected={isActive}
-              aria-controls={`tabpanel-${index}`}
+              aria-controls={`${baseId}-tabpanel-${index}`}
               tabIndex={isActive ? 0 : -1}
               onClick={() => handleTabClick(index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               className={`
-                px-4 py-2 font-medium text-sm border-b-2 transition-colors
+                px-4 py-2 font-medium text-sm transition-colors
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-${tabColor}-500
-                ${
-                  isActive
-                    ? `${borderColor} ${textColor}`
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }
+                ${solid ? "rounded-t-md" : "border-b-2"}
+                ${isActive ? activeClasses : inactiveClasses}
               `}
             >
               {tab.label}
@@ -164,16 +192,16 @@ export const Tabs = ({
         })}
       </div>
 
-      {/* Tab Panels */}
       {tabs.map((tab, index) => {
         const isActive = currentTab === index;
         return (
           <div
             key={tab.id}
-            id={`tabpanel-${index}`}
+            id={`${baseId}-tabpanel-${index}`}
             role="tabpanel"
-            aria-labelledby={`tab-${index}`}
+            aria-labelledby={`${baseId}-tab-${index}`}
             hidden={!isActive}
+            tabIndex={isActive ? 0 : -1}
             className="py-4"
           >
             {tab.content}

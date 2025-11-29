@@ -32,6 +32,11 @@ const meta = {
       action: "tab changed",
       description: "Callback when active tab changes",
     },
+    solid: {
+      control: "boolean",
+      description:
+        "Use solid colored background for active tabs with white text instead of border styling",
+    },
     style: {
       control: "object",
       description: "Inline styles for the container",
@@ -297,6 +302,84 @@ export const DefaultSecondTab: Story = {
         id: "tab3",
         label: "Third",
         content: <p className="text-gray-700">Third tab content</p>,
+      },
+    ],
+  },
+};
+
+export const SolidRed: Story = {
+  args: {
+    solid: true,
+    color: "red",
+    tabs: [
+      {
+        id: "tab1",
+        label: "Tab 1",
+        content: (
+          <p className="text-gray-700">Solid red tabs with white text</p>
+        ),
+      },
+      {
+        id: "tab2",
+        label: "Tab 2",
+        content: <p className="text-gray-700">Content for tab 2</p>,
+      },
+      {
+        id: "tab3",
+        label: "Tab 3",
+        content: <p className="text-gray-700">Content for tab 3</p>,
+      },
+    ],
+  },
+};
+
+export const SolidBlue: Story = {
+  args: {
+    solid: true,
+    color: "blue",
+    tabs: [
+      {
+        id: "tab1",
+        label: "Tab 1",
+        content: (
+          <p className="text-gray-700">Solid blue tabs with white text</p>
+        ),
+      },
+      {
+        id: "tab2",
+        label: "Tab 2",
+        content: <p className="text-gray-700">Content for tab 2</p>,
+      },
+      {
+        id: "tab3",
+        label: "Tab 3",
+        content: <p className="text-gray-700">Content for tab 3</p>,
+      },
+    ],
+  },
+};
+
+export const SolidViolet: Story = {
+  args: {
+    solid: true,
+    color: "violet",
+    tabs: [
+      {
+        id: "tab1",
+        label: "Tab 1",
+        content: (
+          <p className="text-gray-700">Solid violet tabs with white text</p>
+        ),
+      },
+      {
+        id: "tab2",
+        label: "Tab 2",
+        content: <p className="text-gray-700">Content for tab 2</p>,
+      },
+      {
+        id: "tab3",
+        label: "Tab 3",
+        content: <p className="text-gray-700">Content for tab 3</p>,
       },
     ],
   },
