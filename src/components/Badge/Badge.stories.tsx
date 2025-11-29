@@ -10,6 +10,11 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
+    ariaLabel: {
+      control: "text",
+      description:
+        "Optional accessible label for screen readers when badge meaning is not clear from text alone",
+    },
     className: {
       control: "text",
       description: "Additional CSS classes for the badge",
@@ -216,4 +221,13 @@ export const MultipleVariants: Story = {
       <Badge color="violet" text="Featured" icon={<LightningIcon />} />
     </div>
   ),
+};
+
+export const WithAriaLabel: Story = {
+  args: {
+    color: "green",
+    text: "Verified",
+    icon: <CheckIcon />,
+    ariaLabel: "Account verified status badge",
+  },
 };

@@ -26,6 +26,10 @@ export interface BadgeProps {
    */
   icon?: ReactNode;
   /**
+   * Optional accessible label for screen readers when badge meaning is not clear from text alone
+   */
+  ariaLabel?: string;
+  /**
    * Inline styles for the badge
    */
   style?: CSSProperties;
@@ -36,6 +40,7 @@ export interface BadgeProps {
 }
 
 export const Badge = ({
+  ariaLabel,
   className = "",
   color = "blue",
   icon,
@@ -46,6 +51,8 @@ export const Badge = ({
 
   return (
     <span
+      role="status"
+      aria-label={ariaLabel}
       className={`
         inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
         ${colorClasses}
@@ -53,7 +60,11 @@ export const Badge = ({
       `}
       style={style}
     >
-      {icon && <span className="inline-flex items-center">{icon}</span>}
+      {icon && (
+        <span className="inline-flex items-center" aria-hidden="true">
+          {icon}
+        </span>
+      )}
       <span>{text}</span>
     </span>
   );
