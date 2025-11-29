@@ -1,11 +1,6 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 
 export interface ButtonProps {
-  /**
-   * The text content to display inside the button
-   */
-  text: ReactNode;
-
   /**
    * Additional CSS classes to apply to the button
    */
@@ -39,6 +34,11 @@ export interface ButtonProps {
   loading?: boolean;
 
   /**
+   * Click event handler
+   */
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+
+  /**
    * Whether the button has fully rounded (pill-shaped) corners
    */
   rounded?: boolean;
@@ -52,7 +52,12 @@ export interface ButtonProps {
   /**
    * Inline styles to apply to the button
    */
-  style?: React.CSSProperties;
+  style?: CSSProperties;
+
+  /**
+   * The text content to display inside the button
+   */
+  text: ReactNode;
 
   /**
    * HTML button type attribute
@@ -65,27 +70,22 @@ export interface ButtonProps {
    * @default 'primary'
    */
   variant?: "primary" | "secondary" | "tertiary";
-
-  /**
-   * Click event handler
-   */
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function Button({
-  text,
   className,
   color = "blue",
   disabled,
   icon,
   iconPosition = "left",
   loading = false,
+  onClick,
   rounded = false,
   size = "lg",
   style,
+  text,
   type = "button",
   variant = "primary",
-  onClick,
 }: ButtonProps) {
   const colorClasses = {
     red: {
