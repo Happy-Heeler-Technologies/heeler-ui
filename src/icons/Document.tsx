@@ -14,6 +14,7 @@ export const Document = ({
   className = "",
   color = "blue",
   hideFromScreenReaders = false,
+  title,
 }: IconProps) => {
   const colorClass = colorMap[color];
   const sizeClass = className ? "" : "w-3 h-3";
@@ -24,7 +25,10 @@ export const Document = ({
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
-      aria-hidden={hideFromScreenReaders}
+      aria-hidden={title ? undefined : hideFromScreenReaders || undefined}
+      role={title ? "img" : undefined}
+      aria-label={title}
+      focusable="false"
     >
       <path
         fillRule="evenodd"

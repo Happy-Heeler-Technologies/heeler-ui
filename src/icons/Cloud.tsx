@@ -14,6 +14,7 @@ export const Cloud = ({
   className = "",
   color = "blue",
   hideFromScreenReaders = false,
+  title,
 }: IconProps) => {
   const colorClass = colorMap[color];
   const sizeClass = className ? "" : "w-3 h-3";
@@ -24,7 +25,10 @@ export const Cloud = ({
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
-      aria-hidden={hideFromScreenReaders}
+      aria-hidden={title ? undefined : hideFromScreenReaders || undefined}
+      role={title ? "img" : undefined}
+      aria-label={title}
+      focusable="false"
     >
       <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
     </svg>
