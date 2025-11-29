@@ -247,16 +247,29 @@ const [error, setError] = useState("");
 />
 ```
 
-#### Accessibility Features
+#### Input Types
 
-The Input component is built with WCAG 2.1 AA compliance:
+Supports a wide range of HTML5 input types:
 
-- **Keyboard Navigation**: Full keyboard support with `focus-visible` rings
-- **Screen Reader Support**: Proper ARIA attributes including `aria-required`, `aria-invalid`, `aria-errormessage`, and `aria-describedby`
-- **Error Handling**: Dynamic error announcements with `aria-live="polite"`
-- **Label Association**: Automatic ID generation and proper `htmlFor` linking
-- **Required Fields**: Visual indicator with screen reader support
-- **Disabled States**: Proper `aria-disabled` attribute with visual feedback
+- **Text inputs**: `text` (default), `email`, `password`, `tel`, `url`, `search`
+- **Numeric inputs**: `number`
+- **Date/Time inputs**: `date`, `time`, `datetime-local`
+
+#### Sizes
+
+Three size options to match your design:
+
+- `sm` - Small: Compact for tight spaces or dense forms
+- `md` - Medium (default): Balanced size for most use cases
+- `lg` - Large: Prominent for important inputs or touch interfaces
+
+#### Colors
+
+The design system is based on the colors of the rainbow. Choose from these preset options:
+
+- `red`, `orange`, `yellow`, `green`, `blue`, `indigo`, `violet`
+
+Colors affect the focus ring, border, and text color (unless `textColor` is specified).
 
 #### Examples
 
@@ -264,8 +277,10 @@ The Input component is built with WCAG 2.1 AA compliance:
 // Different input types
 <Input type="email" label="Email" placeholder="you@example.com" />
 <Input type="password" label="Password" required />
-<Input type="number" label="Age" placeholder="25" />
+<Input type="number" label="Age" min={0} max={120} placeholder="25" />
+<Input type="tel" label="Phone" placeholder="(555) 123-4567" />
 <Input type="date" label="Birth Date" />
+<Input type="search" label="Search" placeholder="Search..." />
 
 // Different sizes
 <Input label="Small Input" size="sm" placeholder="Small" />
@@ -273,8 +288,13 @@ The Input component is built with WCAG 2.1 AA compliance:
 <Input label="Large Input" size="lg" placeholder="Large" />
 
 // Rainbow colors
-<Input label="Violet Theme" color="violet" placeholder="Focus to see color" />
-<Input label="Green Theme" color="green" placeholder="Type here..." />
+<Input label="Red Theme" color="red" placeholder="Focus to see red" />
+<Input label="Orange Theme" color="orange" placeholder="Type here..." />
+<Input label="Yellow Theme" color="yellow" placeholder="Focus me" />
+<Input label="Green Theme" color="green" placeholder="Enter text" />
+<Input label="Blue Theme" color="blue" placeholder="Default blue" />
+<Input label="Indigo Theme" color="indigo" placeholder="Type here..." />
+<Input label="Violet Theme" color="violet" placeholder="Enter value" />
 
 // Text color (automatically matches border color by default)
 <Input label="Blue Input" color="blue" placeholder="Text will be blue" />
@@ -301,19 +321,98 @@ The Input component is built with WCAG 2.1 AA compliance:
   placeholder="Choose a username"
 />
 
+// States
+<Input label="Disabled" disabled placeholder="Cannot edit" />
+<Input label="Read-only" readOnly value="Fixed value" />
+<Input label="Required" required placeholder="Must be filled" />
+
+// Validation attributes
+<Input
+  type="email"
+  label="Email"
+  required
+  minLength={5}
+  maxLength={50}
+  autoComplete="email"
+  placeholder="you@example.com"
+/>
+
+<Input
+  type="password"
+  label="Password"
+  required
+  minLength={8}
+  maxLength={100}
+  autoComplete="new-password"
+  placeholder="Min 8 characters"
+/>
+
+// Combined features
+<Input
+  type="email"
+  label="Contact Email"
+  size="lg"
+  color="indigo"
+  required
+  autoComplete="email"
+  helperText="We'll only use this for important updates"
+  placeholder="your.email@example.com"
+/>
+
 // Form validation example
 const [email, setEmail] = useState("");
 const [error, setError] = useState("");
+
+const handleValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setEmail(value);
+
+  if (!value) {
+    setError("Email is required");
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    setError("Please enter a valid email address");
+  } else {
+    setError("");
+  }
+};
 
 <Input
   type="email"
   label="Email"
   value={email}
-  onChange={(e) => setEmail(e.target.value)}
+  onChange={handleValidation}
   errorMessage={error}
   color="violet"
   required
 />
+
+// Form submission example
+<form onSubmit={handleSubmit}>
+  <Input
+    label="Full Name"
+    name="fullName"
+    required
+    autoComplete="name"
+    placeholder="John Doe"
+  />
+  <Input
+    type="email"
+    label="Email Address"
+    name="email"
+    required
+    autoComplete="email"
+    placeholder="john@example.com"
+  />
+  <Input
+    type="tel"
+    label="Phone Number"
+    name="phone"
+    autoComplete="tel"
+    placeholder="(555) 123-4567"
+  />
+  <Button type="submit" text="Submit" />
+  <Button type="reset" variant="secondary" text="Clear" />
+</form>
 ```
 
 #### Accessibility
