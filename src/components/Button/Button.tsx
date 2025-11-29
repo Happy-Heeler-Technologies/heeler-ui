@@ -1,18 +1,74 @@
 import type { ReactNode } from "react";
 
 export interface ButtonProps {
+  /**
+   * The text content to display inside the button
+   */
   text: ReactNode;
+
+  /**
+   * Additional CSS classes to apply to the button
+   */
   className?: string;
+
+  /**
+   * Rainbow color scheme. Applies to primary and tertiary variants
+   * @default 'blue'
+   */
   color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+
+  /**
+   * Disables the button and prevents interaction
+   */
   disabled?: boolean;
+
+  /**
+   * Optional icon element to display (works with any icon library)
+   */
   icon?: ReactNode;
+
+  /**
+   * Position of the icon relative to the button text
+   * @default 'left'
+   */
   iconPosition?: "left" | "right";
+
+  /**
+   * Shows a spinner and disables the button during loading states
+   */
   loading?: boolean;
+
+  /**
+   * Whether the button has fully rounded (pill-shaped) corners
+   */
   rounded?: boolean;
+
+  /**
+   * Size of the button
+   * @default 'lg'
+   */
   size?: "sm" | "md" | "lg";
+
+  /**
+   * Inline styles to apply to the button
+   */
   style?: React.CSSProperties;
+
+  /**
+   * HTML button type attribute
+   * @default 'button'
+   */
   type?: "button" | "submit" | "reset";
+
+  /**
+   * The visual style variant of the button
+   * @default 'primary'
+   */
   variant?: "primary" | "secondary" | "tertiary";
+
+  /**
+   * Click event handler
+   */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 

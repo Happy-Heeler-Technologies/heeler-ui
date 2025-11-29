@@ -162,6 +162,194 @@ The Button component includes comprehensive accessibility features:
 
 ---
 
+### Checkbox
+
+A checkbox component for boolean selections with label support, helper text, and multiple sizes. Features a custom-styled checkmark that can match the label text color for visual consistency. Built with full accessibility support and the rainbow color system.
+
+#### Props
+
+| Prop           | Type                                                                         | Default     | Description                                                                       |
+| -------------- | ---------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------- |
+| `checked`      | `boolean`                                                                    | `false`     | Whether the checkbox is checked                                                   |
+| `className`    | `string`                                                                     | `undefined` | Additional CSS classes for the container div                                      |
+| `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"` | `"blue"`    | Rainbow color for the checked state                                               |
+| `disabled`     | `boolean`                                                                    | `false`     | Whether the checkbox is disabled                                                  |
+| `errorMessage` | `string`                                                                     | `undefined` | Error message to display below the checkbox                                       |
+| `helperText`   | `string`                                                                     | `undefined` | Helper text to display below the checkbox (when no error)                         |
+| `id`           | `string`                                                                     | `undefined` | Unique identifier for the checkbox element                                        |
+| `label`        | `string`                                                                     | `undefined` | Label text for the checkbox                                                       |
+| `labelColor`   | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"` | `undefined` | Label and checkmark color (defaults to color prop for label, white for checkmark) |
+| `name`         | `string`                                                                     | `undefined` | Name attribute for the checkbox (useful for forms)                                |
+| `required`     | `boolean`                                                                    | `false`     | Whether the checkbox is required                                                  |
+| `size`         | `"sm" \| "md" \| "lg"`                                                       | `"md"`      | Size of the checkbox                                                              |
+| `style`        | `React.CSSProperties`                                                        | `undefined` | Inline styles for the checkbox element                                            |
+| `onBlur`       | `(event: React.FocusEvent<HTMLInputElement>) => void`                        | `undefined` | Blur event handler                                                                |
+| `onChange`     | `(event: React.ChangeEvent<HTMLInputElement>) => void`                       | `undefined` | Change handler for controlled component                                           |
+| `onFocus`      | `(event: React.FocusEvent<HTMLInputElement>) => void`                        | `undefined` | Focus event handler                                                               |
+
+#### Usage
+
+```tsx
+import { Checkbox } from "@heeler/ui";
+
+// Basic checkbox
+<Checkbox label="I agree to the terms and conditions" />
+
+// Controlled checkbox
+const [agreed, setAgreed] = useState(false);
+
+<Checkbox
+  label="Subscribe to newsletter"
+  checked={agreed}
+  onChange={(e) => setAgreed(e.target.checked)}
+/>
+
+// With helper text
+<Checkbox
+  label="Enable notifications"
+  helperText="We'll send you updates about your account"
+/>
+
+// Required checkbox
+<Checkbox
+  label="I agree to the terms"
+  required
+/>
+
+// Different colors
+<Checkbox label="Green option" color="green" checked />
+<Checkbox label="Violet option" color="violet" checked />
+```
+
+#### Sizes
+
+Three size options to match your design:
+
+- `sm` - Small: Compact for dense forms or limited space
+- `md` - Medium (default): Balanced size for most use cases
+- `lg` - Large: Prominent for important selections or touch interfaces
+
+#### Colors
+
+The design system is based on the colors of the rainbow. Choose from these preset options:
+
+- `red`, `orange`, `yellow`, `green`, `blue` (default), `indigo`, `violet`
+
+Colors apply to the checked state background, border, and focus ring. The checkmark is white by default for optimal contrast. When `labelColor` is specified, both the label text and checkmark use that color for visual consistency.
+
+#### Examples
+
+```tsx
+// Different sizes
+<Checkbox label="Small" size="sm" checked />
+<Checkbox label="Medium (default)" size="md" checked />
+<Checkbox label="Large" size="lg" checked />
+
+// Rainbow colors (label color automatically matches)
+<Checkbox label="Red" color="red" checked />
+<Checkbox label="Orange" color="orange" checked />
+<Checkbox label="Yellow" color="yellow" checked />
+<Checkbox label="Green" color="green" checked />
+<Checkbox label="Blue" color="blue" checked />
+<Checkbox label="Indigo" color="indigo" checked />
+<Checkbox label="Violet" color="violet" checked />
+
+// Label and checkmark color override
+<Checkbox
+  label="Custom colors"
+  color="indigo"
+  labelColor="orange"
+  checked
+  helperText="Indigo checkbox with orange label and checkmark"
+/>
+
+// States
+<Checkbox label="Checked" checked />
+<Checkbox label="Unchecked" />
+<Checkbox label="Disabled unchecked" disabled />
+<Checkbox label="Disabled checked" disabled checked />
+<Checkbox label="Required" required />
+
+// With helper text
+<Checkbox
+  label="Email notifications"
+  helperText="Receive updates via email"
+  checked
+/>
+
+// With error message
+<Checkbox
+  label="I agree to the terms and conditions"
+  errorMessage="You must agree to the terms to continue"
+  required
+/>
+
+// Multiple checkboxes (form example)
+const [preferences, setPreferences] = useState({
+  email: true,
+  sms: false,
+  push: true,
+});
+
+<div>
+  <Checkbox
+    label="Email notifications"
+    checked={preferences.email}
+    onChange={() => setPreferences(prev => ({...prev, email: !prev.email}))}
+    helperText="Receive updates via email"
+    color="blue"
+  />
+  <Checkbox
+    label="SMS notifications"
+    checked={preferences.sms}
+    onChange={() => setPreferences(prev => ({...prev, sms: !prev.sms}))}
+    helperText="Receive text messages"
+    color="green"
+  />
+  <Checkbox
+    label="Push notifications"
+    checked={preferences.push}
+    onChange={() => setPreferences(prev => ({...prev, push: !prev.push}))}
+    helperText="Browser push notifications"
+    color="violet"
+  />
+</div>
+
+// Form submission example
+<form onSubmit={handleSubmit}>
+  <Checkbox
+    label="I agree to the terms and conditions"
+    name="terms"
+    required
+    checked={agreedToTerms}
+    onChange={(e) => setAgreedToTerms(e.target.checked)}
+  />
+  <Checkbox
+    label="Subscribe to newsletter"
+    name="newsletter"
+    checked={newsletter}
+    onChange={(e) => setNewsletter(e.target.checked)}
+    helperText="Optional: Receive product updates and news"
+  />
+  <Button type="submit" text="Submit" />
+</form>
+```
+
+#### Accessibility
+
+The Checkbox component follows WCAG 2.1 AA standards and includes:
+
+- **ARIA Attributes**: `aria-checked`, `aria-required`, `aria-disabled`, `aria-invalid`, `aria-errormessage`, and `aria-describedby` for comprehensive screen reader support
+- **Automatic ID Generation**: Uses `React.useId()` to ensure unique, accessible IDs for proper label association
+- **Error Announcements**: Error messages use `role="alert"` and `aria-live="polite"` to announce changes to screen readers
+- **Keyboard Navigation**: Full keyboard support with visible focus indicators using `focus-visible`
+- **Required Indicators**: Required fields display an asterisk with `aria-hidden="true"` (requirement communicated via `aria-required`)
+- **Label Association**: Proper `htmlFor` linking for fully clickable labels
+- **Disabled States**: Visual and functional disabled states with appropriate cursor changes and `aria-disabled`
+- **Custom Checkmark**: Uses SVG with proper color contrast (white by default) and decorative `aria-hidden` on visual elements
+
+---
+
 ### Input
 
 A text input component with consistent labeling, error handling, and support for multiple input types. Built with accessibility in mind, featuring proper ARIA attributes and keyboard navigation support.
