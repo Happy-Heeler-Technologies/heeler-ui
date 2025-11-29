@@ -19,10 +19,6 @@ const meta = {
       options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
       description: "Rainbow color for focus ring and border",
     },
-    customColor: {
-      control: "color",
-      description: "Custom hex color for focus ring and border",
-    },
     disabled: {
       control: "boolean",
       description: "Whether the input is disabled",
@@ -238,26 +234,6 @@ export const Violet: Story = {
     label: "Violet Theme",
     color: "violet",
     placeholder: "Focus to see violet theme",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-// Custom focus color
-export const CustomFocusColor: Story = {
-  args: {
-    label: "Custom Focus Color",
-    customColor: "#FF1493",
-    placeholder: "Focus to see custom pink color",
-    helperText: "Using custom hex color #FF1493",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const CustomFocusColorTeal: Story = {
-  args: {
-    label: "Teal Focus",
-    customColor: "#14B8A6",
-    placeholder: "Custom teal focus color",
   },
   render: (args) => <ControlledInput {...args} />,
 };

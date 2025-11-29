@@ -15,17 +15,6 @@ export interface InputProps extends Omit<
   color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
 
   /**
-   * Apply the color selection to the input text
-   * @default false
-   */
-  applyCustomColorToText?: boolean;
-
-  /**
-   * Custom hex color override for focus ring and border (e.g., '#FF5733')
-   */
-  customColor?: string;
-
-  /**
    * Whether the input is disabled
    */
   disabled?: boolean;
@@ -96,8 +85,6 @@ export const Input: React.FC<InputProps> = ({
   errorMessage,
   disabled = false,
   color,
-  applyCustomColorToText = false,
-  customColor,
   size = "md",
   placeholder,
   required = false,
@@ -136,17 +123,6 @@ export const Input: React.FC<InputProps> = ({
       "border-violet-500 focus-visible:border-violet-600 focus-visible:ring-violet-500",
   };
 
-  // Text color classes
-  const textColorClasses = {
-    red: "text-red-600",
-    orange: "text-orange-600",
-    yellow: "text-yellow-600",
-    green: "text-green-600",
-    blue: "text-blue-600",
-    indigo: "text-indigo-600",
-    violet: "text-violet-600",
-  };
-
   // Base input classes
   const baseClasses =
     "w-full rounded-md border bg-white transition-colors duration-200";
@@ -170,28 +146,9 @@ export const Input: React.FC<InputProps> = ({
       ? colorClasses[color]
       : standardClasses;
 
-  // Text color classes (only if applyCustomColorToText is enabled and color is specified)
-  const selectedTextColorClasses =
-    applyCustomColorToText && color && !hasError
-      ? textColorClasses[color]
-      : "text-gray-900";
-
   // Build the final input class string
   const inputClasses =
-    `${baseClasses} ${sizeClasses[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} ${selectedTextColorClasses}`.trim();
-
-  // Custom focus color styles (if provided)
-  const customFocusStyle =
-    customColor && !hasError
-      ? ({
-          "--focus-color": customColor,
-        } as React.CSSProperties)
-      : undefined;
-
-  const customFocusClasses =
-    customColor && !hasError
-      ? "focus-visible:!border-[var(--focus-color)] focus-visible:!ring-[var(--focus-color)]"
-      : "";
+    `${baseClasses} ${sizeClasses[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} text-gray-900`.trim();
 
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
@@ -219,8 +176,7 @@ export const Input: React.FC<InputProps> = ({
         aria-invalid={hasError}
         aria-errormessage={hasError ? errorId : undefined}
         aria-describedby={helperText ? helperId : undefined}
-        className={`${inputClasses} ${customFocusClasses}`}
-        style={customFocusStyle}
+        className={inputClasses}
         {...rest}
       />
 
