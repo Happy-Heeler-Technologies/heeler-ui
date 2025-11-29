@@ -7,6 +7,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
+import type { RainbowColor } from "../../icons/types";
 
 // default style (border + matching text)
 const COLOR_MAP: Record<string, string> = {
@@ -46,7 +47,7 @@ export interface Tab {
   /**
    * Optional rainbow color for this tab
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  color?: RainbowColor;
 }
 
 export interface TabsProps {
@@ -58,7 +59,7 @@ export interface TabsProps {
    * Default rainbow color for all tabs (can be overridden per tab)
    * @default 'blue'
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  color?: RainbowColor;
   /**
    * Index of the initially active tab
    * @default 0
