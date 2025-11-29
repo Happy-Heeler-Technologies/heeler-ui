@@ -1,6 +1,6 @@
 import type { IconProps } from "./types";
 
-const COLOR_MAP: Record<string, string> = {
+const colorMap: Record<string, string> = {
   red: "text-red-600",
   orange: "text-orange-500",
   yellow: "text-yellow-500",
@@ -10,12 +10,12 @@ const COLOR_MAP: Record<string, string> = {
   violet: "text-violet-600",
 };
 
-export const BellIcon = ({
+export const Plus = ({
   className = "",
   color = "blue",
   hideFromScreenReaders = false,
 }: IconProps) => {
-  const colorClass = COLOR_MAP[color];
+  const colorClass = colorMap[color];
   const sizeClass = className ? "" : "w-3 h-3";
 
   return (
@@ -26,7 +26,11 @@ export const BellIcon = ({
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden={hideFromScreenReaders}
     >
-      <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+      <path
+        fillRule="evenodd"
+        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+        clipRule="evenodd"
+      />
     </svg>
   );
 };

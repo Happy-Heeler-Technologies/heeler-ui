@@ -1,6 +1,5 @@
 import type { IconProps } from "./types";
 
-// Color mapping for icons
 const colorMap: Record<string, string> = {
   red: "text-red-600",
   orange: "text-orange-500",
@@ -11,7 +10,7 @@ const colorMap: Record<string, string> = {
   violet: "text-violet-600",
 };
 
-export const LightningIcon = ({
+export const Trash = ({
   className = "",
   color = "blue",
   hideFromScreenReaders = false,
@@ -29,7 +28,7 @@ export const LightningIcon = ({
     >
       <path
         fillRule="evenodd"
-        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
         clipRule="evenodd"
       />
     </svg>
