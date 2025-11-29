@@ -13,4 +13,9 @@ export interface IconProps {
    * @default false
    */
   hideFromScreenReaders?: boolean;
+  /**
+   * Accessible title for the icon. When provided, the icon will have role="img" and be visible to screen readers.
+   * Use this when the icon is standalone and conveys meaning without accompanying text.
+   */
+  title?: string;
 }
