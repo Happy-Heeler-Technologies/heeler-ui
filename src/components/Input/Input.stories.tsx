@@ -14,6 +14,10 @@ const meta = {
       control: "text",
       description: "Additional CSS classes for the container div",
     },
+    autoComplete: {
+      control: "text",
+      description: "Autocomplete attribute for better form filling UX",
+    },
     color: {
       control: "select",
       options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
