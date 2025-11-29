@@ -101,6 +101,8 @@ export function Button({
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
+      aria-disabled={disabled || loading}
+      aria-busy={loading}
       style={style}
       className={`inline-flex items-center justify-center font-medium ${variantClass} ${sizeClasses[size]} ${roundedClass} ${a11yClasses} ${
         className ?? ""
