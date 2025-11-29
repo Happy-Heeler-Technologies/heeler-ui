@@ -1,4 +1,5 @@
 import { type CSSProperties, type ReactNode } from "react";
+import type { RainbowColor } from "../../icons/types";
 
 const colorMap: Record<string, string> = {
   red: "bg-red-600 text-white",
@@ -19,7 +20,7 @@ export interface BadgeProps {
    * Rainbow color for the badge
    * @default 'blue'
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  color?: RainbowColor;
   /**
    * Optional icon to display before the text
    */
