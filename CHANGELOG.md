@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Tabs Component**: New tabbed interface component with the following features:
+  - 8 configurable props including `tabs`, `color`, `defaultTab`, `activeTab`, `onTabChange`, `solid`, `className`, `style`
+  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for both solid and tertiary styling modes
+  - Per-tab color override support for mixed color tabs
+  - Two styling modes: default tertiary (border + text color) and optional solid (background + white text)
+  - Full keyboard navigation support (ArrowLeft/Right with wrapping, Home, End keys)
+  - Controlled and uncontrolled component patterns with `activeTab` and `defaultTab` props
+  - Complete accessibility implementation with WCAG AA compliance:
+    - Semantic ARIA roles (`tablist`, `tab`, `tabpanel`)
+    - `aria-selected`, `aria-controls`, and `aria-labelledby` relationships
+    - `aria-orientation="horizontal"` for screen reader context
+    - Unique ID generation using React's `useId` hook to prevent collisions
+    - Proper focus management with `tabIndex` (0 for active, -1 for inactive)
+    - Keyboard-only focus indicators with `focus-visible` styling
+  - Complete Storybook documentation with 13 stories covering all variants, solid examples, mixed colors, and default tab selection
+
+### Changed
+
+- **README**: Updated component list format from simple bullets to heading-style entries with emojis for improved visibility and scanning
+
 ## [0.1.0-alpha.8] - 2025-11-29
 
 ### Added
