@@ -10,22 +10,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Dialog Component**: New modal dialog component with comprehensive accessibility and customization:
-  - 12 configurable props including `open`, `onClose`, `title`, `description`, `primaryButton`, `secondaryButton`, `color`, `borderColor`, `titleColor`, `descriptionColor`, `labelForScreenReaders`, `className`, `style`
-  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for dialog, border, title, and description colors
-  - Independent color control: dialog background, border, title, and description colors can be customized separately
-  - Optional button system: primary and secondary buttons are both optional, with backdrop click and escape key as fallback close mechanisms
-  - Per-button color override support for custom button styling within dialogs
+  - 13 configurable props including `open`, `onClose`, `title`, `description`, `icon`, `iconBackground`, `primaryButton`, `secondaryButton`, `color`, `borderColor`, `titleColor`, `descriptionColor`, `labelForScreenReaders`, `className`, `style`
+  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for dialog border, title, description, icon, and button colors
+  - Independent color control: border, title, description, and icon colors can be customized separately for maximum flexibility
+  - Optional icon support with two display modes:
+    - With background: Icon displayed in rounded colored circle matching primary button color with white icon color
+    - Without background: Icon displayed in primary color without background
+  - Flexible button system: both primary and secondary buttons are optional, with backdrop click and Escape key as fallback close mechanisms
+  - Per-button color override: primary buttons can specify custom colors independent of dialog color
+  - Secondary buttons use gray styling for visual hierarchy
   - Complete accessibility implementation with WCAG AA compliance:
     - `role="dialog"` with `aria-modal="true"` for semantic dialog structure
     - `aria-labelledby` and `aria-describedby` relationships for proper screen reader announcements
     - `aria-label` support via `labelForScreenReaders` prop for dialogs with emoji or icon-only titles
-    - Full keyboard navigation: Escape key to close, Tab/Shift+Tab focus trap cycling
-    - Automatic focus management: focuses primary button, secondary button, or dialog container on open
+    - Full keyboard navigation: Escape key to close, Tab/Shift+Tab focus trap with wrapping
+    - Intelligent focus management: automatically focuses first interactive element (buttons, links, inputs) or dialog container on open
     - Focus restoration: returns focus to previously active element when dialog closes
     - Body scroll lock: prevents background scrolling while dialog is open
-    - Backdrop click to close: clicking outside dialog triggers onClose
-  - Mobile-friendly design with proper padding and responsive layout
-  - Complete Storybook documentation with 13 stories covering all color variants, button configurations, accessibility features, and edge cases
+    - Backdrop click to close: clicking outside dialog triggers `onClose` callback
+    - Keyboard-only focus indicators using `focus-visible` for better UX
+  - Responsive design with mobile-friendly padding and max-width constraints
+  - Semi-transparent backdrop with blur effect for visual depth
+  - Complete Storybook documentation with 3 comprehensive showcase stories demonstrating all color variants with icons (with background, without background, and no icons)
 
 ## [0.1.0-alpha.9] - 2025-11-29
 

@@ -53,6 +53,10 @@ Content card for displaying images, titles, and descriptions
 
 Boolean selection with labels, helper text, and custom styling
 
+### 💬 Dialog
+
+Modal dialog with optional icons, customizable colors, and full accessibility support
+
 ### 🎨 Icons
 
 Library of 30 accessible icons with rainbow colors (ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Bell, Calendar, Cancel, Chart, Check, Clock, Cloud, Cog, Document, Download, Eye, Fire, Heart, Home, Lightning, Lock, LockOpen, Mail, Menu, Pencil, Plus, Refresh, Search, Star, Trash, User)
