@@ -43,11 +43,7 @@ const ControlledSelect = (args: SelectProps) => {
   const [value, setValue] = useState(args.value || "");
   return (
     <div style={{ width: "320px" }}>
-      <Select
-        {...args}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
+      <Select {...args} value={value} onChange={(val) => setValue(val)} />
     </div>
   );
 };
@@ -67,7 +63,7 @@ const meta = {
     color: {
       control: "select",
       options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
-      description: "Rainbow color for focus ring, border, and text",
+      description: "Rainbow color for focus ring, border, text, and options",
     },
     disabled: {
       control: "boolean",
@@ -89,6 +85,12 @@ const meta = {
       control: "text",
       description: "Label text for the select",
     },
+    labelTextColor: {
+      control: "select",
+      options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
+      description:
+        "Override the label text color independently (uses color prop if not specified)",
+    },
     name: {
       control: "text",
       description: "Name attribute for the select (useful for forms)",
@@ -108,6 +110,12 @@ const meta = {
     options: {
       control: "object",
       description: "Array of options to display in the select",
+    },
+    optionTextColor: {
+      control: "select",
+      options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
+      description:
+        "Override the option text color independently (uses color prop if not specified)",
     },
     placeholder: {
       control: "text",
@@ -387,6 +395,40 @@ export const AllColors: Story = {
   ),
 };
 
+// Custom color overrides
+export const CustomColorOverrides: Story = {
+  args: { options: [] },
+  render: () => (
+    <div className="flex flex-col gap-6" style={{ width: "320px" }}>
+      <Select
+        label="Custom label color"
+        options={fruitOptions}
+        value="apple"
+        color="blue"
+        labelTextColor="violet"
+        helperText="Label is violet, border/options are blue"
+      />
+      <Select
+        label="Custom option color"
+        options={countryOptions}
+        value="us"
+        color="green"
+        optionTextColor="orange"
+        helperText="Border/label is green, options are orange"
+      />
+      <Select
+        label="All custom colors"
+        options={priorityOptions}
+        value="high"
+        color="indigo"
+        labelTextColor="red"
+        optionTextColor="violet"
+        helperText="Border indigo, label red, options violet"
+      />
+    </div>
+  ),
+};
+
 // Form example with multiple selects
 export const FormExample: Story = {
   args: { options: [] },
@@ -397,10 +439,9 @@ export const FormExample: Story = {
       priority: "",
     });
 
-    const handleChange =
-      (field: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-      };
+    const handleChange = (field: string) => (value: string) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
     return (
       <div className="flex flex-col gap-6" style={{ width: "400px" }}>
@@ -458,7 +499,7 @@ export const Controlled: Story = {
           label="Controlled select"
           options={fruitOptions}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(val) => setValue(val)}
           helperText={`Current value: ${value || "none"}`}
           color="violet"
         />

@@ -1,10 +1,11 @@
 import {
-  ChangeEvent,
   CSSProperties,
   FC,
-  FocusEvent,
-  ReactNode,
+  KeyboardEvent,
+  useEffect,
   useId,
+  useRef,
+  useState,
 } from "react";
 import type { RainbowColor } from "../../types";
 
@@ -30,7 +31,7 @@ export interface SelectProps {
   className?: string;
 
   /**
-   * Rainbow color for focus ring, border, and text
+   * Rainbow color for focus ring, border, text, and options
    * @default 'blue'
    */
   color?: RainbowColor;
@@ -61,6 +62,12 @@ export interface SelectProps {
   label?: string;
 
   /**
+   * Override the label text color independently
+   * If not specified, uses the color prop
+   */
+  labelTextColor?: RainbowColor;
+
+  /**
    * Name attribute for the select (useful for forms)
    */
   name?: string;
@@ -68,22 +75,28 @@ export interface SelectProps {
   /**
    * Blur event handler
    */
-  onBlur?: (event: FocusEvent<HTMLSelectElement>) => void;
+  onBlur?: () => void;
 
   /**
    * Change handler for controlled component
    */
-  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (value: string) => void;
 
   /**
    * Focus event handler
    */
-  onFocus?: (event: FocusEvent<HTMLSelectElement>) => void;
+  onFocus?: () => void;
 
   /**
    * Array of options to display in the select
    */
   options: SelectOption[];
+
+  /**
+   * Override the option text color independently
+   * If not specified, uses the color prop
+   */
+  optionTextColor?: RainbowColor;
 
   /**
    * Placeholder text shown when no value is selected
@@ -120,25 +133,40 @@ export const Select: FC<SelectProps> = ({
   helperText,
   id,
   label,
+  labelTextColor,
   name,
   onBlur,
   onChange,
   onFocus,
   options,
+  optionTextColor,
   placeholder,
   required = false,
   size = "md",
   style,
   value,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const listboxRef = useRef<HTMLUListElement>(null);
+
   // Generate a unique ID if not provided
   const selectId = id || `select-${useId()}`;
   const helperId = `${selectId}-helper`;
   const errorId = `${selectId}-error`;
+  const listboxId = `${selectId}-listbox`;
 
   const hasError = Boolean(errorMessage);
 
   const sizeClasses = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2.5 text-base",
+    lg: "px-5 py-3 text-lg",
+  };
+
+  const optionSizeClasses = {
     sm: "px-3 py-1.5 text-sm",
     md: "px-4 py-2.5 text-base",
     lg: "px-5 py-3 text-lg",
@@ -160,28 +188,198 @@ export const Select: FC<SelectProps> = ({
   };
 
   const labelColorClasses: Record<RainbowColor, string> = {
-    red: "text-red-700",
-    orange: "text-orange-600",
-    yellow: "text-yellow-600",
-    green: "text-green-700",
-    blue: "text-blue-700",
-    indigo: "text-indigo-700",
-    violet: "text-violet-700",
+    red: "text-red-600",
+    orange: "text-orange-500",
+    yellow: "text-yellow-500",
+    green: "text-green-600",
+    blue: "text-blue-600",
+    indigo: "text-indigo-600",
+    violet: "text-violet-600",
   };
 
-  const selectClasses = `
+  const optionColorClasses: Record<RainbowColor, string> = {
+    red: "text-red-600 hover:bg-red-50",
+    orange: "text-orange-500 hover:bg-orange-50",
+    yellow: "text-yellow-500 hover:bg-yellow-50",
+    green: "text-green-600 hover:bg-green-50",
+    blue: "text-blue-600 hover:bg-blue-50",
+    indigo: "text-indigo-600 hover:bg-indigo-50",
+    violet: "text-violet-600 hover:bg-violet-50",
+  };
+
+  const optionHighlightClasses: Record<RainbowColor, string> = {
+    red: "bg-red-50",
+    orange: "bg-orange-50",
+    yellow: "bg-yellow-50",
+    green: "bg-green-50",
+    blue: "bg-blue-50",
+    indigo: "bg-indigo-50",
+    violet: "bg-violet-50",
+  };
+
+  const selectedOption = options.find((opt) => opt.value === value);
+  const displayValue = selectedOption?.label || placeholder || "Select...";
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setHighlightedIndex(-1);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isOpen]);
+
+  // Scroll highlighted option into view
+  useEffect(() => {
+    if (isOpen && highlightedIndex >= 0 && listboxRef.current) {
+      const highlightedElement = listboxRef.current.children[
+        highlightedIndex
+      ] as HTMLElement;
+      if (highlightedElement) {
+        highlightedElement.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [highlightedIndex, isOpen]);
+
+  const handleToggle = () => {
+    if (disabled) return;
+    const newIsOpen = !isOpen;
+    setIsOpen(newIsOpen);
+
+    if (newIsOpen) {
+      onFocus?.();
+      // Find and highlight the currently selected option
+      const selectedIndex = options.findIndex((opt) => opt.value === value);
+      setHighlightedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    } else {
+      onBlur?.();
+      setHighlightedIndex(-1);
+    }
+  };
+
+  const handleSelect = (option: SelectOption) => {
+    if (option.disabled) return;
+    onChange?.(option.value);
+    setIsOpen(false);
+    setHighlightedIndex(-1);
+    onBlur?.();
+    triggerRef.current?.focus();
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (disabled) return;
+
+    switch (event.key) {
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        if (!isOpen) {
+          setIsOpen(true);
+          onFocus?.();
+          const selectedIndex = options.findIndex((opt) => opt.value === value);
+          setHighlightedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+        } else if (highlightedIndex >= 0) {
+          handleSelect(options[highlightedIndex]);
+        }
+        break;
+
+      case "ArrowDown":
+        event.preventDefault();
+        if (!isOpen) {
+          setIsOpen(true);
+          onFocus?.();
+          setHighlightedIndex(0);
+        } else {
+          let nextIndex = highlightedIndex + 1;
+          while (nextIndex < options.length && options[nextIndex].disabled) {
+            nextIndex++;
+          }
+          if (nextIndex < options.length) {
+            setHighlightedIndex(nextIndex);
+          }
+        }
+        break;
+
+      case "ArrowUp":
+        event.preventDefault();
+        if (!isOpen) {
+          setIsOpen(true);
+          onFocus?.();
+          setHighlightedIndex(options.length - 1);
+        } else {
+          let prevIndex = highlightedIndex - 1;
+          while (prevIndex >= 0 && options[prevIndex].disabled) {
+            prevIndex--;
+          }
+          if (prevIndex >= 0) {
+            setHighlightedIndex(prevIndex);
+          }
+        }
+        break;
+
+      case "Escape":
+        event.preventDefault();
+        setIsOpen(false);
+        setHighlightedIndex(-1);
+        onBlur?.();
+        break;
+
+      case "Home":
+        event.preventDefault();
+        if (isOpen) {
+          let firstIndex = 0;
+          while (firstIndex < options.length && options[firstIndex].disabled) {
+            firstIndex++;
+          }
+          if (firstIndex < options.length) {
+            setHighlightedIndex(firstIndex);
+          }
+        }
+        break;
+
+      case "End":
+        event.preventDefault();
+        if (isOpen) {
+          let lastIndex = options.length - 1;
+          while (lastIndex >= 0 && options[lastIndex].disabled) {
+            lastIndex--;
+          }
+          if (lastIndex >= 0) {
+            setHighlightedIndex(lastIndex);
+          }
+        }
+        break;
+
+      case "Tab":
+        if (isOpen) {
+          setIsOpen(false);
+          setHighlightedIndex(-1);
+          onBlur?.();
+        }
+        break;
+    }
+  };
+
+  const triggerClasses = `
     w-full rounded-md border-2 bg-white
     ${sizeClasses[size]}
     ${hasError ? "border-red-600 text-red-600 focus:border-red-600 focus:ring-red-600" : colorClasses[color]}
     ${disabled ? "bg-gray-100 cursor-not-allowed opacity-60" : "cursor-pointer"}
     focus:outline-none focus:ring-2 focus:ring-offset-2
     transition-colors
-    appearance-none
-    bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%3E%3cpath%20d%3D%22M7%207l3-3%203%203m0%206l-3%203-3-3%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3c%2Fsvg%3E')]
-    bg-[length:1.5em_1.5em]
-    bg-[position:right_0.5rem_center]
-    bg-no-repeat
-    pr-10
+    flex items-center justify-between
+    text-left
+    ${!selectedOption && placeholder ? "text-gray-400" : ""}
   `;
 
   // Build aria-describedby with both helper and error IDs
@@ -191,11 +389,11 @@ export const Select: FC<SelectProps> = ({
       .join(" ") || undefined;
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div className={`flex flex-col gap-1.5 ${className}`} ref={containerRef}>
       {label && (
         <label
           htmlFor={selectId}
-          className={`text-sm font-medium ${labelColorClasses[color]}`}
+          className={`text-sm font-medium ${labelColorClasses[labelTextColor || color]}`}
         >
           {label}
           {required && (
@@ -206,38 +404,81 @@ export const Select: FC<SelectProps> = ({
         </label>
       )}
 
-      <select
-        id={selectId}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        disabled={disabled}
-        required={required}
-        aria-required={required}
-        aria-disabled={disabled}
-        aria-invalid={hasError}
-        aria-errormessage={hasError ? errorId : undefined}
-        aria-describedby={ariaDescribedBy}
-        className={selectClasses}
-        style={style}
-      >
-        {placeholder && (
-          <option value="" disabled>
-            {placeholder}
-          </option>
-        )}
-        {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            disabled={option.disabled}
+      <div className="relative">
+        <button
+          ref={triggerRef}
+          id={selectId}
+          type="button"
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls={listboxId}
+          aria-labelledby={label ? `${selectId}-label` : undefined}
+          aria-required={required}
+          aria-disabled={disabled}
+          aria-invalid={hasError}
+          aria-errormessage={hasError ? errorId : undefined}
+          aria-describedby={ariaDescribedBy}
+          onClick={handleToggle}
+          onKeyDown={handleKeyDown}
+          disabled={disabled}
+          className={triggerClasses}
+          style={style}
+        >
+          <span className="block truncate">{displayValue}</span>
+          <svg
+            className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            {option.label}
-          </option>
-        ))}
-      </select>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+
+        {isOpen && (
+          <ul
+            ref={listboxRef}
+            id={listboxId}
+            role="listbox"
+            aria-labelledby={label ? `${selectId}-label` : undefined}
+            className="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none"
+          >
+            {options.map((option, index) => {
+              const isSelected = option.value === value;
+              const isHighlighted = index === highlightedIndex;
+
+              return (
+                <li
+                  key={option.value}
+                  role="option"
+                  aria-selected={isSelected}
+                  aria-disabled={option.disabled}
+                  onClick={() => handleSelect(option)}
+                  className={`
+                    ${optionSizeClasses[size]}
+                    ${optionColorClasses[optionTextColor || color]}
+                    ${isHighlighted ? optionHighlightClasses[optionTextColor || color] : ""}
+                    ${option.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                    ${isSelected ? "font-semibold" : ""}
+                    transition-colors
+                  `}
+                >
+                  {option.label}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {/* Hidden input for form submission */}
+        <input type="hidden" name={name} value={value || ""} />
+      </div>
 
       {hasError && (
         <p
