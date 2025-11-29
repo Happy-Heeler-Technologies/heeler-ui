@@ -26,7 +26,7 @@ export interface BadgeProps {
    */
   icon?: ReactNode;
   /**
-   * Optional accessible label for screen readers when badge meaning is not clear from text alone
+   * Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges
    */
   ariaLabel?: string;
   /**
@@ -37,6 +37,13 @@ export interface BadgeProps {
    * Text content of the badge
    */
   text: string;
+  /**
+   * Semantic variant of the badge:
+   * - "status": Live status indicator (uses role="status" for announcements)
+   * - "label": Static informational label (no ARIA role)
+   * @default 'label'
+   */
+  variant?: "status" | "label";
 }
 
 export const Badge = ({
@@ -46,13 +53,18 @@ export const Badge = ({
   icon,
   style,
   text,
+  variant = "label",
 }: BadgeProps) => {
   const colorClasses = colorMap[color];
 
+  // For status badges, default aria-label to "Status: {text}" if not provided
+  const computedAriaLabel =
+    variant === "status" && !ariaLabel ? `Status: ${text}` : ariaLabel;
+
   return (
     <span
-      role="status"
-      aria-label={ariaLabel}
+      role={variant === "status" ? "status" : undefined}
+      aria-label={computedAriaLabel}
       className={`
         inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
         ${colorClasses}

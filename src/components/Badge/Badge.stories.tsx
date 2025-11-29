@@ -14,7 +14,7 @@ const meta = {
     ariaLabel: {
       control: "text",
       description:
-        "Optional accessible label for screen readers when badge meaning is not clear from text alone",
+        "Optional accessible label for screen readers. If not provided, defaults to 'Status: {text}' for status badges",
     },
     className: {
       control: "text",
@@ -36,6 +36,12 @@ const meta = {
     text: {
       control: "text",
       description: "Text content of the badge",
+    },
+    variant: {
+      control: "select",
+      options: ["label", "status"],
+      description:
+        "Semantic variant: 'label' for static info (default), 'status' for live updates",
     },
   },
 } satisfies Meta<typeof Badge>;
@@ -163,4 +169,52 @@ export const WithAriaLabel: Story = {
     icon: <Check />,
     ariaLabel: "Account verified status badge",
   },
+};
+
+export const StatusVariant: Story = {
+  name: "Status Variant (Live Updates)",
+  args: {
+    color: "green",
+    text: "Online",
+    variant: "status",
+  },
+  render: (args) => (
+    <div className="flex flex-col gap-4">
+      <div>
+        <p className="text-sm mb-2 text-gray-600">
+          Status badges use role="status" to announce changes to screen readers:
+        </p>
+        <Badge {...args} />
+      </div>
+      <div className="flex gap-2">
+        <Badge variant="status" color="green" text="Online" />
+        <Badge variant="status" color="yellow" text="Away" />
+        <Badge variant="status" color="red" text="Offline" />
+      </div>
+    </div>
+  ),
+};
+
+export const LabelVariant: Story = {
+  name: "Label Variant (Static Info)",
+  args: {
+    color: "blue",
+    text: "Admin",
+    variant: "label",
+  },
+  render: (args) => (
+    <div className="flex flex-col gap-4">
+      <div>
+        <p className="text-sm mb-2 text-gray-600">
+          Label badges are static and don't use ARIA roles:
+        </p>
+        <Badge {...args} />
+      </div>
+      <div className="flex gap-2">
+        <Badge variant="label" color="blue" text="Admin" />
+        <Badge variant="label" color="violet" text="Pro" />
+        <Badge variant="label" color="indigo" text="Beta" />
+      </div>
+    </div>
+  ),
 };
