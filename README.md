@@ -1,4 +1,4 @@
-# @heeler/ui
+# 🐾 @heeler/ui
 
 ## 🚧 Under Construction
 
@@ -37,10 +37,25 @@ All components are built with accessibility as a core principle:
 
 @heeler/ui currently includes the following components:
 
-- **Button** - Flexible button with variants, colors, sizes, and loading states
-- **Card** - Content card for displaying images, titles, and descriptions
-- **Checkbox** - Boolean selection with labels, helper text, and custom styling
-- **Input** - Text input with support for multiple types, validation, and error handling
+### 🔘 Button
+
+Flexible button with variants, colors, sizes, and loading states
+
+### 🃏 Card
+
+Content card for displaying images, titles, and descriptions
+
+### ☑️ Checkbox
+
+Boolean selection with labels, helper text, and custom styling
+
+### ✏️ Input
+
+Text input with support for multiple types, validation, and error handling
+
+### 📑 Tabs
+
+Tabbed interface with keyboard navigation, rainbow colors, and solid/tertiary styling
 
 ## Exploring Components
 
