@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-alpha.9] - 2025-11-29
+
 ### Added
+
+- **Loading Component**: New loading spinner component with comprehensive customization and accessibility:
+  - 8 configurable props including `spinnerColor`, `backgroundColor`, `textColor`, `size`, `text`, `withBackground`, `labelForScreenReaders`, `className`, `style`
+  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for spinner, background, and text
+  - Independent color control: spinner, background, and text colors can be customized separately
+  - 3 size options: small (32px), medium (48px), large (64px)
+  - Optional solid background container with soft colored backgrounds
+  - Optional loading text with customizable color (defaults to spinner color)
+  - Complete accessibility implementation with WCAG AA compliance:
+    - `role="status"` for semantic loading state
+    - `aria-live="polite"` for screen reader announcements
+    - `aria-busy="true"` to indicate loading state
+    - Smart `aria-label` handling: uses visible text or custom label for screen readers
+    - Visually hidden fallback text when no visible text is shown (`.sr-only` class)
+    - Spinner marked decorative with `aria-hidden="true"`
+  - Complete Storybook documentation with stories for all colors, sizes, backgrounds, mixed color combinations, and overlay examples
 
 - **Badge Component**: New badge component for status indicators and labels with the following features:
   - 7 configurable props including `text`, `icon`, `color`, `variant`, `ariaLabel`, `className`, `style`
@@ -27,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Consistent 12px default size (w-3 h-3) with customizable `className` for sizing
   - Individual component files for tree-shaking and optimal bundle size
 
-- **RainbowColor Type**: Centralized type definition (`"red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet"`) exported from `icons/types.ts` and used across Badge, Tabs, and all icon components for consistency
+- **RainbowColor Type**: Centralized type definition (`"red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet"`) exported from `icons/types.ts` and used across Badge, Loading, Tabs, and all icon components for consistency
 
 - **Tabs Component**: New tabbed interface component with the following features:
   - 8 configurable props including `tabs`, `color`, `defaultTab`, `activeTab`, `onTabChange`, `solid`, `className`, `style`
@@ -49,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **README**: Updated component list format from simple bullets to heading-style entries with emojis for improved visibility and scanning
 - **Tabs Component**: Updated to use centralized `RainbowColor` type from `icons/types.ts`
+- **Global Styles**: Added `.sr-only` utility class for screen-reader-only content to support accessibility patterns across all components
 
 ## [0.1.0-alpha.8] - 2025-11-29
 
