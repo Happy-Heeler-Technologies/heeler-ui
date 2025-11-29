@@ -41,18 +41,17 @@ A flexible button component with multiple variants, colors, and sizes.
 
 #### Props
 
-| Prop           | Type                                                                         | Default     | Description                                                                              |
-| -------------- | ---------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
-| `variant`      | `"primary" \| "secondary" \| "tertiary"`                                     | `"primary"` | The visual style variant of the button                                                   |
-| `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"` | `"blue"`    | Rainbow color scheme. Applies to primary and tertiary variants                           |
-| `customColor`  | `string`                                                                     | `undefined` | Custom hex color to override the rainbow color. Applies to primary and tertiary variants |
-| `size`         | `"sm" \| "md" \| "lg"`                                                       | `"lg"`      | Size of the button                                                                       |
-| `rounded`      | `boolean`                                                                    | `false`     | Whether the button has fully rounded (pill-shaped) corners                               |
-| `loading`      | `boolean`                                                                    | `false`     | Shows a spinner and disables the button during loading states                            |
-| `icon`         | `ReactNode`                                                                  | `undefined` | Optional icon element to display (works with any icon library)                           |
-| `iconPosition` | `"left" \| "right"`                                                          | `"left"`    | Position of the icon relative to the button text                                         |
-| `disabled`     | `boolean`                                                                    | `false`     | Disables the button and prevents interaction                                             |
-| `children`     | `ReactNode`                                                                  | -           | Button content                                                                           |
+| Prop           | Type                                                                         | Default     | Description                                                    |
+| -------------- | ---------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------- |
+| `variant`      | `"primary" \| "secondary" \| "tertiary"`                                     | `"primary"` | The visual style variant of the button                         |
+| `color`        | `"red" \| "orange" \| "yellow" \| "green" \| "blue" \| "indigo" \| "violet"` | `"blue"`    | Rainbow color scheme. Applies to primary and tertiary variants |
+| `size`         | `"sm" \| "md" \| "lg"`                                                       | `"lg"`      | Size of the button                                             |
+| `rounded`      | `boolean`                                                                    | `false`     | Whether the button has fully rounded (pill-shaped) corners     |
+| `loading`      | `boolean`                                                                    | `false`     | Shows a spinner and disables the button during loading states  |
+| `icon`         | `ReactNode`                                                                  | `undefined` | Optional icon element to display (works with any icon library) |
+| `iconPosition` | `"left" \| "right"`                                                          | `"left"`    | Position of the icon relative to the button text               |
+| `disabled`     | `boolean`                                                                    | `false`     | Disables the button and prevents interaction                   |
+| `text`         | `ReactNode`                                                                  | -           | The text content to display inside the button                  |
 
 #### Usage
 
@@ -60,32 +59,29 @@ A flexible button component with multiple variants, colors, and sizes.
 import { Button } from "@heeler/ui";
 
 // Primary button (default)
-<Button>Click me</Button>
+<Button text="Click me" />
 
 // Secondary button
-<Button variant="secondary">Cancel</Button>
+<Button variant="secondary" text="Cancel" />
 
 // Tertiary button with custom color
-<Button variant="tertiary" color="green">Learn More</Button>
+<Button variant="tertiary" color="green" text="Learn More" />
 
 // Small button
-<Button size="sm">Small</Button>
+<Button size="sm" text="Small" />
 
 // Rounded pill-shaped button
-<Button rounded>Rounded</Button>
-
-// Custom hex color (overrides color prop)
-<Button customColor="#FF1493">Custom Pink</Button>
+<Button rounded text="Rounded" />
 
 // Loading state
-<Button loading>Processing...</Button>
+<Button loading text="Processing..." />
 
 // With icon (works with any icon library)
-<Button icon={<HeartIcon />}>Like</Button>
-<Button icon={<ArrowRightIcon />} iconPosition="right">Next</Button>
+<Button icon={<HeartIcon />} text="Like" />
+<Button icon={<ArrowRightIcon />} iconPosition="right" text="Next" />
 
 // Disabled state
-<Button disabled>Disabled</Button>
+<Button disabled text="Disabled" />
 ```
 
 #### Variants
@@ -100,40 +96,32 @@ The design system is based on the colors of the rainbow. Choose from these prese
 
 - `red`, `orange`, `yellow`, `green`, `blue` (default), `indigo`, `violet`
 
-For custom colors outside the rainbow palette, use the `customColor` prop:
-
-- `customColor="#FF1493"`, `customColor="#00CED1"`, etc.
-
 #### Examples
 
 ```tsx
 // Different variants with colors
-<Button variant="primary" color="indigo">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="tertiary" color="green">Tertiary</Button>
+<Button variant="primary" color="indigo" text="Primary" />
+<Button variant="secondary" text="Secondary" />
+<Button variant="tertiary" color="green" text="Tertiary" />
 
 // Different sizes
-<Button size="sm">Small</Button>
-<Button size="md">Medium</Button>
-<Button size="lg">Large</Button>
+<Button size="sm" text="Small" />
+<Button size="md" text="Medium" />
+<Button size="lg" text="Large" />
 
 // Rounded buttons
-<Button rounded color="orange">Pill Button</Button>
-
-// Custom colors
-<Button customColor="#8B5CF6">Custom Purple</Button>
-<Button variant="tertiary" customColor="#10B981">Custom Green Outline</Button>
+<Button rounded color="orange" text="Pill Button" />
 
 // Loading states
-<Button loading color="blue">Loading...</Button>
-<Button variant="secondary" loading>Processing...</Button>
+<Button loading color="blue" text="Loading..." />
+<Button variant="secondary" loading text="Processing..." />
 
 // With icons (use any icon library: lucide-react, heroicons, react-icons, etc.)
 import { Heart, ArrowRight, Plus } from "lucide-react";
 
-<Button icon={<Heart />}>Favorite</Button>
-<Button icon={<ArrowRight />} iconPosition="right">Continue</Button>
-<Button variant="secondary" icon={<Plus />}>Add Item</Button>
+<Button icon={<Heart />} text="Favorite" />
+<Button icon={<ArrowRight />} iconPosition="right" text="Continue" />
+<Button variant="secondary" icon={<Plus />} text="Add Item" />
 
 // Combined features
 <Button
@@ -142,13 +130,12 @@ import { Heart, ArrowRight, Plus } from "lucide-react";
   size="md"
   rounded
   icon={<Heart />}
->
-  Love It
-</Button>
+  text="Love It"
+/>
 
 // Disabled state
-<Button disabled>Cannot Click</Button>
-<Button disabled loading>Still Loading</Button>
+<Button disabled text="Cannot Click" />
+<Button disabled loading text="Still Loading" />
 ```
 
 ---

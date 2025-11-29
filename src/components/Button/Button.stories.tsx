@@ -9,6 +9,10 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
+    text: {
+      control: "text",
+      description: "The text content to display inside the button",
+    },
     variant: {
       control: "select",
       options: ["primary", "secondary", "tertiary"],
@@ -19,11 +23,6 @@ const meta = {
       options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
       description:
         "The rainbow color scheme (applies to primary and tertiary variants)",
-    },
-    customColor: {
-      control: "color",
-      description:
-        "Custom hex color to override the rainbow color (applies to primary and tertiary variants)",
     },
     size: {
       control: "select",
@@ -48,9 +47,26 @@ const meta = {
       options: ["left", "right"],
       description: "Position of the icon relative to the button text",
     },
-    children: {
+    disabled: {
+      control: "boolean",
+      description: "Disables the button and prevents interaction",
+    },
+    className: {
       control: "text",
-      description: "The content to display inside the button",
+      description: "Additional CSS classes to apply to the button",
+    },
+    style: {
+      control: "object",
+      description: "Inline styles to apply to the button",
+    },
+    onClick: {
+      control: false,
+      description: "Click event handler",
+    },
+    type: {
+      control: "select",
+      options: ["button", "submit", "reset"],
+      description: "HTML button type attribute",
     },
   },
 } satisfies Meta<typeof Button>;
@@ -62,14 +78,14 @@ export const Primary: Story = {
   args: {
     variant: "primary",
     color: "blue",
-    children: "Primary Button",
+    text: "Primary Button",
   },
 };
 
 export const Secondary: Story = {
   args: {
     variant: "secondary",
-    children: "Secondary Button",
+    text: "Secondary Button",
   },
 };
 
@@ -77,7 +93,7 @@ export const Tertiary: Story = {
   args: {
     variant: "tertiary",
     color: "blue",
-    children: "Tertiary Button",
+    text: "Tertiary Button",
   },
 };
 
@@ -85,7 +101,7 @@ export const PrimaryGreen: Story = {
   args: {
     variant: "primary",
     color: "green",
-    children: "Green Primary",
+    text: "Green Primary",
   },
 };
 
@@ -93,7 +109,7 @@ export const TertiaryIndigo: Story = {
   args: {
     variant: "tertiary",
     color: "indigo",
-    children: "Indigo Tertiary",
+    text: "Indigo Tertiary",
   },
 };
 
@@ -102,7 +118,7 @@ export const SmallButton: Story = {
     variant: "primary",
     color: "blue",
     size: "sm",
-    children: "Small Button",
+    text: "Small Button",
   },
 };
 
@@ -111,7 +127,7 @@ export const MediumButton: Story = {
     variant: "primary",
     color: "blue",
     size: "md",
-    children: "Medium Button",
+    text: "Medium Button",
   },
 };
 
@@ -120,23 +136,7 @@ export const LargeButton: Story = {
     variant: "primary",
     color: "blue",
     size: "lg",
-    children: "Large Button",
-  },
-};
-
-export const CustomHexPrimary: Story = {
-  args: {
-    variant: "primary",
-    customColor: "#FF1493",
-    children: "Custom Pink",
-  },
-};
-
-export const CustomHexTertiary: Story = {
-  args: {
-    variant: "tertiary",
-    customColor: "#00CED1",
-    children: "Custom Cyan",
+    text: "Large Button",
   },
 };
 
@@ -145,7 +145,7 @@ export const OvalButton: Story = {
     variant: "primary",
     color: "blue",
     rounded: true,
-    children: "Oval Button",
+    text: "Oval Button",
   },
 };
 
@@ -153,7 +153,7 @@ export const OvalSecondary: Story = {
   args: {
     variant: "secondary",
     rounded: true,
-    children: "Oval Secondary",
+    text: "Oval Secondary",
   },
 };
 
@@ -162,7 +162,7 @@ export const Disabled: Story = {
     variant: "primary",
     color: "blue",
     disabled: true,
-    children: "Disabled Button",
+    text: "Disabled Button",
   },
 };
 
@@ -170,7 +170,7 @@ export const DisabledSecondary: Story = {
   args: {
     variant: "secondary",
     disabled: true,
-    children: "Disabled Secondary",
+    text: "Disabled Secondary",
   },
 };
 
@@ -179,7 +179,7 @@ export const Loading: Story = {
     variant: "primary",
     color: "blue",
     loading: true,
-    children: "Loading...",
+    text: "Loading...",
   },
 };
 
@@ -187,7 +187,7 @@ export const LoadingSecondary: Story = {
   args: {
     variant: "secondary",
     loading: true,
-    children: "Processing...",
+    text: "Processing...",
   },
 };
 
@@ -196,7 +196,7 @@ export const LoadingTertiary: Story = {
     variant: "tertiary",
     color: "green",
     loading: true,
-    children: "Submitting...",
+    text: "Submitting...",
   },
 };
 
@@ -255,7 +255,7 @@ export const WithIconLeft: Story = {
     color: "blue",
     icon: HeartIcon,
     iconPosition: "left",
-    children: "Like",
+    text: "Like",
   },
 };
 
@@ -265,7 +265,7 @@ export const WithIconRight: Story = {
     color: "green",
     icon: ArrowRightIcon,
     iconPosition: "right",
-    children: "Next",
+    text: "Next",
   },
 };
 
@@ -274,7 +274,7 @@ export const SecondaryWithIcon: Story = {
     variant: "secondary",
     icon: PlusIcon,
     iconPosition: "left",
-    children: "Add Item",
+    text: "Add Item",
   },
 };
 
@@ -284,7 +284,7 @@ export const TertiaryWithIcon: Story = {
     color: "violet",
     icon: HeartIcon,
     iconPosition: "left",
-    children: "Favorite",
+    text: "Favorite",
   },
 };
 
@@ -295,6 +295,6 @@ export const SmallWithIcon: Story = {
     size: "sm",
     icon: PlusIcon,
     iconPosition: "left",
-    children: "Add",
+    text: "Add",
   },
 };
