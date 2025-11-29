@@ -28,4 +28,4 @@ export { Star } from "./Star";
 export { Trash } from "./Trash";
 export { User } from "./User";
 export { Cancel } from "./Cancel";
-export type { IconProps, RainbowColor } from "./types";
+export type { IconProps } from "./types";

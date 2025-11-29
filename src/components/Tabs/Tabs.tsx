@@ -7,7 +7,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import type { RainbowColor } from "../../icons/types";
+import type { RainbowColor } from "../../types";
 
 // default style (border + matching text)
 const COLOR_MAP: Record<string, string> = {
@@ -33,6 +33,14 @@ const SOLID_COLOR_MAP: Record<string, string> = {
 
 export interface Tab {
   /**
+   * Optional rainbow color for this tab
+   */
+  color?: RainbowColor;
+  /**
+   * Content to display when tab is active
+   */
+  content: ReactNode;
+  /**
    * Unique identifier for the tab
    */
   id: string;
@@ -40,17 +48,13 @@ export interface Tab {
    * Display label for the tab
    */
   label: string;
-  /**
-   * Content to display when tab is active
-   */
-  content: ReactNode;
-  /**
-   * Optional rainbow color for this tab
-   */
-  color?: RainbowColor;
 }
 
 export interface TabsProps {
+  /**
+   * Controlled active tab index
+   */
+  activeTab?: number;
   /**
    * Additional CSS classes for the container
    */
@@ -66,22 +70,18 @@ export interface TabsProps {
    */
   defaultTab?: number;
   /**
-   * Controlled active tab index
-   */
-  activeTab?: number;
-  /**
    * Callback when active tab changes
    */
   onTabChange?: (index: number) => void;
-  /**
-   * Inline styles for the container
-   */
-  style?: CSSProperties;
   /**
    * Use solid colored background for active tabs with white text instead of border styling
    * @default false
    */
   solid?: boolean;
+  /**
+   * Inline styles for the container
+   */
+  style?: CSSProperties;
   /**
    * Array of tab configurations
    */
@@ -89,10 +89,10 @@ export interface TabsProps {
 }
 
 export const Tabs = ({
+  activeTab,
   className = "",
   color = "blue",
   defaultTab = 0,
-  activeTab,
   onTabChange,
   solid = false,
   style,

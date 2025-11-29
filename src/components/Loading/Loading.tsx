@@ -1,5 +1,5 @@
 import { type CSSProperties } from "react";
-import type { RainbowColor } from "../../icons/types";
+import type { RainbowColor } from "../../types";
 
 const spinnerColorMap: Record<RainbowColor, string> = {
   red: "border-red-600",
@@ -33,29 +33,33 @@ const textColorMap: Record<RainbowColor, string> = {
 
 export interface LoadingProps {
   /**
+   * Rainbow color for the background (only applied when withBackground is true)
+   * @default 'blue'
+   */
+  backgroundColor?: RainbowColor;
+  /**
    * Additional CSS classes for the loading container
    */
   className?: string;
+  /**
+   * Optional accessible label for screen readers
+   * @default 'Loading'
+   */
+  labelForScreenReaders?: string;
+  /**
+   * Size of the spinner
+   * @default 'medium'
+   */
+  size?: "small" | "medium" | "large";
   /**
    * Rainbow color for the spinner
    * @default 'blue'
    */
   spinnerColor?: RainbowColor;
   /**
-   * Rainbow color for the background (only applied when withBackground is true)
-   * @default 'blue'
+   * Inline styles for the loading container
    */
-  backgroundColor?: RainbowColor;
-  /**
-   * Whether to show a solid background container
-   * @default false
-   */
-  withBackground?: boolean;
-  /**
-   * Size of the spinner
-   * @default 'medium'
-   */
-  size?: "small" | "medium" | "large";
+  style?: CSSProperties;
   /**
    * Optional loading text to display below spinner
    */
@@ -65,14 +69,10 @@ export interface LoadingProps {
    */
   textColor?: RainbowColor;
   /**
-   * Inline styles for the loading container
+   * Whether to show a solid background container
+   * @default false
    */
-  style?: CSSProperties;
-  /**
-   * Optional accessible label for screen readers
-   * @default 'Loading'
-   */
-  labelForScreenReaders?: string;
+  withBackground?: boolean;
 }
 
 const sizeMap = {
@@ -82,15 +82,15 @@ const sizeMap = {
 };
 
 export const Loading = ({
-  className = "",
-  spinnerColor = "blue",
   backgroundColor = "blue",
-  withBackground = false,
+  className = "",
+  labelForScreenReaders = "Loading",
   size = "medium",
+  spinnerColor = "blue",
+  style,
   text,
   textColor,
-  style,
-  labelForScreenReaders = "Loading",
+  withBackground = false,
 }: LoadingProps) => {
   const spinnerClasses = spinnerColorMap[spinnerColor];
   const bgClasses = withBackground ? backgroundColorMap[backgroundColor] : "";

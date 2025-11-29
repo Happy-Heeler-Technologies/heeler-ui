@@ -1,11 +1,4 @@
-export type RainbowColor =
-  | "red"
-  | "orange"
-  | "yellow"
-  | "green"
-  | "blue"
-  | "indigo"
-  | "violet";
+import type { RainbowColor } from "../types";
 
 export interface IconProps {
   /**

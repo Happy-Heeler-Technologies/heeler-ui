@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Dialog Component**: New modal dialog component with comprehensive accessibility and customization:
+  - 12 configurable props including `open`, `onClose`, `title`, `description`, `primaryButton`, `secondaryButton`, `color`, `borderColor`, `titleColor`, `descriptionColor`, `labelForScreenReaders`, `className`, `style`
+  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for dialog, border, title, and description colors
+  - Independent color control: dialog background, border, title, and description colors can be customized separately
+  - Optional button system: primary and secondary buttons are both optional, with backdrop click and escape key as fallback close mechanisms
+  - Per-button color override support for custom button styling within dialogs
+  - Complete accessibility implementation with WCAG AA compliance:
+    - `role="dialog"` with `aria-modal="true"` for semantic dialog structure
+    - `aria-labelledby` and `aria-describedby` relationships for proper screen reader announcements
+    - `aria-label` support via `labelForScreenReaders` prop for dialogs with emoji or icon-only titles
+    - Full keyboard navigation: Escape key to close, Tab/Shift+Tab focus trap cycling
+    - Automatic focus management: focuses primary button, secondary button, or dialog container on open
+    - Focus restoration: returns focus to previously active element when dialog closes
+    - Body scroll lock: prevents background scrolling while dialog is open
+    - Backdrop click to close: clicking outside dialog triggers onClose
+  - Mobile-friendly design with proper padding and responsive layout
+  - Complete Storybook documentation with 13 stories covering all color variants, button configurations, accessibility features, and edge cases
+
 ## [0.1.0-alpha.9] - 2025-11-29
 
 ### Added

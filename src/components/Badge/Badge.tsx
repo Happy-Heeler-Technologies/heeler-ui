@@ -1,5 +1,5 @@
 import { type CSSProperties, type ReactNode } from "react";
-import type { RainbowColor } from "../../icons/types";
+import type { RainbowColor } from "../../types";
 
 const colorMap: Record<string, string> = {
   red: "bg-red-600 text-white",
@@ -13,6 +13,10 @@ const colorMap: Record<string, string> = {
 
 export interface BadgeProps {
   /**
+   * Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges
+   */
+  ariaLabel?: string;
+  /**
    * Additional CSS classes for the badge
    */
   className?: string;
@@ -25,10 +29,6 @@ export interface BadgeProps {
    * Optional icon to display before the text
    */
   icon?: ReactNode;
-  /**
-   * Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges
-   */
-  ariaLabel?: string;
   /**
    * Inline styles for the badge
    */
