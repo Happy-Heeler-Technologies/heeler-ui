@@ -1,6 +1,5 @@
 import { type CSSProperties, type ReactNode } from "react";
 
-// Color mapping for badge backgrounds
 const colorMap: Record<string, string> = {
   red: "bg-red-600 text-white",
   orange: "bg-orange-500 text-white",
