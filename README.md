@@ -37,6 +37,10 @@ All components are built with accessibility as a core principle:
 
 @heeler/ui currently includes the following components:
 
+### 🏷️ Badge
+
+Status indicators and labels with optional icons and semantic variants
+
 ### 🔘 Button
 
 Flexible button with variants, colors, sizes, and loading states
@@ -49,9 +53,17 @@ Content card for displaying images, titles, and descriptions
 
 Boolean selection with labels, helper text, and custom styling
 
+### 🎨 Icons
+
+Library of 30 accessible icons with rainbow colors (ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Bell, Calendar, Cancel, Chart, Check, Clock, Cloud, Cog, Document, Download, Eye, Fire, Heart, Home, Lightning, Lock, LockOpen, Mail, Menu, Pencil, Plus, Refresh, Search, Star, Trash, User)
+
 ### ✏️ Input
 
 Text input with support for multiple types, validation, and error handling
+
+### ⏳ Loading
+
+Spinner component with customizable colors, sizes, and optional backgrounds
 
 ### 📑 Tabs
 
