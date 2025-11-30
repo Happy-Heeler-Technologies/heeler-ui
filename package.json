@@ -40,7 +40,8 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.cjs.js"
       }
-    }
+    },
+    "./styles.css": "./dist/index.css"
   },
   "scripts": {
     "build": "vite build",
@@ -53,7 +54,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "dist/index.css"
   ],
   "dependencies": {
     "react": ">=18",

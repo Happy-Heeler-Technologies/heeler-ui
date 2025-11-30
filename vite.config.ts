@@ -19,12 +19,16 @@ export default defineConfig({
       formats: ["es", "cjs"],
       fileName: (format) => (format === "es" ? "index.esm.js" : "index.cjs.js"),
     },
+    cssCodeSplit: false,
     rollupOptions: {
       external: ["react", "react-dom"],
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+        },
+        assetFileNames: () => {
+          return "index.css";
         },
       },
     },
