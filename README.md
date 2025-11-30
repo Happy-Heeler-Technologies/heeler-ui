@@ -69,6 +69,10 @@ Text input with support for multiple types, validation, and error handling
 
 Spinner component with customizable colors, sizes, and optional backgrounds
 
+### 📋 Select
+
+Custom dropdown select with styled options, keyboard navigation, and full accessibility
+
 ### 📑 Tabs
 
 Tabbed interface with keyboard navigation, rainbow colors, and solid/tertiary styling

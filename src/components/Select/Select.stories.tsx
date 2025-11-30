@@ -77,6 +77,12 @@ const meta = {
       control: "text",
       description: "Helper text to display below the select (when no error)",
     },
+    helperTextColor: {
+      control: "select",
+      options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
+      description:
+        "Override the helper text color independently (uses gray-500 if not specified)",
+    },
     id: {
       control: "text",
       description: "Unique identifier for the select element",
@@ -424,6 +430,14 @@ export const CustomColorOverrides: Story = {
         labelTextColor="red"
         optionTextColor="violet"
         helperText="Border indigo, label red, options violet"
+      />
+      <Select
+        label="Custom helper text color"
+        options={fruitOptions}
+        value="banana"
+        color="blue"
+        helperText="Helper text can have custom color too"
+        helperTextColor="orange"
       />
     </div>
   ),
