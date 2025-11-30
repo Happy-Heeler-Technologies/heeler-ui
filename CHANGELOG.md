@@ -18,9 +18,10 @@ This release marks the first stable version of @heeler/ui, featuring a complete 
 - 🌈 Rainbow color system with 7 vibrant variants across all components
 - ♿ WCAG AA compliant with comprehensive keyboard navigation and screen reader support
 - 📘 Full TypeScript support with exported types and interfaces
-- 🎨 Built with Tailwind CSS v4 for modern styling
+- 🎨 Pre-compiled CSS bundle - **no Tailwind configuration required in your app**
 - 📦 Tree-shakeable ESM/CJS builds
 - 📚 Comprehensive Storybook documentation (150+ stories total)
+- ⚡ Simple 2-step installation: `npm install @heeler/ui` and `import "@heeler/ui/styles.css"`
 
 **Component Library:**
 

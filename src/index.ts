@@ -1,3 +1,6 @@
+// Import styles so they get bundled with the library
+import "./index.css";
+
 export * from "./components/Badge/Badge";
 export * from "./components/Button/Button";
 export * from "./components/Card/Card";
