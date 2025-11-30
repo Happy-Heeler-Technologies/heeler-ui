@@ -1,5 +1,10 @@
 # 🐾 @heeler/ui
 
+### 🚀 Version 1.0.0 is officially launched!
+We will continue to add more components and enhancements in future iterations.  Contributions, suggestions, comments, and any other feedback are encouraged!
+
+Enjoy :) 
+
 ## About
 
 **@heeler/ui** is an open source React component library built with TypeScript and Tailwind CSS. Designed with accessibility in mind, it provides a collection of customizable, production-ready components based on a vibrant rainbow color system.
