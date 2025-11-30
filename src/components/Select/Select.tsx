@@ -24,6 +24,73 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
+const SIZE_CLASSES = {
+  sm: "px-3 py-1.5 text-sm",
+  md: "px-4 py-2.5 text-base",
+  lg: "px-5 py-3 text-lg",
+} as const;
+
+const OPTION_SIZE_CLASSES = {
+  sm: "px-3 py-1.5 text-sm",
+  md: "px-4 py-2.5 text-base",
+  lg: "px-5 py-3 text-lg",
+} as const;
+
+const COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "border-red-600 text-red-600 focus:border-red-600 focus:ring-red-600",
+  orange:
+    "border-orange-500 text-orange-500 focus:border-orange-500 focus:ring-orange-500",
+  yellow:
+    "border-yellow-500 text-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
+  green:
+    "border-green-600 text-green-600 focus:border-green-600 focus:ring-green-600",
+  blue: "border-blue-600 text-blue-600 focus:border-blue-600 focus:ring-blue-600",
+  indigo:
+    "border-indigo-600 text-indigo-600 focus:border-indigo-600 focus:ring-indigo-600",
+  violet:
+    "border-violet-600 text-violet-600 focus:border-violet-600 focus:ring-violet-600",
+};
+
+const LABEL_COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "text-red-600",
+  orange: "text-orange-500",
+  yellow: "text-yellow-500",
+  green: "text-green-600",
+  blue: "text-blue-600",
+  indigo: "text-indigo-600",
+  violet: "text-violet-600",
+};
+
+const HELPER_TEXT_COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "text-red-600",
+  orange: "text-orange-500",
+  yellow: "text-yellow-500",
+  green: "text-green-600",
+  blue: "text-blue-600",
+  indigo: "text-indigo-600",
+  violet: "text-violet-600",
+};
+
+const OPTION_COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "text-red-600 hover:bg-red-50",
+  orange: "text-orange-500 hover:bg-orange-50",
+  yellow: "text-yellow-500 hover:bg-yellow-50",
+  green: "text-green-600 hover:bg-green-50",
+  blue: "text-blue-600 hover:bg-blue-50",
+  indigo: "text-indigo-600 hover:bg-indigo-50",
+  violet: "text-violet-600 hover:bg-violet-50",
+};
+
+const OPTION_HIGHLIGHT_CLASSES: Record<RainbowColor, string> = {
+  red: "bg-red-50",
+  orange: "bg-orange-50",
+  yellow: "bg-yellow-50",
+  green: "bg-green-50",
+  blue: "bg-blue-50",
+  indigo: "bg-indigo-50",
+  violet: "bg-violet-50",
+};
+
 export interface SelectProps {
   /**
    * Additional CSS classes for the container div
@@ -50,6 +117,12 @@ export interface SelectProps {
    * Helper text to display below the select (when no error)
    */
   helperText?: string;
+
+  /**
+   * Override the helper text color independently
+   * If not specified, uses gray-500
+   */
+  helperTextColor?: RainbowColor;
 
   /**
    * Unique identifier for the select element
@@ -131,6 +204,7 @@ export const Select: FC<SelectProps> = ({
   disabled = false,
   errorMessage,
   helperText,
+  helperTextColor,
   id,
   label,
   labelTextColor,
@@ -152,75 +226,19 @@ export const Select: FC<SelectProps> = ({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listboxRef = useRef<HTMLUListElement>(null);
 
-  // Generate a unique ID if not provided
-  const selectId = id || `select-${useId()}`;
+  // generate a unique ID if not provided
+  const generatedId = useId();
+  const selectId = id || `select-${generatedId}`;
   const helperId = `${selectId}-helper`;
   const errorId = `${selectId}-error`;
   const listboxId = `${selectId}-listbox`;
 
   const hasError = Boolean(errorMessage);
 
-  const sizeClasses = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2.5 text-base",
-    lg: "px-5 py-3 text-lg",
-  };
-
-  const optionSizeClasses = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2.5 text-base",
-    lg: "px-5 py-3 text-lg",
-  };
-
-  const colorClasses: Record<RainbowColor, string> = {
-    red: "border-red-600 text-red-600 focus:border-red-600 focus:ring-red-600",
-    orange:
-      "border-orange-500 text-orange-500 focus:border-orange-500 focus:ring-orange-500",
-    yellow:
-      "border-yellow-500 text-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
-    green:
-      "border-green-600 text-green-600 focus:border-green-600 focus:ring-green-600",
-    blue: "border-blue-600 text-blue-600 focus:border-blue-600 focus:ring-blue-600",
-    indigo:
-      "border-indigo-600 text-indigo-600 focus:border-indigo-600 focus:ring-indigo-600",
-    violet:
-      "border-violet-600 text-violet-600 focus:border-violet-600 focus:ring-violet-600",
-  };
-
-  const labelColorClasses: Record<RainbowColor, string> = {
-    red: "text-red-600",
-    orange: "text-orange-500",
-    yellow: "text-yellow-500",
-    green: "text-green-600",
-    blue: "text-blue-600",
-    indigo: "text-indigo-600",
-    violet: "text-violet-600",
-  };
-
-  const optionColorClasses: Record<RainbowColor, string> = {
-    red: "text-red-600 hover:bg-red-50",
-    orange: "text-orange-500 hover:bg-orange-50",
-    yellow: "text-yellow-500 hover:bg-yellow-50",
-    green: "text-green-600 hover:bg-green-50",
-    blue: "text-blue-600 hover:bg-blue-50",
-    indigo: "text-indigo-600 hover:bg-indigo-50",
-    violet: "text-violet-600 hover:bg-violet-50",
-  };
-
-  const optionHighlightClasses: Record<RainbowColor, string> = {
-    red: "bg-red-50",
-    orange: "bg-orange-50",
-    yellow: "bg-yellow-50",
-    green: "bg-green-50",
-    blue: "bg-blue-50",
-    indigo: "bg-indigo-50",
-    violet: "bg-violet-50",
-  };
-
   const selectedOption = options.find((opt) => opt.value === value);
   const displayValue = selectedOption?.label || placeholder || "Select...";
 
-  // Close dropdown when clicking outside
+  // close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -239,7 +257,7 @@ export const Select: FC<SelectProps> = ({
     }
   }, [isOpen]);
 
-  // Scroll highlighted option into view
+  // scroll highlighted option into view
   useEffect(() => {
     if (isOpen && highlightedIndex >= 0 && listboxRef.current) {
       const highlightedElement = listboxRef.current.children[
@@ -258,7 +276,7 @@ export const Select: FC<SelectProps> = ({
 
     if (newIsOpen) {
       onFocus?.();
-      // Find and highlight the currently selected option
+      // find and highlight the currently selected option
       const selectedIndex = options.findIndex((opt) => opt.value === value);
       setHighlightedIndex(selectedIndex >= 0 ? selectedIndex : 0);
     } else {
@@ -367,13 +385,55 @@ export const Select: FC<SelectProps> = ({
           onBlur?.();
         }
         break;
+
+      default:
+        // type-ahead search support
+        if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
+          event.preventDefault();
+          const searchChar = event.key.toLowerCase();
+          const startIndex = isOpen ? highlightedIndex + 1 : 0;
+
+          // search from current position to end
+          let foundIndex = -1;
+          for (let i = startIndex; i < options.length; i++) {
+            if (
+              !options[i].disabled &&
+              options[i].label.toLowerCase().startsWith(searchChar)
+            ) {
+              foundIndex = i;
+              break;
+            }
+          }
+
+          // ff not found, wrap around and search from beginning
+          if (foundIndex === -1) {
+            for (let i = 0; i < startIndex; i++) {
+              if (
+                !options[i].disabled &&
+                options[i].label.toLowerCase().startsWith(searchChar)
+              ) {
+                foundIndex = i;
+                break;
+              }
+            }
+          }
+
+          if (foundIndex !== -1) {
+            if (!isOpen) {
+              setIsOpen(true);
+              onFocus?.();
+            }
+            setHighlightedIndex(foundIndex);
+          }
+        }
+        break;
     }
   };
 
   const triggerClasses = `
     w-full rounded-md border-2 bg-white
-    ${sizeClasses[size]}
-    ${hasError ? "border-red-600 text-red-600 focus:border-red-600 focus:ring-red-600" : colorClasses[color]}
+    ${SIZE_CLASSES[size]}
+    ${hasError ? "border-red-600 text-red-600 focus:border-red-600 focus:ring-red-600" : COLOR_CLASSES[color]}
     ${disabled ? "bg-gray-100 cursor-not-allowed opacity-60" : "cursor-pointer"}
     focus:outline-none focus:ring-2 focus:ring-offset-2
     transition-colors
@@ -382,7 +442,7 @@ export const Select: FC<SelectProps> = ({
     ${!selectedOption && placeholder ? "text-gray-400" : ""}
   `;
 
-  // Build aria-describedby with both helper and error IDs
+  // build aria-describedby with both helper and error IDs
   const ariaDescribedBy =
     [helperText && !hasError ? helperId : null, hasError ? errorId : null]
       .filter(Boolean)
@@ -392,8 +452,9 @@ export const Select: FC<SelectProps> = ({
     <div className={`flex flex-col gap-1.5 ${className}`} ref={containerRef}>
       {label && (
         <label
+          id={`${selectId}-label`}
           htmlFor={selectId}
-          className={`text-sm font-medium ${labelColorClasses[labelTextColor || color]}`}
+          className={`text-sm font-medium ${LABEL_COLOR_CLASSES[labelTextColor || color]}`}
         >
           {label}
           {required && (
@@ -413,7 +474,13 @@ export const Select: FC<SelectProps> = ({
           aria-expanded={isOpen}
           aria-haspopup="listbox"
           aria-controls={listboxId}
+          aria-activedescendant={
+            isOpen && highlightedIndex >= 0
+              ? `${selectId}-option-${highlightedIndex}`
+              : undefined
+          }
           aria-labelledby={label ? `${selectId}-label` : undefined}
+          aria-label={!label ? placeholder || "Select an option" : undefined}
           aria-required={required}
           aria-disabled={disabled}
           aria-invalid={hasError}
@@ -431,6 +498,7 @@ export const Select: FC<SelectProps> = ({
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -456,14 +524,15 @@ export const Select: FC<SelectProps> = ({
               return (
                 <li
                   key={option.value}
+                  id={`${selectId}-option-${index}`}
                   role="option"
                   aria-selected={isSelected}
                   aria-disabled={option.disabled}
                   onClick={() => handleSelect(option)}
                   className={`
-                    ${optionSizeClasses[size]}
-                    ${optionColorClasses[optionTextColor || color]}
-                    ${isHighlighted ? optionHighlightClasses[optionTextColor || color] : ""}
+                    ${OPTION_SIZE_CLASSES[size]}
+                    ${OPTION_COLOR_CLASSES[optionTextColor || color]}
+                    ${isHighlighted ? OPTION_HIGHLIGHT_CLASSES[optionTextColor || color] : ""}
                     ${option.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
                     ${isSelected ? "font-semibold" : ""}
                     transition-colors
@@ -492,7 +561,14 @@ export const Select: FC<SelectProps> = ({
       )}
 
       {helperText && !hasError && (
-        <p id={helperId} className="text-sm text-gray-500">
+        <p
+          id={helperId}
+          className={`text-sm ${
+            helperTextColor
+              ? HELPER_TEXT_COLOR_CLASSES[helperTextColor]
+              : "text-gray-500"
+          }`}
+        >
           {helperText}
         </p>
       )}

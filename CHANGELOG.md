@@ -9,6 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Select Component**: New custom dropdown select component with comprehensive accessibility and customization:
+  - 17 configurable props including `options`, `value`, `onChange`, `label`, `helperText`, `errorMessage`, `color`, `labelTextColor`, `optionTextColor`, `helperTextColor`, `size`, `placeholder`, `disabled`, `required`, `name`, `id`, `onFocus`, `onBlur`, `className`, `style`
+  - Custom dropdown implementation using WAI-ARIA combobox pattern (button + listbox) for full styling control
+  - `SelectOption` interface with `label`, `value`, and optional `disabled` properties
+  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for select border and text
+  - Independent color control: label, options, and helper text colors can be customized separately via optional override props
+  - Label text defaults to primary color (600-shade) with `labelTextColor` prop for customization
+  - Option text defaults to primary color (500-shade) with `optionTextColor` prop for customization
+  - Helper text defaults to gray with `helperTextColor` prop for customization
+  - 3 size options: small, medium (default), large affecting padding and text size
+  - Custom-styled options with primary color text and hover backgrounds
+  - Disabled option support with visual styling and keyboard skip behavior
+  - Animated chevron icon with rotation on open/close
+  - Hidden input element for form submission with `name` attribute
+  - Complete accessibility implementation with WCAG AA compliance:
+    - WAI-ARIA combobox pattern with `role="combobox"` on trigger button and `role="listbox"` on dropdown
+    - `role="option"` on all options with unique IDs for `aria-activedescendant` tracking
+    - `aria-expanded`, `aria-haspopup="listbox"`, `aria-controls`, `aria-activedescendant` for screen reader context
+    - `aria-labelledby` for labeled selects, `aria-label` fallback for unlabeled selects
+    - `aria-required`, `aria-disabled`, `aria-invalid`, `aria-errormessage`, `aria-describedby` for form states
+    - `aria-selected` on options for current value indication
+    - Full keyboard navigation: Enter/Space to toggle/select, ArrowDown/Up to navigate (skipping disabled), Home/End for first/last, Escape to close, Tab to close and continue
+    - Type-ahead search: press characters to jump to matching options with wraparound support
+    - Intelligent focus management: auto-scroll highlighted option into view, return focus to trigger after selection
+    - Click outside to close with proper focus return
+    - Error announcements with `role="alert"` and `aria-live="polite"`
+    - Keyboard-only focus indicators using `focus-visible` for better UX
+  - `onChange` callback receives value string directly (not event object) for simplified state management
+  - `onFocus` and `onBlur` callbacks for external focus tracking
+  - Complete Storybook documentation with 26 comprehensive stories demonstrating all features, color variants, sizes, form integration, controlled patterns, and custom color overrides
+
 - **Dialog Component**: New modal dialog component with comprehensive accessibility and customization:
   - 13 configurable props including `open`, `onClose`, `title`, `description`, `icon`, `iconBackground`, `primaryButton`, `secondaryButton`, `color`, `borderColor`, `titleColor`, `descriptionColor`, `labelForScreenReaders`, `className`, `style`
   - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for dialog border, title, description, icon, and button colors
