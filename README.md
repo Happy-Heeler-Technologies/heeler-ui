@@ -95,9 +95,10 @@ This will start an interactive component explorer at `http://localhost:6006` whe
 
 ## Installation
 
-### 1. Install the component library
+### Quick Start (2 steps)
 
 ```bash
+# 1. Install the package
 npm install @heeler/ui
 # or
 yarn add @heeler/ui
@@ -105,52 +106,29 @@ yarn add @heeler/ui
 pnpm add @heeler/ui
 ```
 
-### 2. Install and configure Tailwind CSS v4
-
-This library requires **Tailwind CSS v4** to be installed in your project. Follow these steps:
-
-#### Install Tailwind CSS
-
-```bash
-npm install tailwindcss@next @tailwindcss/postcss@next
-# or
-yarn add tailwindcss@next @tailwindcss/postcss@next
-# or
-pnpm add tailwindcss@next @tailwindcss/postcss@next
-```
-
-#### Configure PostCSS
-
-Create or update `postcss.config.js` in your project root:
-
 ```javascript
-export default {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
+// 2. Import the styles once in your app entry point (e.g., App.tsx or main.tsx)
+import "@heeler/ui/styles.css";
+
+// Then use any component
+import { Button, Input, Badge } from "@heeler/ui";
+
+function App() {
+  return (
+    <div>
+      <Button color="blue">Click me</Button>
+      <Input label="Email" type="email" />
+      <Badge text="New" color="green" />
+    </div>
+  );
+}
 ```
 
-**Note:** If your `package.json` has `"type": "module"`, use ES module syntax (`export default`) as shown above. Otherwise, use CommonJS syntax (`module.exports = { ... }`).
-
-#### Import Tailwind in your CSS
-
-Add this to your main CSS file (e.g., `src/index.css` or `app/globals.css`):
-
-```css
-@import "tailwindcss";
-```
-
-#### Start your dev server
-
-The Tailwind CSS v4 engine will automatically scan your files and generate styles.
-
-**For complete Tailwind CSS v4 setup instructions and troubleshooting, visit the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation).**
+**That's it!** No Tailwind configuration required. All styles are pre-compiled and bundled with the library.
 
 ### Requirements
 
 - **React**: 18 or higher
-- **Tailwind CSS**: v4 (using `@tailwindcss/postcss`)
 - **Node.js**: 16 or higher
 
 ---
