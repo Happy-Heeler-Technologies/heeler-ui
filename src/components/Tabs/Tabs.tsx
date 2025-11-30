@@ -236,3 +236,5 @@ export const Tabs = ({
     </div>
   );
 };
+
+Tabs.displayName = "Tabs";

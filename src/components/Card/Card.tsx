@@ -1,4 +1,16 @@
-import { CSSProperties, FC, ReactNode } from "react";
+import { CSSProperties, FC, ReactNode, useId } from "react";
+import type { RainbowColor } from "../../types";
+
+// Rainbow color mapping for border and title
+const COLOR_MAP: Record<RainbowColor, string> = {
+  red: "border-red-600 text-red-700",
+  orange: "border-orange-500 text-orange-700",
+  yellow: "border-yellow-500 text-yellow-500",
+  green: "border-green-600 text-green-700",
+  blue: "border-blue-600 text-blue-700",
+  indigo: "border-indigo-600 text-indigo-700",
+  violet: "border-violet-600 text-violet-700",
+};
 
 export interface CardProps {
   /**
@@ -8,7 +20,7 @@ export interface CardProps {
   /**
    * Rainbow color for border and title. If not set, uses default styling.
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  color?: RainbowColor;
   /**
    * Description text displayed below the title.
    */
@@ -46,27 +58,17 @@ export const Card: FC<CardProps> = ({
   titleColorOverride,
 }) => {
   // Generate unique IDs for accessibility
-  const titleId = `card-title-${Math.random().toString(36).substr(2, 9)}`;
-  const descriptionId = `card-desc-${Math.random().toString(36).substr(2, 9)}`;
-
-  // Rainbow color mapping for border and title
-  const colorMap: Record<string, string> = {
-    red: "border-red-600 text-red-700",
-    orange: "border-orange-500 text-orange-700",
-    yellow: "border-yellow-500 text-yellow-500",
-    green: "border-green-600 text-green-700",
-    blue: "border-blue-600 text-blue-700",
-    indigo: "border-indigo-600 text-indigo-700",
-    violet: "border-violet-600 text-violet-700",
-  };
+  const generatedId = useId();
+  const titleId = `card-title-${generatedId}`;
+  const descriptionId = `card-desc-${generatedId}`;
 
   const borderColor = color
-    ? colorMap[color]?.split(" ")[0]
+    ? COLOR_MAP[color]?.split(" ")[0]
     : "border-gray-200";
   const titleColor = titleColorOverride
     ? titleColorOverride
     : color
-      ? colorMap[color]?.split(" ")[1]
+      ? COLOR_MAP[color]?.split(" ")[1]
       : "text-gray-900";
   const descriptionColor = descriptionColorOverride
     ? descriptionColorOverride
@@ -99,3 +101,5 @@ export const Card: FC<CardProps> = ({
     </article>
   );
 };
+
+Card.displayName = "Card";

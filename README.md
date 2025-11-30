@@ -1,11 +1,5 @@
 # 🐾 @heeler/ui
 
-## 🚧 Under Construction
-
-This React/TypeScript/Tailwind component library is actively being developed. Check back soon for updates!
-
----
-
 ## About
 
 **@heeler/ui** is an open source React component library built with TypeScript and Tailwind CSS. Designed with accessibility in mind, it provides a collection of customizable, production-ready components based on a vibrant rainbow color system.
@@ -68,6 +62,10 @@ Text input with support for multiple types, validation, and error handling
 ### ⏳ Loading
 
 Spinner component with customizable colors, sizes, and optional backgrounds
+
+### 🔘 RadioGroup
+
+Single selection radio group with custom colors, per-option helper text, and full accessibility
 
 ### 📋 Select
 

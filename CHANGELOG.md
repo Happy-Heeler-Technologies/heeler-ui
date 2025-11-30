@@ -9,6 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **RadioGroup Component**: New single-selection radio group component with comprehensive accessibility and customization:
+  - 17 configurable props including `options`, `value`, `onChange`, `label`, `helperText`, `helperTextColor`, `errorMessage`, `color`, `labelTextColor`, `optionLabelColor`, `size`, `disabled`, `required`, `name`, `id`, `className`, `style`
+  - `RadioOption` interface with `label`, `value`, optional `disabled`, and optional `helperText` properties
+  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for radio buttons and labels
+  - Independent color control: group label, option labels, and helper text colors can be customized separately via optional override props
+  - Group label defaults to primary color (600-shade) with `labelTextColor` prop for customization
+  - Option labels default to primary color (600-shade) with `optionLabelColor` prop for customization
+  - Helper text defaults to gray with `helperTextColor` prop for customization
+  - 3 size options: small, medium (default), large affecting radio button and label sizes
+  - Circular radio buttons with white inner dot when selected
+  - Per-option helper text support with proper ARIA associations
+  - Disabled state support for entire group or individual options
+  - Natural vertical layout (users can override with `className` for horizontal if needed)
+  - Enhanced visual hierarchy with larger, semibold group label and increased spacing
+  - Complete accessibility implementation with WCAG AA compliance:
+    - Semantic HTML with `<fieldset>` and `<legend>` for proper form grouping
+    - `role="radiogroup"` for explicit grouping with screen readers
+    - `aria-labelledby` linking group to legend, `aria-required`, `aria-invalid`, `aria-errormessage`, `aria-describedby` on radiogroup
+    - Individual radio buttons have `aria-checked`, `aria-disabled`, and `aria-describedby` for per-option helper text
+    - Native `<input type="radio">` elements with `.sr-only` class for screen reader accessibility
+    - Proper `<label>` elements with `htmlFor` associations
+    - `aria-hidden="true"` on decorative visual radio button elements
+    - `aria-label="required"` on asterisk for required field indication
+    - Full native keyboard navigation (Tab, Space/Enter to select, Arrow keys within group)
+    - `focus-visible` indicators for keyboard-only focus rings
+    - Error announcements with `role="alert"` and `aria-live="polite"`
+    - Unique ID generation using React's `useId()` hook to prevent collisions
+  - Complete Storybook documentation with 26 comprehensive stories demonstrating all features, color variants, sizes, form integration, controlled patterns, and custom color overrides
+
 - **Select Component**: New custom dropdown select component with comprehensive accessibility and customization:
   - 17 configurable props including `options`, `value`, `onChange`, `label`, `helperText`, `errorMessage`, `color`, `labelTextColor`, `optionTextColor`, `helperTextColor`, `size`, `placeholder`, `disabled`, `required`, `name`, `id`, `onFocus`, `onBlur`, `className`, `style`
   - Custom dropdown implementation using WAI-ARIA combobox pattern (button + listbox) for full styling control

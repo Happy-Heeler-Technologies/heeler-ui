@@ -334,3 +334,5 @@ export const Dialog = ({
     </div>
   );
 };
+
+Dialog.displayName = "Dialog";

@@ -1,7 +1,7 @@
 import { type CSSProperties, type ReactNode } from "react";
 import type { RainbowColor } from "../../types";
 
-const colorMap: Record<string, string> = {
+const COLOR_MAP: Record<RainbowColor, string> = {
   red: "bg-red-600 text-white",
   orange: "bg-orange-500 text-white",
   yellow: "bg-yellow-500 text-white",
@@ -12,10 +12,6 @@ const colorMap: Record<string, string> = {
 };
 
 export interface BadgeProps {
-  /**
-   * Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges
-   */
-  ariaLabel?: string;
   /**
    * Additional CSS classes for the badge
    */
@@ -29,6 +25,10 @@ export interface BadgeProps {
    * Optional icon to display before the text
    */
   icon?: ReactNode;
+  /**
+   * Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges
+   */
+  labelForScreenReaders?: string;
   /**
    * Inline styles for the badge
    */
@@ -47,19 +47,21 @@ export interface BadgeProps {
 }
 
 export const Badge = ({
-  ariaLabel,
   className = "",
   color = "blue",
   icon,
+  labelForScreenReaders,
   style,
   text,
   variant = "label",
 }: BadgeProps) => {
-  const colorClasses = colorMap[color];
+  const colorClasses = COLOR_MAP[color];
 
   // For status badges, default aria-label to "Status: {text}" if not provided
   const computedAriaLabel =
-    variant === "status" && !ariaLabel ? `Status: ${text}` : ariaLabel;
+    variant === "status" && !labelForScreenReaders
+      ? `Status: ${text}`
+      : labelForScreenReaders;
 
   return (
     <span
@@ -81,3 +83,5 @@ export const Badge = ({
     </span>
   );
 };
+
+Badge.displayName = "Badge";

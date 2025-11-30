@@ -11,10 +11,10 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
-    ariaLabel: {
+    labelForScreenReaders: {
       control: "text",
       description:
-        "Optional accessible label for screen readers. If not provided, defaults to 'Status: {text}' for status badges",
+        'Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges',
     },
     className: {
       control: "text",
@@ -162,12 +162,12 @@ export const MultipleVariants: Story = {
   ),
 };
 
-export const WithAriaLabel: Story = {
+export const WithLabelForScreenReaders: Story = {
   args: {
     color: "green",
     text: "Verified",
     icon: <Check />,
-    ariaLabel: "Account verified status badge",
+    labelForScreenReaders: "Account verified status badge",
   },
 };
 

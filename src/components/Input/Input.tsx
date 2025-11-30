@@ -6,6 +6,39 @@ import {
   KeyboardEvent,
   useId,
 } from "react";
+import type { RainbowColor } from "../../types";
+
+const SIZE_CLASSES = {
+  sm: "text-sm px-3 py-1.5",
+  md: "text-base px-4 py-2",
+  lg: "text-lg px-5 py-3",
+} as const;
+
+// Rainbow color classes for focus rings and borders
+const COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "border-red-500 focus-visible:border-red-600 focus-visible:ring-red-500",
+  orange:
+    "border-orange-500 focus-visible:border-orange-600 focus-visible:ring-orange-500",
+  yellow:
+    "border-yellow-500 focus-visible:border-yellow-600 focus-visible:ring-yellow-500",
+  green:
+    "border-green-500 focus-visible:border-green-600 focus-visible:ring-green-500",
+  blue: "border-blue-500 focus-visible:border-blue-600 focus-visible:ring-blue-500",
+  indigo:
+    "border-indigo-500 focus-visible:border-indigo-600 focus-visible:ring-indigo-500",
+  violet:
+    "border-violet-500 focus-visible:border-violet-600 focus-visible:ring-violet-500",
+};
+
+const TEXT_COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "text-red-600",
+  orange: "text-orange-600",
+  yellow: "text-yellow-600",
+  green: "text-green-600",
+  blue: "text-blue-600",
+  indigo: "text-indigo-600",
+  violet: "text-violet-600",
+};
 
 export interface InputProps {
   /**
@@ -20,8 +53,9 @@ export interface InputProps {
 
   /**
    * Rainbow color for focus ring and border
+   * @default undefined
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  color?: RainbowColor;
 
   /**
    * Whether the input is disabled
@@ -122,14 +156,7 @@ export interface InputProps {
   /**
    * Text color for the input value (defaults to color prop if not specified)
    */
-  textColor?:
-    | "red"
-    | "orange"
-    | "yellow"
-    | "green"
-    | "blue"
-    | "indigo"
-    | "violet";
+  textColor?: RainbowColor;
 
   /**
    * The HTML input type
@@ -181,43 +208,12 @@ export const Input: FC<InputProps> = ({
   value,
 }) => {
   // Generate a unique ID if not provided
-  const inputId = id || `input-${useId()}`;
+  const generatedId = useId();
+  const inputId = id || `input-${generatedId}`;
   const errorId = `${inputId}-error`;
   const helperId = `${inputId}-helper`;
 
   const hasError = Boolean(errorMessage);
-
-  const sizeClasses = {
-    sm: "text-sm px-3 py-1.5",
-    md: "text-base px-4 py-2",
-    lg: "text-lg px-5 py-3",
-  };
-
-  // Rainbow color classes for focus rings and borders
-  const colorClasses = {
-    red: "border-red-500 focus-visible:border-red-600 focus-visible:ring-red-500",
-    orange:
-      "border-orange-500 focus-visible:border-orange-600 focus-visible:ring-orange-500",
-    yellow:
-      "border-yellow-500 focus-visible:border-yellow-600 focus-visible:ring-yellow-500",
-    green:
-      "border-green-500 focus-visible:border-green-600 focus-visible:ring-green-500",
-    blue: "border-blue-500 focus-visible:border-blue-600 focus-visible:ring-blue-500",
-    indigo:
-      "border-indigo-500 focus-visible:border-indigo-600 focus-visible:ring-indigo-500",
-    violet:
-      "border-violet-500 focus-visible:border-violet-600 focus-visible:ring-violet-500",
-  };
-
-  const textColorClasses = {
-    red: "text-red-600",
-    orange: "text-orange-600",
-    yellow: "text-yellow-600",
-    green: "text-green-600",
-    blue: "text-blue-600",
-    indigo: "text-indigo-600",
-    violet: "text-violet-600",
-  };
 
   const baseClasses =
     "w-full rounded-md border bg-white transition-colors duration-200";
@@ -238,21 +234,21 @@ export const Input: FC<InputProps> = ({
   const selectedColorClasses = hasError
     ? ""
     : color
-      ? colorClasses[color]
+      ? COLOR_CLASSES[color]
       : standardClasses;
 
   // Determine text color (use textColor if specified, otherwise use color, otherwise default gray)
   const selectedTextColor = hasError
     ? "text-gray-900"
     : textColor
-      ? textColorClasses[textColor]
+      ? TEXT_COLOR_CLASSES[textColor]
       : color
-        ? textColorClasses[color]
+        ? TEXT_COLOR_CLASSES[color]
         : "text-gray-900";
 
   // Build the final input class string
   const inputClasses =
-    `${baseClasses} ${sizeClasses[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} ${selectedTextColor}`.trim();
+    `${baseClasses} ${SIZE_CLASSES[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} ${selectedTextColor}`.trim();
 
   // Build aria-describedby with both helper and error IDs
   const ariaDescribedBy =

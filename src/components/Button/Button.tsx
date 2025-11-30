@@ -1,4 +1,58 @@
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
+import type { RainbowColor } from "../../types";
+
+const COLOR_CLASSES: Record<
+  RainbowColor,
+  { primary: string; tertiary: string }
+> = {
+  red: {
+    primary: "bg-red-600 text-white hover:bg-red-700",
+    tertiary:
+      "bg-transparent border border-red-600 text-red-600 hover:bg-red-50",
+  },
+  orange: {
+    primary: "bg-orange-600 text-white hover:bg-orange-700",
+    tertiary:
+      "bg-transparent border border-orange-600 text-orange-600 hover:bg-orange-50",
+  },
+  yellow: {
+    primary: "bg-yellow-500 text-white hover:bg-yellow-600",
+    tertiary:
+      "bg-transparent border border-yellow-500 text-yellow-600 hover:bg-yellow-50",
+  },
+  green: {
+    primary: "bg-green-600 text-white hover:bg-green-700",
+    tertiary:
+      "bg-transparent border border-green-600 text-green-600 hover:bg-green-50",
+  },
+  blue: {
+    primary: "bg-blue-600 text-white hover:bg-blue-700",
+    tertiary:
+      "bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50",
+  },
+  indigo: {
+    primary: "bg-indigo-600 text-white hover:bg-indigo-700",
+    tertiary:
+      "bg-transparent border border-indigo-600 text-indigo-600 hover:bg-indigo-50",
+  },
+  violet: {
+    primary: "bg-violet-600 text-white hover:bg-violet-700",
+    tertiary:
+      "bg-transparent border border-violet-600 text-violet-600 hover:bg-violet-50",
+  },
+};
+
+const SIZE_CLASSES = {
+  sm: "px-3 py-1.5 text-xs min-w-20",
+  md: "px-4 py-2 text-sm min-w-24",
+  lg: "px-6 py-3 text-base min-w-32",
+} as const;
+
+const ICON_SIZE_CLASSES = {
+  sm: "h-3 w-3",
+  md: "h-4 w-4",
+  lg: "h-5 w-5",
+} as const;
 
 export interface ButtonProps {
   /**
@@ -10,7 +64,7 @@ export interface ButtonProps {
    * Rainbow color scheme. Applies to primary and tertiary variants
    * @default 'blue'
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  color?: RainbowColor;
 
   /**
    * Disables the button and prevents interaction
@@ -87,64 +141,14 @@ export function Button({
   type = "button",
   variant = "primary",
 }: ButtonProps) {
-  const colorClasses = {
-    red: {
-      primary: "bg-red-600 text-white hover:bg-red-700",
-      tertiary:
-        "bg-transparent border border-red-600 text-red-600 hover:bg-red-50",
-    },
-    orange: {
-      primary: "bg-orange-600 text-white hover:bg-orange-700",
-      tertiary:
-        "bg-transparent border border-orange-600 text-orange-600 hover:bg-orange-50",
-    },
-    yellow: {
-      primary: "bg-yellow-500 text-white hover:bg-yellow-600",
-      tertiary:
-        "bg-transparent border border-yellow-500 text-yellow-600 hover:bg-yellow-50",
-    },
-    green: {
-      primary: "bg-green-600 text-white hover:bg-green-700",
-      tertiary:
-        "bg-transparent border border-green-600 text-green-600 hover:bg-green-50",
-    },
-    blue: {
-      primary: "bg-blue-600 text-white hover:bg-blue-700",
-      tertiary:
-        "bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50",
-    },
-    indigo: {
-      primary: "bg-indigo-600 text-white hover:bg-indigo-700",
-      tertiary:
-        "bg-transparent border border-indigo-600 text-indigo-600 hover:bg-indigo-50",
-    },
-    violet: {
-      primary: "bg-violet-600 text-white hover:bg-violet-700",
-      tertiary:
-        "bg-transparent border border-violet-600 text-violet-600 hover:bg-violet-50",
-    },
-  };
-
   let variantClass = "";
 
   if (variant === "secondary") {
     variantClass = "bg-gray-200 text-gray-900 hover:bg-gray-300";
   } else {
     // Use preset rainbow color
-    variantClass = colorClasses[color][variant];
+    variantClass = COLOR_CLASSES[color][variant];
   }
-
-  const sizeClasses = {
-    sm: "px-3 py-1.5 text-xs min-w-20",
-    md: "px-4 py-2 text-sm min-w-24",
-    lg: "px-6 py-3 text-base min-w-32",
-  };
-
-  const iconSizeClasses = {
-    sm: "h-3 w-3",
-    md: "h-4 w-4",
-    lg: "h-5 w-5",
-  };
 
   const roundedClass = rounded ? "rounded-full" : "rounded-md";
 
@@ -160,7 +164,7 @@ export function Button({
       aria-disabled={disabled || loading}
       aria-busy={loading}
       style={style}
-      className={`inline-flex items-center justify-center font-medium ${variantClass} ${sizeClasses[size]} ${roundedClass} ${a11yClasses} ${
+      className={`inline-flex items-center justify-center font-medium ${variantClass} ${SIZE_CLASSES[size]} ${roundedClass} ${a11yClasses} ${
         className ?? ""
       }`}
     >
@@ -189,7 +193,7 @@ export function Button({
       )}
       {!loading && icon && iconPosition === "left" && (
         <span
-          className={`-ml-1 mr-2 ${iconSizeClasses[size]}`}
+          className={`-ml-1 mr-2 ${ICON_SIZE_CLASSES[size]}`}
           aria-hidden="true"
         >
           {icon}
@@ -198,7 +202,7 @@ export function Button({
       {text}
       {!loading && icon && iconPosition === "right" && (
         <span
-          className={`ml-2 -mr-1 ${iconSizeClasses[size]}`}
+          className={`ml-2 -mr-1 ${ICON_SIZE_CLASSES[size]}`}
           aria-hidden="true"
         >
           {icon}
@@ -207,3 +211,5 @@ export function Button({
     </button>
   );
 }
+
+Button.displayName = "Button";

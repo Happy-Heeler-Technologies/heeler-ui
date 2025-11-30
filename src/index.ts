@@ -5,6 +5,7 @@ export * from "./components/Checkbox/Checkbox";
 export * from "./components/Dialog/Dialog";
 export * from "./components/Input/Input";
 export * from "./components/Loading/Loading";
+export * from "./components/RadioGroup/RadioGroup";
 export * from "./components/Select/Select";
 export * from "./components/Tabs/Tabs";
 

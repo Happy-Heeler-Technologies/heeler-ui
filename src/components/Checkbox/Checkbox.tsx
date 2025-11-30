@@ -1,4 +1,58 @@
 import { ChangeEvent, CSSProperties, FC, FocusEvent, useId } from "react";
+import type { RainbowColor } from "../../types";
+
+const SIZE_CLASSES = {
+  sm: "h-4 w-4",
+  md: "h-5 w-5",
+  lg: "h-6 w-6",
+} as const;
+
+const LABEL_SIZE_CLASSES = {
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg",
+} as const;
+
+// Rainbow color classes for checked state (background and border)
+const COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "bg-red-600 border-red-600",
+  orange: "bg-orange-600 border-orange-600",
+  yellow: "bg-yellow-500 border-yellow-500",
+  green: "bg-green-600 border-green-600",
+  blue: "bg-blue-600 border-blue-600",
+  indigo: "bg-indigo-600 border-indigo-600",
+  violet: "bg-violet-600 border-violet-600",
+};
+
+const FOCUS_RING_CLASSES: Record<RainbowColor, string> = {
+  red: "focus-visible:ring-red-500",
+  orange: "focus-visible:ring-orange-500",
+  yellow: "focus-visible:ring-yellow-500",
+  green: "focus-visible:ring-green-500",
+  blue: "focus-visible:ring-blue-500",
+  indigo: "focus-visible:ring-indigo-500",
+  violet: "focus-visible:ring-violet-500",
+};
+
+const CHECKMARK_COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "stroke-red-600",
+  orange: "stroke-orange-600",
+  yellow: "stroke-yellow-600",
+  green: "stroke-green-600",
+  blue: "stroke-blue-600",
+  indigo: "stroke-indigo-600",
+  violet: "stroke-violet-600",
+};
+
+const LABEL_COLOR_CLASSES: Record<RainbowColor, string> = {
+  red: "text-red-600",
+  orange: "text-orange-600",
+  yellow: "text-yellow-600",
+  green: "text-green-600",
+  blue: "text-blue-600",
+  indigo: "text-indigo-600",
+  violet: "text-violet-600",
+};
 
 export interface CheckboxProps {
   /**
@@ -13,8 +67,9 @@ export interface CheckboxProps {
 
   /**
    * Rainbow color for the checked state
+   * @default 'blue'
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  color?: RainbowColor;
 
   /**
    * Whether the checkbox is disabled
@@ -44,14 +99,7 @@ export interface CheckboxProps {
   /**
    * Label text color (defaults to color prop if not specified)
    */
-  labelColor?:
-    | "red"
-    | "orange"
-    | "yellow"
-    | "green"
-    | "blue"
-    | "indigo"
-    | "violet";
+  labelColor?: RainbowColor;
 
   /**
    * Name attribute for the checkbox (useful for forms)
@@ -109,75 +157,23 @@ export const Checkbox: FC<CheckboxProps> = ({
   onFocus,
 }) => {
   // Generate a unique ID if not provided
-  const checkboxId = id || `checkbox-${useId()}`;
+  const generatedId = useId();
+  const checkboxId = id || `checkbox-${generatedId}`;
   const helperId = `${checkboxId}-helper`;
   const errorId = `${checkboxId}-error`;
 
   const hasError = Boolean(errorMessage);
 
-  const sizeClasses = {
-    sm: "h-4 w-4",
-    md: "h-5 w-5",
-    lg: "h-6 w-6",
-  };
-
-  const labelSizeClasses = {
-    sm: "text-sm",
-    md: "text-base",
-    lg: "text-lg",
-  };
-
-  // Rainbow color classes for checked state (background and border)
-  const colorClasses = {
-    red: "bg-red-600 border-red-600",
-    orange: "bg-orange-600 border-orange-600",
-    yellow: "bg-yellow-500 border-yellow-500",
-    green: "bg-green-600 border-green-600",
-    blue: "bg-blue-600 border-blue-600",
-    indigo: "bg-indigo-600 border-indigo-600",
-    violet: "bg-violet-600 border-violet-600",
-  };
-
-  const focusRingClasses = {
-    red: "focus-visible:ring-red-500",
-    orange: "focus-visible:ring-orange-500",
-    yellow: "focus-visible:ring-yellow-500",
-    green: "focus-visible:ring-green-500",
-    blue: "focus-visible:ring-blue-500",
-    indigo: "focus-visible:ring-indigo-500",
-    violet: "focus-visible:ring-violet-500",
-  };
-
-  const checkmarkColorClasses = {
-    red: "stroke-red-600",
-    orange: "stroke-orange-600",
-    yellow: "stroke-yellow-600",
-    green: "stroke-green-600",
-    blue: "stroke-blue-600",
-    indigo: "stroke-indigo-600",
-    violet: "stroke-violet-600",
-  };
-
-  const labelColorClasses = {
-    red: "text-red-600",
-    orange: "text-orange-600",
-    yellow: "text-yellow-600",
-    green: "text-green-600",
-    blue: "text-blue-600",
-    indigo: "text-indigo-600",
-    violet: "text-violet-600",
-  };
-
   // Determine label color (use labelColor if specified, otherwise use color, otherwise default gray)
   const selectedLabelColor = labelColor
-    ? labelColorClasses[labelColor]
+    ? LABEL_COLOR_CLASSES[labelColor]
     : color
-      ? labelColorClasses[color]
+      ? LABEL_COLOR_CLASSES[color]
       : "text-gray-700";
 
   // Determine checkmark color (use labelColor if specified, otherwise white)
   const selectedCheckmarkColor = labelColor
-    ? checkmarkColorClasses[labelColor]
+    ? CHECKMARK_COLOR_CLASSES[labelColor]
     : "stroke-white";
 
   // Build aria-describedby with both helper and error IDs
@@ -210,7 +206,7 @@ export const Checkbox: FC<CheckboxProps> = ({
             style={style}
           />
           <div
-            className={`${sizeClasses[size]} rounded border-2 transition-all duration-200 flex items-center justify-center ${
+            className={`${SIZE_CLASSES[size]} rounded border-2 transition-all duration-200 flex items-center justify-center ${
               disabled
                 ? "opacity-50 cursor-not-allowed pointer-events-none"
                 : "cursor-pointer"
@@ -218,10 +214,12 @@ export const Checkbox: FC<CheckboxProps> = ({
               hasError
                 ? "border-red-500 bg-red-50"
                 : checked
-                  ? colorClasses[color]
+                  ? COLOR_CLASSES[color]
                   : "border-gray-300 bg-white hover:border-gray-400"
             } peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 ${
-              hasError ? "focus-visible:ring-red-500" : focusRingClasses[color]
+              hasError
+                ? "focus-visible:ring-red-500"
+                : FOCUS_RING_CLASSES[color]
             }`}
             aria-hidden="true"
           >
@@ -248,7 +246,7 @@ export const Checkbox: FC<CheckboxProps> = ({
         {label && (
           <label
             htmlFor={checkboxId}
-            className={`${labelSizeClasses[size]} font-medium ${selectedLabelColor} ${
+            className={`${LABEL_SIZE_CLASSES[size]} font-medium ${selectedLabelColor} ${
               disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           >
