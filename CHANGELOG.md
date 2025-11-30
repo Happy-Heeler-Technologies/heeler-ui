@@ -5,95 +5,145 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2025-11-29
 
 ### Added
 
-- **RadioGroup Component**: New single-selection radio group component with comprehensive accessibility and customization:
-  - 17 configurable props including `options`, `value`, `onChange`, `label`, `helperText`, `helperTextColor`, `errorMessage`, `color`, `labelTextColor`, `optionLabelColor`, `size`, `disabled`, `required`, `name`, `id`, `className`, `style`
-  - `RadioOption` interface with `label`, `value`, optional `disabled`, and optional `helperText` properties
-  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for radio buttons and labels
-  - Independent color control: group label, option labels, and helper text colors can be customized separately via optional override props
-  - Group label defaults to primary color (600-shade) with `labelTextColor` prop for customization
-  - Option labels default to primary color (600-shade) with `optionLabelColor` prop for customization
-  - Helper text defaults to gray with `helperTextColor` prop for customization
-  - 3 size options: small, medium (default), large affecting radio button and label sizes
+**🎉 Initial stable release with 10 production-ready components!**
+
+This release marks the first stable version of @heeler/ui, featuring a complete set of accessible, customizable React components built with TypeScript and Tailwind CSS v4. All components follow consistent patterns, support the rainbow color system (red, orange, yellow, green, blue, indigo, violet), and meet WCAG AA accessibility standards.
+
+**Core Features:**
+
+- 🌈 Rainbow color system with 7 vibrant variants across all components
+- ♿ WCAG AA compliant with comprehensive keyboard navigation and screen reader support
+- 📘 Full TypeScript support with exported types and interfaces
+- 🎨 Built with Tailwind CSS v4 for modern styling
+- 📦 Tree-shakeable ESM/CJS builds
+- 📚 Comprehensive Storybook documentation (150+ stories total)
+
+**Component Library:**
+
+- **Badge Component**: Status indicators and labels with icons
+  - 7 props: `text`, `icon`, `color`, `variant`, `labelForScreenReaders`, `className`, `style`
+  - Two semantic variants: `label` (default) and `status` (with live region announcements)
+  - Optional icon support with automatic `aria-hidden` handling
+  - Smart ARIA labeling for status badges
+  - 7 rainbow color variants with WCAG AA contrast ratios
+
+- **Button Component**: Flexible, accessible buttons with variants and states
+  - 10 props: `children`, `color`, `disabled`, `icon`, `iconPosition`, `loading`, `onClick`, `size`, `variant`, `className`, `style`
+  - 3 variants: solid (default), outline, ghost
+  - 3 sizes: small, medium (default), large
+  - Optional icon support with left/right positioning
+  - Loading state with spinner and disabled interaction
+  - Full keyboard and focus management
+
+- **Card Component**: Content cards for images, titles, and descriptions
+  - 8 props: `title`, `description`, `image`, `color`, `titleColorOverride`, `descriptionColorOverride`, `className`, `style`
+  - Semantic `<article>` HTML with ARIA relationships
+  - 7 rainbow color variants for borders and titles
+  - Independent color overrides for title and description text
+  - Responsive image container with consistent styling
+  - Unique ID generation for proper accessibility
+
+- **Checkbox Component**: Boolean selection with full customization
+  - 16 props: `checked`, `onChange`, `label`, `color`, `labelColor`, `size`, `disabled`, `required`, `helperText`, `errorMessage`, `name`, `id`, `className`, `style`
+  - 3 sizes: small, medium (default), large
+  - Custom SVG checkmark with adaptive coloring
+  - Helper text and error message support
+  - Full ARIA attributes and keyboard support
+
+- **Dialog Component**: Modal dialogs with icons and flexible buttons
+  - 13 props: `open`, `onClose`, `title`, `description`, `icon`, `iconBackground`, `primaryButton`, `secondaryButton`, `color`, `borderColor`, `titleColor`, `descriptionColor`, `labelForScreenReaders`, `className`, `style`
+  - Optional icon with two display modes (with/without background)
+  - Flexible button system (both optional)
+  - Per-button color overrides
+  - Focus trap with Tab/Shift+Tab wrapping
+  - Body scroll lock and backdrop blur
+  - Focus restoration on close
+  - `role="dialog"` with full ARIA implementation
+
+- **Icon Library**: 30 accessible SVG icons
+  - Icons: ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Bell, Calendar, Cancel, Chart, Check, Clock, Cloud, Cog, Document, Download, Eye, Fire, Heart, Home, Lightning, Lock, LockOpen, Mail, Menu, Pencil, Plus, Refresh, Search, Star, Trash, User
+  - Consistent 12px default size (customizable via `className`)
+  - Accessibility props: `title`, `hideFromScreenReaders`
+  - Automatic `role="img"` with `aria-label` when titled
+  - Individual component files for optimal tree-shaking
+
+- **Input Component**: Text inputs with validation and error handling
+  - 15 props: `type`, `value`, `onChange`, `label`, `labelColor`, `helperText`, `helperTextColor`, `errorMessage`, `placeholder`, `disabled`, `required`, `color`, `size`, `name`, `id`, `className`, `style`
+  - Multiple input types: text, email, password, number, tel, url, search, date, time
+  - 3 sizes: small, medium (default), large
+  - Helper text and error message support with ARIA associations
+  - Full keyboard and form integration
+
+- **Loading Component**: Animated spinners for loading states
+  - 8 props: `spinnerColor`, `backgroundColor`, `textColor`, `size`, `text`, `withBackground`, `labelForScreenReaders`, `className`, `style`
+  - 3 sizes: small (32px), medium (48px), large (64px)
+  - Optional solid background container
+  - Optional loading text with customizable color
+  - `role="status"` with `aria-live="polite"` for announcements
+  - Smart `aria-label` handling with screen-reader-only fallbacks
+
+- **RadioGroup Component**: Single-selection radio groups
+  - 17 props: `options`, `value`, `onChange`, `label`, `helperText`, `helperTextColor`, `errorMessage`, `color`, `labelTextColor`, `optionLabelColor`, `size`, `disabled`, `required`, `name`, `id`, `className`, `style`
+  - `RadioOption` interface: `label`, `value`, optional `disabled`, optional `helperText`
+  - 3 sizes: small, medium (default), large
+  - Independent color controls for group label, option labels, and helper text
+  - Per-option helper text with proper ARIA associations
   - Circular radio buttons with white inner dot when selected
-  - Per-option helper text support with proper ARIA associations
-  - Disabled state support for entire group or individual options
-  - Natural vertical layout (users can override with `className` for horizontal if needed)
-  - Enhanced visual hierarchy with larger, semibold group label and increased spacing
-  - Complete accessibility implementation with WCAG AA compliance:
-    - Semantic HTML with `<fieldset>` and `<legend>` for proper form grouping
-    - `role="radiogroup"` for explicit grouping with screen readers
-    - `aria-labelledby` linking group to legend, `aria-required`, `aria-invalid`, `aria-errormessage`, `aria-describedby` on radiogroup
-    - Individual radio buttons have `aria-checked`, `aria-disabled`, and `aria-describedby` for per-option helper text
-    - Native `<input type="radio">` elements with `.sr-only` class for screen reader accessibility
-    - Proper `<label>` elements with `htmlFor` associations
-    - `aria-hidden="true"` on decorative visual radio button elements
-    - `aria-label="required"` on asterisk for required field indication
-    - Full native keyboard navigation (Tab, Space/Enter to select, Arrow keys within group)
-    - `focus-visible` indicators for keyboard-only focus rings
-    - Error announcements with `role="alert"` and `aria-live="polite"`
-    - Unique ID generation using React's `useId()` hook to prevent collisions
-  - Complete Storybook documentation with 26 comprehensive stories demonstrating all features, color variants, sizes, form integration, controlled patterns, and custom color overrides
+  - Semantic `<fieldset>` and `<legend>` structure
+  - `role="radiogroup"` with comprehensive ARIA attributes
+  - Native keyboard navigation (Tab, Space/Enter, Arrow keys)
+  - 26 Storybook stories
 
-- **Select Component**: New custom dropdown select component with comprehensive accessibility and customization:
-  - 17 configurable props including `options`, `value`, `onChange`, `label`, `helperText`, `errorMessage`, `color`, `labelTextColor`, `optionTextColor`, `helperTextColor`, `size`, `placeholder`, `disabled`, `required`, `name`, `id`, `onFocus`, `onBlur`, `className`, `style`
-  - Custom dropdown implementation using WAI-ARIA combobox pattern (button + listbox) for full styling control
-  - `SelectOption` interface with `label`, `value`, and optional `disabled` properties
-  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for select border and text
-  - Independent color control: label, options, and helper text colors can be customized separately via optional override props
-  - Label text defaults to primary color (600-shade) with `labelTextColor` prop for customization
-  - Option text defaults to primary color (500-shade) with `optionTextColor` prop for customization
-  - Helper text defaults to gray with `helperTextColor` prop for customization
-  - 3 size options: small, medium (default), large affecting padding and text size
-  - Custom-styled options with primary color text and hover backgrounds
-  - Disabled option support with visual styling and keyboard skip behavior
-  - Animated chevron icon with rotation on open/close
-  - Hidden input element for form submission with `name` attribute
-  - Complete accessibility implementation with WCAG AA compliance:
-    - WAI-ARIA combobox pattern with `role="combobox"` on trigger button and `role="listbox"` on dropdown
-    - `role="option"` on all options with unique IDs for `aria-activedescendant` tracking
-    - `aria-expanded`, `aria-haspopup="listbox"`, `aria-controls`, `aria-activedescendant` for screen reader context
-    - `aria-labelledby` for labeled selects, `aria-label` fallback for unlabeled selects
-    - `aria-required`, `aria-disabled`, `aria-invalid`, `aria-errormessage`, `aria-describedby` for form states
-    - `aria-selected` on options for current value indication
-    - Full keyboard navigation: Enter/Space to toggle/select, ArrowDown/Up to navigate (skipping disabled), Home/End for first/last, Escape to close, Tab to close and continue
-    - Type-ahead search: press characters to jump to matching options with wraparound support
-    - Intelligent focus management: auto-scroll highlighted option into view, return focus to trigger after selection
-    - Click outside to close with proper focus return
-    - Error announcements with `role="alert"` and `aria-live="polite"`
-    - Keyboard-only focus indicators using `focus-visible` for better UX
-  - `onChange` callback receives value string directly (not event object) for simplified state management
-  - `onFocus` and `onBlur` callbacks for external focus tracking
-  - Complete Storybook documentation with 26 comprehensive stories demonstrating all features, color variants, sizes, form integration, controlled patterns, and custom color overrides
+- **Select Component**: Custom dropdown with full styling control
+  - 17 props: `options`, `value`, `onChange`, `label`, `helperText`, `errorMessage`, `color`, `labelTextColor`, `optionTextColor`, `helperTextColor`, `size`, `placeholder`, `disabled`, `required`, `name`, `id`, `onFocus`, `onBlur`, `className`, `style`
+  - `SelectOption` interface: `label`, `value`, optional `disabled`
+  - 3 sizes: small, medium (default), large
+  - WAI-ARIA combobox pattern (button + listbox)
+  - Independent color controls for labels, options, and helper text
+  - Animated chevron icon with rotation
+  - Type-ahead search with wraparound
+  - Disabled option support with skip behavior
+  - Full keyboard navigation (Enter/Space, Arrows, Home/End, Escape, Tab)
+  - Intelligent focus management with auto-scroll
+  - Hidden input for form submission
+  - 26 Storybook stories
 
-- **Dialog Component**: New modal dialog component with comprehensive accessibility and customization:
-  - 13 configurable props including `open`, `onClose`, `title`, `description`, `icon`, `iconBackground`, `primaryButton`, `secondaryButton`, `color`, `borderColor`, `titleColor`, `descriptionColor`, `labelForScreenReaders`, `className`, `style`
-  - 7 rainbow color variants (red, orange, yellow, green, blue, indigo, violet) for dialog border, title, description, icon, and button colors
-  - Independent color control: border, title, description, and icon colors can be customized separately for maximum flexibility
-  - Optional icon support with two display modes:
-    - With background: Icon displayed in rounded colored circle matching primary button color with white icon color
-    - Without background: Icon displayed in primary color without background
-  - Flexible button system: both primary and secondary buttons are optional, with backdrop click and Escape key as fallback close mechanisms
-  - Per-button color override: primary buttons can specify custom colors independent of dialog color
-  - Secondary buttons use gray styling for visual hierarchy
-  - Complete accessibility implementation with WCAG AA compliance:
-    - `role="dialog"` with `aria-modal="true"` for semantic dialog structure
-    - `aria-labelledby` and `aria-describedby` relationships for proper screen reader announcements
-    - `aria-label` support via `labelForScreenReaders` prop for dialogs with emoji or icon-only titles
-    - Full keyboard navigation: Escape key to close, Tab/Shift+Tab focus trap with wrapping
-    - Intelligent focus management: automatically focuses first interactive element (buttons, links, inputs) or dialog container on open
-    - Focus restoration: returns focus to previously active element when dialog closes
-    - Body scroll lock: prevents background scrolling while dialog is open
-    - Backdrop click to close: clicking outside dialog triggers `onClose` callback
-    - Keyboard-only focus indicators using `focus-visible` for better UX
-  - Responsive design with mobile-friendly padding and max-width constraints
-  - Semi-transparent backdrop with blur effect for visual depth
-  - Complete Storybook documentation with 3 comprehensive showcase stories demonstrating all color variants with icons (with background, without background, and no icons)
+- **Tabs Component**: Tabbed interfaces with keyboard navigation
+  - 8 props: `tabs`, `color`, `defaultTab`, `activeTab`, `onTabChange`, `solid`, `className`, `style`
+  - Two styling modes: tertiary (default, border + text) and solid (background + white text)
+  - Per-tab color override support for mixed colors
+  - Controlled and uncontrolled patterns
+  - Full keyboard navigation (ArrowLeft/Right with wrapping, Home, End)
+  - Semantic ARIA roles: `tablist`, `tab`, `tabpanel`
+  - `aria-selected`, `aria-controls`, `aria-labelledby` relationships
+  - Focus management with `tabIndex` and `focus-visible` styling
+  - 13 Storybook stories
 
-## [0.1.0-alpha.9] - 2025-11-29
+### Changed
+
+- **Component Standardization**: All components now follow consistent patterns:
+  - Centralized `RainbowColor` type from `types.ts`
+  - Constants moved outside components with UPPERCASE_NAMING
+  - Consistent `useId()` pattern with `generatedId` variable
+  - All components have `displayName` property
+  - Standardized prop naming: `labelForScreenReaders` (not `ariaLabel`)
+  - Alphabetically ordered props for consistency
+
+- **Global Styles**: Added `.sr-only` utility class for screen-reader-only content across all components
+
+### Notes
+
+This v1.0.0 release establishes the stable API for @heeler/ui. Going forward, all changes will follow semantic versioning:
+
+- **Patch** (1.0.x): Bug fixes and minor improvements
+- **Minor** (1.x.0): New features and components (backward compatible)
+- **Major** (x.0.0): Breaking changes to existing APIs
+
+All 10 components are production-ready with comprehensive documentation, full accessibility, and extensive test coverage via Storybook.
 
 ### Added
 
