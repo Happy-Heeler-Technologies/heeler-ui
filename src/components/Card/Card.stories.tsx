@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Card } from "./Card";
+import { Button } from "../Button/Button";
+import { Badge } from "../Badge/Badge";
 
-const meta = {
+const meta: Meta<typeof Card> = {
   title: "Components/Card",
   component: Card,
   parameters: {
@@ -9,232 +11,212 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
-    className: {
-      control: "text",
-      description: "Custom CSS classes for the card container.",
+    layout: {
+      control: "select",
+      options: ["vertical", "horizontal"],
     },
-    color: {
-      control: {
-        type: "select",
-        options: [
-          "red",
-          "orange",
-          "yellow",
-          "green",
-          "blue",
-          "indigo",
-          "violet",
-        ],
-      },
-      description:
-        "Rainbow color for border and title. If not set, uses default styling.",
+    elevation: {
+      control: "select",
+      options: ["flat", "subtle", "elevated"],
     },
-    description: {
-      control: "text",
-      description: "Description text displayed below the title.",
+    imageAspectRatio: {
+      control: "select",
+      options: ["square", "video", "wide", "auto"],
     },
-    descriptionColorOverride: {
-      control: "text",
-      description:
-        "Optional override for the description text color (Tailwind class or CSS string).",
+    imagePosition: {
+      control: "select",
+      options: ["left", "right"],
     },
-    style: {
-      control: "object",
-      description: "Inline styles for the card container.",
-    },
-    title: {
-      control: "text",
-      description: "Title text displayed prominently in the card.",
-    },
-    titleColorOverride: {
-      control: "text",
-      description:
-        "Optional override for the title text color (Tailwind class or CSS string).",
-    },
+    image: { control: false },
+    header: { control: false },
+    children: { control: false },
+    footer: { control: false },
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Card>;
+
+const sampleImage = (
+  <img
+    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+    alt="Mountain landscape"
+  />
+);
 
 export const Default: Story = {
   args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
-        alt="Happy Heeler Card"
-        className="w-full h-full object-cover"
-      />
+    image: sampleImage,
+    header: <h3 className="text-lg font-semibold text-gray-900">Card Title</h3>,
+    children: (
+      <p className="text-gray-600 text-sm">
+        This is a flexible card component with composable slots for header,
+        body, and footer content.
+      </p>
     ),
-    title: "Happy Heeler Card",
-    description:
-      "This is a simple card component following Heeler UI conventions.",
+    className: "w-80",
   },
 };
 
-export const TitleColorOverride: Story = {
+export const WithFooter: Story = {
   args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
-        alt="Custom Title Color"
-        className="w-full h-full object-cover"
-      />
+    image: sampleImage,
+    header: (
+      <h3 className="text-lg font-semibold text-gray-900">Project Update</h3>
     ),
-    title: "Custom Title Color",
-    description: "This card uses a custom title color.",
-    color: "yellow",
-    titleColorOverride: "text-pink-600",
+    children: (
+      <p className="text-gray-600 text-sm">
+        The new design system is ready for review. Check out the latest
+        components.
+      </p>
+    ),
+    footer: (
+      <div className="flex gap-2">
+        <Button size="small" text="View" backgroundColor="bg-blue-600" />
+        <Button
+          size="small"
+          text="Dismiss"
+          variant="outline"
+          borderColor="border-gray-300"
+        />
+      </div>
+    ),
+    className: "w-80",
   },
 };
 
-export const DescriptionColorOverride: Story = {
-  args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"
-        alt="Custom Description Color"
-        className="w-full h-full object-cover"
+export const Elevations: Story = {
+  render: () => (
+    <div className="flex gap-6">
+      <Card
+        elevation="flat"
+        header={<h3 className="font-semibold text-gray-900">Flat</h3>}
+        children={
+          <p className="text-gray-600 text-sm">No shadow, border only</p>
+        }
+        className="w-48"
       />
+      <Card
+        elevation="subtle"
+        header={<h3 className="font-semibold text-gray-900">Subtle</h3>}
+        children={<p className="text-gray-600 text-sm">Light shadow</p>}
+        className="w-48"
+      />
+      <Card
+        elevation="elevated"
+        header={<h3 className="font-semibold text-gray-900">Elevated</h3>}
+        children={<p className="text-gray-600 text-sm">Prominent shadow</p>}
+        className="w-48"
+      />
+    </div>
+  ),
+};
+
+export const Horizontal: Story = {
+  args: {
+    layout: "horizontal",
+    image: sampleImage,
+    header: (
+      <h3 className="text-lg font-semibold text-gray-900">Horizontal Layout</h3>
     ),
-    title: "Custom Description Color",
-    description: "This card uses a custom description color.",
-    color: "yellow",
-    descriptionColorOverride: "text-green-600",
+    children: (
+      <p className="text-gray-600 text-sm">
+        Image positioned beside the content for a different visual treatment.
+      </p>
+    ),
+    className: "w-[480px]",
   },
 };
 
-export const Red: Story = {
+export const HorizontalImageRight: Story = {
   args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
-        alt="Red Card"
-        className="w-full h-full object-cover"
-      />
+    layout: "horizontal",
+    imagePosition: "right",
+    image: sampleImage,
+    header: (
+      <h3 className="text-lg font-semibold text-gray-900">Image Right</h3>
     ),
-    title: "Red Card",
-    description: "Card with red border and title.",
-    color: "red",
+    children: (
+      <p className="text-gray-600 text-sm">
+        The image can be positioned on either side of the content.
+      </p>
+    ),
+    className: "w-[480px]",
   },
 };
 
-export const Orange: Story = {
-  args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"
-        alt="Orange Card"
-        className="w-full h-full object-cover"
+export const AspectRatios: Story = {
+  render: () => (
+    <div className="flex gap-6">
+      <Card
+        image={sampleImage}
+        imageAspectRatio="square"
+        header={<h3 className="font-semibold text-gray-900">Square</h3>}
+        className="w-48"
       />
+      <Card
+        image={sampleImage}
+        imageAspectRatio="video"
+        header={<h3 className="font-semibold text-gray-900">Video (16:9)</h3>}
+        className="w-48"
+      />
+      <Card
+        image={sampleImage}
+        imageAspectRatio="wide"
+        header={<h3 className="font-semibold text-gray-900">Wide (21:9)</h3>}
+        className="w-48"
+      />
+    </div>
+  ),
+};
+
+export const Interactive: Story = {
+  args: {
+    interactive: true,
+    image: sampleImage,
+    header: (
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-gray-900">Clickable Card</h3>
+        <Badge size="small" text="New" backgroundColor="bg-blue-600" />
+      </div>
     ),
-    title: "Orange Card",
-    description: "Card with orange border and title.",
-    color: "orange",
+    children: (
+      <p className="text-gray-600 text-sm">
+        This card is interactive. Click it or focus with keyboard to see states.
+      </p>
+    ),
+    onClick: () => alert("Card clicked!"),
+    className: "w-80",
   },
 };
 
-export const Yellow: Story = {
+export const NoImage: Story = {
   args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
-        alt="Yellow Card"
-        className="w-full h-full object-cover"
-      />
+    header: (
+      <h3 className="text-lg font-semibold text-gray-900">Text Only Card</h3>
     ),
-    title: "Yellow Card",
-    description: "Card with yellow border and title.",
-    color: "yellow",
+    children: (
+      <p className="text-gray-600 text-sm">
+        Cards work perfectly without images. Great for text-heavy content or
+        simple info panels.
+      </p>
+    ),
+    footer: <span className="text-xs text-gray-400">Updated 2 hours ago</span>,
+    className: "w-80",
   },
 };
 
-export const Green: Story = {
+export const CustomColors: Story = {
   args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
-        alt="Green Card"
-        className="w-full h-full object-cover"
-      />
+    backgroundColor: "bg-gray-900",
+    elevation: "elevated",
+    image: sampleImage,
+    header: <h3 className="text-lg font-semibold text-white">Dark Card</h3>,
+    children: (
+      <p className="text-gray-300 text-sm">
+        Custom background color with matching text.
+      </p>
     ),
-    title: "Green Card",
-    description: "Card with green border and title.",
-    color: "green",
-  },
-};
-
-export const Blue: Story = {
-  args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
-        alt="Blue Card"
-        className="w-full h-full object-cover"
-      />
-    ),
-    title: "Blue Card",
-    description: "Card with blue border and title.",
-    color: "blue",
-  },
-};
-
-export const Indigo: Story = {
-  args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"
-        alt="Indigo Card"
-        className="w-full h-full object-cover"
-      />
-    ),
-    title: "Indigo Card",
-    description: "Card with indigo border and title.",
-    color: "indigo",
-  },
-};
-
-export const Violet: Story = {
-  args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
-        alt="Violet Card"
-        className="w-full h-full object-cover"
-      />
-    ),
-    title: "Violet Card",
-    description: "Card with violet border and title.",
-    color: "violet",
-  },
-};
-
-export const CustomClass: Story = {
-  args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"
-        alt="Custom Styled Card"
-        className="w-full h-full object-cover"
-      />
-    ),
-    title: "Custom Styled Card",
-    description: "This card uses a custom background color.",
-    className: "bg-blue-50",
-  },
-};
-
-export const CustomStyle: Story = {
-  args: {
-    image: (
-      <img
-        src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
-        alt="Inline Styled Card"
-        className="w-full h-full object-cover"
-      />
-    ),
-    title: "Inline Styled Card",
-    description: "This card uses inline styles for a border.",
-    style: { border: "2px solid #4F46E5" },
+    className: "w-80",
   },
 };
