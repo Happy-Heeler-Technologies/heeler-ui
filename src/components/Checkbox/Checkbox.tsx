@@ -1,283 +1,317 @@
-import { ChangeEvent, CSSProperties, FC, FocusEvent, useId } from "react";
-import type { RainbowColor } from "../../types";
+"use client";
 
-const SIZE_CLASSES = {
-  sm: "h-4 w-4",
-  md: "h-5 w-5",
-  lg: "h-6 w-6",
-} as const;
+import {
+  forwardRef,
+  useEffect,
+  useId,
+  useRef,
+  type ChangeEvent,
+  type CSSProperties,
+  type FocusEvent,
+} from "react";
 
-const LABEL_SIZE_CLASSES = {
-  sm: "text-sm",
-  md: "text-base",
-  lg: "text-lg",
-} as const;
-
-// Rainbow color classes for checked state (background and border)
-const COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "bg-red-600 border-red-600",
-  orange: "bg-orange-600 border-orange-600",
-  yellow: "bg-yellow-500 border-yellow-500",
-  green: "bg-green-600 border-green-600",
-  blue: "bg-blue-600 border-blue-600",
-  indigo: "bg-indigo-600 border-indigo-600",
-  violet: "bg-violet-600 border-violet-600",
-};
-
-const FOCUS_RING_CLASSES: Record<RainbowColor, string> = {
-  red: "focus-visible:ring-red-500",
-  orange: "focus-visible:ring-orange-500",
-  yellow: "focus-visible:ring-yellow-500",
-  green: "focus-visible:ring-green-500",
-  blue: "focus-visible:ring-blue-500",
-  indigo: "focus-visible:ring-indigo-500",
-  violet: "focus-visible:ring-violet-500",
-};
-
-const CHECKMARK_COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "stroke-red-600",
-  orange: "stroke-orange-600",
-  yellow: "stroke-yellow-600",
-  green: "stroke-green-600",
-  blue: "stroke-blue-600",
-  indigo: "stroke-indigo-600",
-  violet: "stroke-violet-600",
-};
-
-const LABEL_COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "text-red-600",
-  orange: "text-orange-600",
-  yellow: "text-yellow-600",
-  green: "text-green-600",
-  blue: "text-blue-600",
-  indigo: "text-indigo-600",
-  violet: "text-violet-600",
-};
+export type CheckboxSize = "small" | "standard" | "large";
 
 export interface CheckboxProps {
   /**
    * Whether the checkbox is checked
+   * @default false
    */
   checked?: boolean;
-
   /**
-   * Additional CSS classes for the container div
+   * Tailwind background/border color class for checked state (e.g., "bg-blue-600")
+   * The border color is automatically derived from the background color.
+   * @default "bg-blue-600"
+   */
+  checkedColor?: string;
+  /**
+   * Additional CSS classes for the container
    */
   className?: string;
-
-  /**
-   * Rainbow color for the checked state
-   * @default 'blue'
-   */
-  color?: RainbowColor;
-
   /**
    * Whether the checkbox is disabled
+   * @default false
    */
   disabled?: boolean;
-
   /**
-   * Error message to display below the checkbox
+   * Error message displayed below the checkbox
    */
   errorMessage?: string;
-
   /**
-   * Helper text to display below the checkbox
+   * Helper text displayed below the checkbox
    */
   helperText?: string;
-
   /**
-   * Unique identifier for the checkbox element
+   * Unique identifier for the checkbox input
    */
   id?: string;
-
+  /**
+   * Whether the checkbox is in an indeterminate state (partially checked)
+   * @default false
+   */
+  indeterminate?: boolean;
   /**
    * Label text for the checkbox
    */
   label?: string;
-
   /**
-   * Label text color (defaults to color prop if not specified)
+   * Tailwind text color class for the label (e.g., "text-gray-700")
+   * @default "text-gray-700"
    */
-  labelColor?: RainbowColor;
-
+  labelColor?: string;
   /**
-   * Name attribute for the checkbox (useful for forms)
+   * Name attribute for form submission
    */
   name?: string;
-
   /**
    * Blur event handler
    */
   onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-
   /**
-   * Change handler for controlled component
+   * Change handler called when checkbox state changes
    */
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-
   /**
    * Focus event handler
    */
   onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-
   /**
    * Whether the checkbox is required
+   * @default false
    */
   required?: boolean;
-
   /**
    * Size of the checkbox
-   * @default 'md'
+   * @default "standard"
    */
-  size?: "sm" | "md" | "lg";
-
+  size?: CheckboxSize;
   /**
-   * Inline styles for the checkbox element
+   * Inline styles for the checkbox input
    */
   style?: CSSProperties;
+  /**
+   * Value attribute for form submission
+   */
+  value?: string;
 }
 
-export const Checkbox: FC<CheckboxProps> = ({
-  checked = false,
-  className = "",
-  color = "blue",
-  disabled = false,
-  errorMessage,
-  helperText,
-  id,
-  label,
-  labelColor,
-  name,
-  required = false,
-  size = "md",
-  style,
-  onBlur,
-  onChange,
-  onFocus,
-}) => {
-  // Generate a unique ID if not provided
-  const generatedId = useId();
-  const checkboxId = id || `checkbox-${generatedId}`;
-  const helperId = `${checkboxId}-helper`;
-  const errorId = `${checkboxId}-error`;
+const SIZE_STYLES: Record<
+  CheckboxSize,
+  { box: string; icon: number; label: string; offset: string }
+> = {
+  small: {
+    box: "h-4 w-4",
+    icon: 10,
+    label: "text-sm",
+    offset: "ml-5",
+  },
+  standard: {
+    box: "h-5 w-5",
+    icon: 12,
+    label: "text-base",
+    offset: "ml-6",
+  },
+  large: {
+    box: "h-6 w-6",
+    icon: 14,
+    label: "text-lg",
+    offset: "ml-7",
+  },
+};
 
-  const hasError = Boolean(errorMessage);
+function deriveBorderColor(bgColor: string): string {
+  return bgColor.replace("bg-", "border-");
+}
 
-  // Determine label color (use labelColor if specified, otherwise use color, otherwise default gray)
-  const selectedLabelColor = labelColor
-    ? LABEL_COLOR_CLASSES[labelColor]
-    : color
-      ? LABEL_COLOR_CLASSES[color]
-      : "text-gray-700";
+function deriveRingColor(bgColor: string): string {
+  const color = bgColor.replace("bg-", "").replace(/-\d+$/, "");
+  return `focus-visible:ring-${color}-500`;
+}
 
-  // Determine checkmark color (use labelColor if specified, otherwise white)
-  const selectedCheckmarkColor = labelColor
-    ? CHECKMARK_COLOR_CLASSES[labelColor]
-    : "stroke-white";
-
-  // Build aria-describedby with both helper and error IDs
-  const ariaDescribedBy =
-    [helperText && !hasError ? helperId : null, hasError ? errorId : null]
-      .filter(Boolean)
-      .join(" ") || undefined;
-
+function CheckIcon({ size }: { size: number }) {
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
-      <div className="flex items-start gap-2">
-        <div className="relative inline-flex items-center">
-          <input
-            type="checkbox"
-            id={checkboxId}
-            name={name}
-            checked={checked}
-            onChange={onChange}
-            onBlur={onBlur}
-            onFocus={onFocus}
-            disabled={disabled}
-            required={required}
-            aria-checked={checked}
-            aria-required={required}
-            aria-disabled={disabled}
-            aria-invalid={hasError}
-            aria-errormessage={hasError ? errorId : undefined}
-            aria-describedby={ariaDescribedBy}
-            className="peer sr-only"
-            style={style}
-          />
-          <div
-            className={`${SIZE_CLASSES[size]} rounded border-2 transition-all duration-200 flex items-center justify-center ${
-              disabled
-                ? "opacity-50 cursor-not-allowed pointer-events-none"
-                : "cursor-pointer"
-            } ${
-              hasError
-                ? "border-red-500 bg-red-50"
-                : checked
-                  ? COLOR_CLASSES[color]
-                  : "border-gray-300 bg-white hover:border-gray-400"
-            } peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 ${
-              hasError
-                ? "focus-visible:ring-red-500"
-                : FOCUS_RING_CLASSES[color]
-            }`}
-            aria-hidden="true"
-          >
-            {checked && (
-              <svg
-                className={`${
-                  size === "sm"
-                    ? "w-3 h-3"
-                    : size === "lg"
-                      ? "w-4 h-4"
-                      : "w-3.5 h-3.5"
-                } ${selectedCheckmarkColor}`}
-                fill="none"
-                strokeWidth="3"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            )}
-          </div>
-        </div>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
 
-        {label && (
-          <label
-            htmlFor={checkboxId}
-            className={`${LABEL_SIZE_CLASSES[size]} font-medium ${selectedLabelColor} ${
-              disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-            }`}
+function IndeterminateIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
+  function Checkbox(
+    {
+      checked = false,
+      checkedColor = "bg-blue-600",
+      className,
+      disabled = false,
+      errorMessage,
+      helperText,
+      id,
+      indeterminate = false,
+      label,
+      labelColor = "text-gray-700",
+      name,
+      onBlur,
+      onChange,
+      onFocus,
+      required = false,
+      size = "standard",
+      style,
+      value,
+    },
+    ref,
+  ) {
+    const internalRef = useRef<HTMLInputElement>(null);
+    const inputRef = (ref as React.RefObject<HTMLInputElement>) || internalRef;
+
+    const generatedId = useId();
+    const checkboxId = id ?? `checkbox-${generatedId}`;
+    const helperId = `${checkboxId}-helper`;
+    const errorId = `${checkboxId}-error`;
+
+    const {
+      box: boxSize,
+      icon: iconSize,
+      label: labelSize,
+      offset,
+    } = SIZE_STYLES[size];
+    const hasError = Boolean(errorMessage);
+    const isCheckedOrIndeterminate = checked || indeterminate;
+
+    const borderColor = deriveBorderColor(checkedColor);
+    const ringColor = deriveRingColor(checkedColor);
+
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.indeterminate = indeterminate;
+      }
+    }, [indeterminate, inputRef]);
+
+    const ariaDescribedBy =
+      [helperText && !hasError ? helperId : null, hasError ? errorId : null]
+        .filter(Boolean)
+        .join(" ") || undefined;
+
+    return (
+      <div
+        className={["flex flex-col gap-1", className].filter(Boolean).join(" ")}
+      >
+        <label
+          className={[
+            "inline-flex items-start gap-2",
+            disabled ? "cursor-not-allowed" : "cursor-pointer",
+          ].join(" ")}
+        >
+          <span className="relative inline-flex items-center justify-center flex-shrink-0">
+            <input
+              ref={inputRef}
+              type="checkbox"
+              id={checkboxId}
+              name={name}
+              value={value}
+              checked={checked}
+              onChange={onChange}
+              onBlur={onBlur}
+              onFocus={onFocus}
+              disabled={disabled}
+              required={required}
+              aria-checked={indeterminate ? "mixed" : checked}
+              aria-invalid={hasError}
+              aria-describedby={ariaDescribedBy}
+              className="peer sr-only"
+              style={style}
+            />
+            <span
+              className={[
+                boxSize,
+                "rounded border-2 transition-colors flex items-center justify-center text-white",
+                "peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2",
+                ringColor,
+                disabled ? "opacity-50 cursor-not-allowed" : "",
+                hasError
+                  ? "border-red-500 bg-red-50"
+                  : isCheckedOrIndeterminate
+                    ? `${checkedColor} ${borderColor}`
+                    : "border-gray-300 bg-white hover:border-gray-400",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              aria-hidden="true"
+            >
+              {isCheckedOrIndeterminate &&
+                (indeterminate ? (
+                  <IndeterminateIcon size={iconSize} />
+                ) : (
+                  <CheckIcon size={iconSize} />
+                ))}
+            </span>
+          </span>
+
+          {label && (
+            <span
+              className={[
+                labelSize,
+                "font-medium select-none pt-px",
+                labelColor,
+                disabled ? "opacity-50" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              {label}
+              {required && (
+                <span className="text-red-500 ml-0.5" aria-hidden="true">
+                  *
+                </span>
+              )}
+            </span>
+          )}
+        </label>
+
+        {hasError && (
+          <p
+            id={errorId}
+            className={`text-sm text-red-600 ${offset}`}
+            role="alert"
           >
-            {label}
-            {required && (
-              <span className="text-red-500 ml-1" aria-hidden="true">
-                *
-              </span>
-            )}
-          </label>
+            {errorMessage}
+          </p>
+        )}
+
+        {!hasError && helperText && (
+          <p id={helperId} className={`text-sm text-gray-500 ${offset}`}>
+            {helperText}
+          </p>
         )}
       </div>
-
-      {hasError && (
-        <p
-          id={errorId}
-          className="text-sm text-red-600 ml-6"
-          role="alert"
-          aria-live="polite"
-        >
-          {errorMessage}
-        </p>
-      )}
-
-      {!hasError && helperText && (
-        <p id={helperId} className="text-sm text-gray-500 ml-6">
-          {helperText}
-        </p>
-      )}
-    </div>
-  );
-};
+    );
+  },
+);
 
 Checkbox.displayName = "Checkbox";
