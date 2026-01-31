@@ -1,160 +1,210 @@
-import type { CSSProperties, MouseEvent, ReactNode } from "react";
-import type { RainbowColor } from "../../types";
+"use client";
 
-const COLOR_CLASSES: Record<
-  RainbowColor,
-  { primary: string; tertiary: string }
-> = {
-  red: {
-    primary: "bg-red-600 text-white hover:bg-red-700",
-    tertiary:
-      "bg-transparent border border-red-600 text-red-600 hover:bg-red-50",
-  },
-  orange: {
-    primary: "bg-orange-600 text-white hover:bg-orange-700",
-    tertiary:
-      "bg-transparent border border-orange-600 text-orange-600 hover:bg-orange-50",
-  },
-  yellow: {
-    primary: "bg-yellow-500 text-white hover:bg-yellow-600",
-    tertiary:
-      "bg-transparent border border-yellow-500 text-yellow-600 hover:bg-yellow-50",
-  },
-  green: {
-    primary: "bg-green-600 text-white hover:bg-green-700",
-    tertiary:
-      "bg-transparent border border-green-600 text-green-600 hover:bg-green-50",
-  },
-  blue: {
-    primary: "bg-blue-600 text-white hover:bg-blue-700",
-    tertiary:
-      "bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50",
-  },
-  indigo: {
-    primary: "bg-indigo-600 text-white hover:bg-indigo-700",
-    tertiary:
-      "bg-transparent border border-indigo-600 text-indigo-600 hover:bg-indigo-50",
-  },
-  violet: {
-    primary: "bg-violet-600 text-white hover:bg-violet-700",
-    tertiary:
-      "bg-transparent border border-violet-600 text-violet-600 hover:bg-violet-50",
-  },
-};
+import {
+  cloneElement,
+  isValidElement,
+  type CSSProperties,
+  type MouseEvent,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
-const SIZE_CLASSES = {
-  sm: "px-3 py-1.5 text-xs min-w-20",
-  md: "px-4 py-2 text-sm min-w-24",
-  lg: "px-6 py-3 text-base min-w-32",
-} as const;
+export type ButtonSize = "small" | "standard" | "large";
 
-const ICON_SIZE_CLASSES = {
-  sm: "h-3 w-3",
-  md: "h-4 w-4",
-  lg: "h-5 w-5",
-} as const;
+export type ButtonVariant = "filled" | "outline";
+
+export interface ButtonIconProps {
+  "aria-hidden"?: boolean;
+  width?: number;
+  height?: number;
+}
 
 export interface ButtonProps {
+  /**
+   * Tailwind background color class for filled variant (e.g., "bg-blue-600")
+   * For outline variant, this is ignored.
+   * @default "bg-gray-900"
+   */
+  backgroundColor?: string;
+  /**
+   * Tailwind border color class for outline variant (e.g., "border-blue-600")
+   * @default "border-gray-900"
+   */
+  borderColor?: string;
   /**
    * Additional CSS classes to apply to the button
    */
   className?: string;
-
-  /**
-   * Rainbow color scheme. Applies to primary and tertiary variants
-   * @default 'blue'
-   */
-  color?: RainbowColor;
-
   /**
    * Disables the button and prevents interaction
    */
   disabled?: boolean;
-
   /**
-   * Optional icon element to display (works with any icon library)
+   * Optional icon component to display at the end of the button text.
+   * Accepts any valid React element (e.g., Lucide icons, custom SVGs).
    */
-  icon?: ReactNode;
-
+  endIcon?: ReactElement;
   /**
-   * Position of the icon relative to the button text
-   * @default 'left'
+   * Tailwind hover background color class (e.g., "hover:bg-blue-700")
+   * For outline variant, defaults to a subtle hover effect.
    */
-  iconPosition?: "left" | "right";
-
+  hoverBackgroundColor?: string;
   /**
    * Shows a spinner and disables the button during loading states
    */
   loading?: boolean;
-
   /**
    * Click event handler
    */
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-
   /**
    * Whether the button has fully rounded (pill-shaped) corners
+   * @default false
    */
   rounded?: boolean;
-
   /**
-   * Size of the button
-   * @default 'lg'
+   * Size of the button affecting padding, font size, and icon dimensions
+   * @default "standard"
    */
-  size?: "sm" | "md" | "lg";
-
+  size?: ButtonSize;
+  /**
+   * Optional icon component to display at the start of the button text.
+   * Accepts any valid React element (e.g., Lucide icons, custom SVGs).
+   */
+  startIcon?: ReactElement;
   /**
    * Inline styles to apply to the button
    */
   style?: CSSProperties;
-
   /**
-   * The text content to display inside the button
+   * The content to display inside the button
    */
   text: ReactNode;
-
+  /**
+   * Tailwind text color class (e.g., "text-white", "text-gray-900")
+   * For outline variant, defaults to match borderColor.
+   * @default "text-white" for filled, inherits from borderColor for outline
+   */
+  textColor?: string;
   /**
    * HTML button type attribute
-   * @default 'button'
+   * @default "button"
    */
   type?: "button" | "submit" | "reset";
-
   /**
-   * The visual style variant of the button
-   * @default 'primary'
+   * Visual style variant of the button
+   * @default "filled"
    */
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: ButtonVariant;
+}
+
+const SIZE_STYLES: Record<ButtonSize, { container: string; iconSize: number }> =
+  {
+    small: {
+      container: "px-3 py-1.5 text-xs gap-1.5",
+      iconSize: 12,
+    },
+    standard: {
+      container: "px-4 py-2 text-sm gap-2",
+      iconSize: 16,
+    },
+    large: {
+      container: "px-6 py-3 text-base gap-2.5",
+      iconSize: 20,
+    },
+  };
+
+const SPINNER_SIZES: Record<ButtonSize, number> = {
+  small: 12,
+  standard: 16,
+  large: 20,
+};
+
+function Spinner({ size }: { size: number }) {
+  return (
+    <svg
+      className="animate-spin"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      />
+    </svg>
+  );
+}
+
+function deriveTextColorFromBorder(borderColor: string): string {
+  return borderColor.replace("border-", "text-");
 }
 
 export function Button({
+  backgroundColor = "bg-gray-900",
+  borderColor = "border-gray-900",
   className,
-  color = "blue",
-  disabled,
-  icon,
-  iconPosition = "left",
+  disabled = false,
+  endIcon,
+  hoverBackgroundColor,
   loading = false,
   onClick,
   rounded = false,
-  size = "lg",
+  size = "standard",
+  startIcon,
   style,
   text,
+  textColor,
   type = "button",
-  variant = "primary",
+  variant = "filled",
 }: ButtonProps) {
-  let variantClass = "";
+  const { container: sizeClasses, iconSize } = SIZE_STYLES[size];
+  const spinnerSize = SPINNER_SIZES[size];
 
-  if (variant === "secondary") {
-    variantClass = "bg-gray-200 text-gray-900 hover:bg-gray-300";
-  } else {
-    // Use preset rainbow color
-    variantClass = COLOR_CLASSES[color][variant];
-  }
+  const resolvedTextColor =
+    textColor ??
+    (variant === "outline"
+      ? deriveTextColorFromBorder(borderColor)
+      : "text-white");
+
+  const variantClasses =
+    variant === "filled"
+      ? [
+          backgroundColor,
+          resolvedTextColor,
+          hoverBackgroundColor ?? "hover:brightness-90",
+        ]
+      : [
+          "bg-transparent border",
+          borderColor,
+          resolvedTextColor,
+          hoverBackgroundColor ?? "hover:bg-gray-100",
+        ];
 
   const roundedClass = rounded ? "rounded-full" : "rounded-md";
 
-  // Accessibility classes
-  const a11yClasses =
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none";
+  const scaleIcon = (icon: ReactElement | undefined) =>
+    icon && isValidElement<ButtonIconProps>(icon)
+      ? cloneElement(icon, {
+          "aria-hidden": true,
+          width: iconSize,
+          height: iconSize,
+        })
+      : null;
+
+  const scaledStartIcon = scaleIcon(startIcon);
+  const scaledEndIcon = scaleIcon(endIcon);
 
   return (
     <button
@@ -164,50 +214,22 @@ export function Button({
       aria-disabled={disabled || loading}
       aria-busy={loading}
       style={style}
-      className={`inline-flex items-center justify-center font-medium ${variantClass} ${SIZE_CLASSES[size]} ${roundedClass} ${a11yClasses} ${
-        className ?? ""
-      }`}
+      className={[
+        "inline-flex items-center justify-center font-medium transition-all [&_svg]:fill-current",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500",
+        "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
+        sizeClasses,
+        ...variantClasses,
+        roundedClass,
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      {loading && (
-        <svg
-          className="animate-spin -ml-1 mr-2 h-4 w-4"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
-      )}
-      {!loading && icon && iconPosition === "left" && (
-        <span
-          className={`-ml-1 mr-2 ${ICON_SIZE_CLASSES[size]}`}
-          aria-hidden="true"
-        >
-          {icon}
-        </span>
-      )}
-      {text}
-      {!loading && icon && iconPosition === "right" && (
-        <span
-          className={`ml-2 -mr-1 ${ICON_SIZE_CLASSES[size]}`}
-          aria-hidden="true"
-        >
-          {icon}
-        </span>
-      )}
+      {loading && <Spinner size={spinnerSize} />}
+      {!loading && scaledStartIcon}
+      <span>{text}</span>
+      {!loading && scaledEndIcon}
     </button>
   );
 }
