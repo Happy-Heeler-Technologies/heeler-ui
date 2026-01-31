@@ -1,205 +1,271 @@
+"use client";
+
 import {
-  CSSProperties,
-  FC,
-  KeyboardEvent,
   useEffect,
   useId,
   useRef,
   useState,
+  type CSSProperties,
+  type KeyboardEvent,
 } from "react";
-import type { RainbowColor } from "../../types";
+
+export type SelectSize = "small" | "standard" | "large";
 
 export interface SelectOption {
-  /**
-   * Display label for the option
-   */
-  label: string;
-  /**
-   * Value of the option
-   */
-  value: string;
-  /**
-   * Whether the option is disabled
-   */
   disabled?: boolean;
+  label: string;
+  value: string;
 }
 
-const SIZE_CLASSES = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2.5 text-base",
-  lg: "px-5 py-3 text-lg",
-} as const;
-
-const OPTION_SIZE_CLASSES = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2.5 text-base",
-  lg: "px-5 py-3 text-lg",
-} as const;
-
-const COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "border-red-600 text-red-600 focus:border-red-600 focus:ring-red-600",
-  orange:
-    "border-orange-500 text-orange-500 focus:border-orange-500 focus:ring-orange-500",
-  yellow:
-    "border-yellow-500 text-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
-  green:
-    "border-green-600 text-green-600 focus:border-green-600 focus:ring-green-600",
-  blue: "border-blue-600 text-blue-600 focus:border-blue-600 focus:ring-blue-600",
-  indigo:
-    "border-indigo-600 text-indigo-600 focus:border-indigo-600 focus:ring-indigo-600",
-  violet:
-    "border-violet-600 text-violet-600 focus:border-violet-600 focus:ring-violet-600",
-};
-
-const LABEL_COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "text-red-600",
-  orange: "text-orange-500",
-  yellow: "text-yellow-500",
-  green: "text-green-600",
-  blue: "text-blue-600",
-  indigo: "text-indigo-600",
-  violet: "text-violet-600",
-};
-
-const HELPER_TEXT_COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "text-red-600",
-  orange: "text-orange-500",
-  yellow: "text-yellow-500",
-  green: "text-green-600",
-  blue: "text-blue-600",
-  indigo: "text-indigo-600",
-  violet: "text-violet-600",
-};
-
-const OPTION_COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "text-red-600 hover:bg-red-50",
-  orange: "text-orange-500 hover:bg-orange-50",
-  yellow: "text-yellow-500 hover:bg-yellow-50",
-  green: "text-green-600 hover:bg-green-50",
-  blue: "text-blue-600 hover:bg-blue-50",
-  indigo: "text-indigo-600 hover:bg-indigo-50",
-  violet: "text-violet-600 hover:bg-violet-50",
-};
-
-const OPTION_HIGHLIGHT_CLASSES: Record<RainbowColor, string> = {
-  red: "bg-red-50",
-  orange: "bg-orange-50",
-  yellow: "bg-yellow-50",
-  green: "bg-green-50",
-  blue: "bg-blue-50",
-  indigo: "bg-indigo-50",
-  violet: "bg-violet-50",
-};
-
 export interface SelectProps {
-  /**
-   * Additional CSS classes for the container div
-   */
   className?: string;
-
-  /**
-   * Rainbow color for focus ring, border, text, and options
-   * @default 'blue'
-   */
-  color?: RainbowColor;
-
-  /**
-   * Whether the select is disabled
-   */
+  color?: string;
   disabled?: boolean;
-
-  /**
-   * Error message to display below the select
-   */
   errorMessage?: string;
-
-  /**
-   * Helper text to display below the select (when no error)
-   */
   helperText?: string;
-
-  /**
-   * Override the helper text color independently
-   * If not specified, uses gray-500
-   */
-  helperTextColor?: RainbowColor;
-
-  /**
-   * Unique identifier for the select element
-   */
+  helperTextColor?: string;
   id?: string;
-
-  /**
-   * Label text for the select
-   */
   label?: string;
-
-  /**
-   * Override the label text color independently
-   * If not specified, uses the color prop
-   */
-  labelTextColor?: RainbowColor;
-
-  /**
-   * Name attribute for the select (useful for forms)
-   */
+  labelTextColor?: string;
   name?: string;
-
-  /**
-   * Blur event handler
-   */
   onBlur?: () => void;
-
-  /**
-   * Change handler for controlled component
-   */
   onChange?: (value: string) => void;
-
-  /**
-   * Focus event handler
-   */
   onFocus?: () => void;
-
-  /**
-   * Array of options to display in the select
-   */
   options: SelectOption[];
-
-  /**
-   * Override the option text color independently
-   * If not specified, uses the color prop
-   */
-  optionTextColor?: RainbowColor;
-
-  /**
-   * Placeholder text shown when no value is selected
-   */
+  optionTextColor?: string;
   placeholder?: string;
-
-  /**
-   * Whether the select is required
-   */
   required?: boolean;
-
-  /**
-   * Size of the select
-   * @default 'md'
-   */
-  size?: "sm" | "md" | "lg";
-
-  /**
-   * Inline styles for the select element
-   */
+  size?: SelectSize;
   style?: CSSProperties;
-
-  /**
-   * Select value (controlled component)
-   */
   value?: string;
 }
 
-export const Select: FC<SelectProps> = ({
-  className = "",
+const SIZE_STYLES: Record<
+  SelectSize,
+  { trigger: string; option: string; label: string; helper: string }
+> = {
+  small: {
+    trigger: "px-2.5 py-1.5 text-sm",
+    option: "px-2.5 py-1.5 text-sm",
+    label: "text-xs",
+    helper: "text-xs",
+  },
+  standard: {
+    trigger: "px-3 py-2 text-base",
+    option: "px-3 py-2 text-base",
+    label: "text-sm",
+    helper: "text-sm",
+  },
+  large: {
+    trigger: "px-4 py-3 text-lg",
+    option: "px-4 py-3 text-lg",
+    label: "text-base",
+    helper: "text-base",
+  },
+};
+
+const BORDER_CLASSES: Record<string, string> = {
+  red: "border-red-500",
+  orange: "border-orange-500",
+  amber: "border-amber-500",
+  yellow: "border-yellow-500",
+  lime: "border-lime-500",
+  green: "border-green-500",
+  emerald: "border-emerald-500",
+  teal: "border-teal-500",
+  cyan: "border-cyan-500",
+  sky: "border-sky-500",
+  blue: "border-blue-500",
+  indigo: "border-indigo-500",
+  violet: "border-violet-500",
+  purple: "border-purple-500",
+  fuchsia: "border-fuchsia-500",
+  pink: "border-pink-500",
+  rose: "border-rose-500",
+  gray: "border-gray-300",
+};
+
+const FOCUS_RING_CLASSES: Record<string, string> = {
+  red: "focus-visible:ring-red-500",
+  orange: "focus-visible:ring-orange-500",
+  amber: "focus-visible:ring-amber-500",
+  yellow: "focus-visible:ring-yellow-500",
+  lime: "focus-visible:ring-lime-500",
+  green: "focus-visible:ring-green-500",
+  emerald: "focus-visible:ring-emerald-500",
+  teal: "focus-visible:ring-teal-500",
+  cyan: "focus-visible:ring-cyan-500",
+  sky: "focus-visible:ring-sky-500",
+  blue: "focus-visible:ring-blue-500",
+  indigo: "focus-visible:ring-indigo-500",
+  violet: "focus-visible:ring-violet-500",
+  purple: "focus-visible:ring-purple-500",
+  fuchsia: "focus-visible:ring-fuchsia-500",
+  pink: "focus-visible:ring-pink-500",
+  rose: "focus-visible:ring-rose-500",
+  gray: "focus-visible:ring-gray-500",
+};
+
+const HIGHLIGHT_CLASSES: Record<string, string> = {
+  red: "bg-red-100 text-red-900",
+  orange: "bg-orange-100 text-orange-900",
+  amber: "bg-amber-100 text-amber-900",
+  yellow: "bg-yellow-100 text-yellow-900",
+  lime: "bg-lime-100 text-lime-900",
+  green: "bg-green-100 text-green-900",
+  emerald: "bg-emerald-100 text-emerald-900",
+  teal: "bg-teal-100 text-teal-900",
+  cyan: "bg-cyan-100 text-cyan-900",
+  sky: "bg-sky-100 text-sky-900",
+  blue: "bg-blue-100 text-blue-900",
+  indigo: "bg-indigo-100 text-indigo-900",
+  violet: "bg-violet-100 text-violet-900",
+  purple: "bg-purple-100 text-purple-900",
+  fuchsia: "bg-fuchsia-100 text-fuchsia-900",
+  pink: "bg-pink-100 text-pink-900",
+  rose: "bg-rose-100 text-rose-900",
+  gray: "bg-gray-100 text-gray-900",
+};
+
+const LABEL_TEXT_CLASSES: Record<string, string> = {
+  red: "text-red-700",
+  orange: "text-orange-700",
+  amber: "text-amber-700",
+  yellow: "text-yellow-700",
+  lime: "text-lime-700",
+  green: "text-green-700",
+  emerald: "text-emerald-700",
+  teal: "text-teal-700",
+  cyan: "text-cyan-700",
+  sky: "text-sky-700",
+  blue: "text-blue-700",
+  indigo: "text-indigo-700",
+  violet: "text-violet-700",
+  purple: "text-purple-700",
+  fuchsia: "text-fuchsia-700",
+  pink: "text-pink-700",
+  rose: "text-rose-700",
+  gray: "text-gray-700",
+};
+
+const HELPER_TEXT_CLASSES: Record<string, string> = {
+  red: "text-red-600",
+  orange: "text-orange-600",
+  amber: "text-amber-600",
+  yellow: "text-yellow-600",
+  lime: "text-lime-600",
+  green: "text-green-600",
+  emerald: "text-emerald-600",
+  teal: "text-teal-600",
+  cyan: "text-cyan-600",
+  sky: "text-sky-600",
+  blue: "text-blue-600",
+  indigo: "text-indigo-600",
+  violet: "text-violet-600",
+  purple: "text-purple-600",
+  fuchsia: "text-fuchsia-600",
+  pink: "text-pink-600",
+  rose: "text-rose-600",
+  gray: "text-gray-500",
+};
+
+const OPTION_TEXT_CLASSES: Record<string, string> = {
+  red: "text-red-700",
+  orange: "text-orange-700",
+  amber: "text-amber-700",
+  yellow: "text-yellow-700",
+  lime: "text-lime-700",
+  green: "text-green-700",
+  emerald: "text-emerald-700",
+  teal: "text-teal-700",
+  cyan: "text-cyan-700",
+  sky: "text-sky-700",
+  blue: "text-blue-700",
+  indigo: "text-indigo-700",
+  violet: "text-violet-700",
+  purple: "text-purple-700",
+  fuchsia: "text-fuchsia-700",
+  pink: "text-pink-700",
+  rose: "text-rose-700",
+  gray: "text-gray-700",
+};
+
+const CHEVRON_CLASSES: Record<string, string> = {
+  red: "text-red-500",
+  orange: "text-orange-500",
+  amber: "text-amber-500",
+  yellow: "text-yellow-500",
+  lime: "text-lime-500",
+  green: "text-green-500",
+  emerald: "text-emerald-500",
+  teal: "text-teal-500",
+  cyan: "text-cyan-500",
+  sky: "text-sky-500",
+  blue: "text-blue-500",
+  indigo: "text-indigo-500",
+  violet: "text-violet-500",
+  purple: "text-purple-500",
+  fuchsia: "text-fuchsia-500",
+  pink: "text-pink-500",
+  rose: "text-rose-500",
+  gray: "text-gray-400",
+};
+
+const DROPDOWN_BORDER_CLASSES: Record<string, string> = {
+  red: "border-red-300",
+  orange: "border-orange-300",
+  amber: "border-amber-300",
+  yellow: "border-yellow-300",
+  lime: "border-lime-300",
+  green: "border-green-300",
+  emerald: "border-emerald-300",
+  teal: "border-teal-300",
+  cyan: "border-cyan-300",
+  sky: "border-sky-300",
+  blue: "border-blue-300",
+  indigo: "border-indigo-300",
+  violet: "border-violet-300",
+  purple: "border-purple-300",
+  fuchsia: "border-fuchsia-300",
+  pink: "border-pink-300",
+  rose: "border-rose-300",
+  gray: "border-gray-200",
+};
+
+function deriveBorderClass(color: string): string {
+  return BORDER_CLASSES[color] || BORDER_CLASSES.blue;
+}
+
+function deriveFocusRingClass(color: string): string {
+  return FOCUS_RING_CLASSES[color] || FOCUS_RING_CLASSES.blue;
+}
+
+function deriveHighlightClass(color: string): string {
+  return HIGHLIGHT_CLASSES[color] || HIGHLIGHT_CLASSES.blue;
+}
+
+function deriveLabelTextClass(color: string): string {
+  return LABEL_TEXT_CLASSES[color] || LABEL_TEXT_CLASSES.blue;
+}
+
+function deriveHelperTextClass(color: string): string {
+  return HELPER_TEXT_CLASSES[color] || HELPER_TEXT_CLASSES.blue;
+}
+
+function deriveOptionTextClass(color: string): string {
+  return OPTION_TEXT_CLASSES[color] || OPTION_TEXT_CLASSES.gray;
+}
+
+function deriveChevronClass(color: string): string {
+  return CHEVRON_CLASSES[color] || CHEVRON_CLASSES.blue;
+}
+
+function deriveDropdownBorderClass(color: string): string {
+  return DROPDOWN_BORDER_CLASSES[color] || DROPDOWN_BORDER_CLASSES.blue;
+}
+
+export function Select({
+  className,
   color = "blue",
   disabled = false,
   errorMessage,
@@ -214,31 +280,41 @@ export const Select: FC<SelectProps> = ({
   onFocus,
   options,
   optionTextColor,
-  placeholder,
+  placeholder = "Select...",
   required = false,
-  size = "md",
+  size = "standard",
   style,
   value,
-}) => {
+}: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listboxRef = useRef<HTMLUListElement>(null);
 
-  // generate a unique ID if not provided
   const generatedId = useId();
-  const selectId = id || `select-${generatedId}`;
+  const selectId = id ?? `select-${generatedId}`;
   const helperId = `${selectId}-helper`;
   const errorId = `${selectId}-error`;
   const listboxId = `${selectId}-listbox`;
 
   const hasError = Boolean(errorMessage);
-
   const selectedOption = options.find((opt) => opt.value === value);
-  const displayValue = selectedOption?.label || placeholder || "Select...";
+  const displayValue = selectedOption?.label || placeholder;
 
-  // close dropdown when clicking outside
+  const sizeStyles = SIZE_STYLES[size];
+
+  const borderClass = hasError ? "border-red-500" : deriveBorderClass(color);
+  const focusRingClass = hasError
+    ? "focus-visible:ring-red-500"
+    : deriveFocusRingClass(color);
+  const highlightClass = deriveHighlightClass(color);
+  const labelClass = deriveLabelTextClass(labelTextColor || color);
+  const helperClass = deriveHelperTextClass(helperTextColor || color);
+  const optionClass = deriveOptionTextClass(optionTextColor || "gray");
+  const chevronClass = deriveChevronClass(color);
+  const dropdownBorderClass = deriveDropdownBorderClass(color);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -257,26 +333,22 @@ export const Select: FC<SelectProps> = ({
     }
   }, [isOpen]);
 
-  // scroll highlighted option into view
   useEffect(() => {
     if (isOpen && highlightedIndex >= 0 && listboxRef.current) {
-      const highlightedElement = listboxRef.current.children[
+      const element = listboxRef.current.children[
         highlightedIndex
       ] as HTMLElement;
-      if (highlightedElement) {
-        highlightedElement.scrollIntoView({ block: "nearest" });
-      }
+      element?.scrollIntoView({ block: "nearest" });
     }
   }, [highlightedIndex, isOpen]);
 
   const handleToggle = () => {
     if (disabled) return;
-    const newIsOpen = !isOpen;
-    setIsOpen(newIsOpen);
+    const opening = !isOpen;
+    setIsOpen(opening);
 
-    if (newIsOpen) {
+    if (opening) {
       onFocus?.();
-      // find and highlight the currently selected option
       const selectedIndex = options.findIndex((opt) => opt.value === value);
       setHighlightedIndex(selectedIndex >= 0 ? selectedIndex : 0);
     } else {
@@ -318,13 +390,9 @@ export const Select: FC<SelectProps> = ({
           onFocus?.();
           setHighlightedIndex(0);
         } else {
-          let nextIndex = highlightedIndex + 1;
-          while (nextIndex < options.length && options[nextIndex].disabled) {
-            nextIndex++;
-          }
-          if (nextIndex < options.length) {
-            setHighlightedIndex(nextIndex);
-          }
+          let next = highlightedIndex + 1;
+          while (next < options.length && options[next].disabled) next++;
+          if (next < options.length) setHighlightedIndex(next);
         }
         break;
 
@@ -335,13 +403,9 @@ export const Select: FC<SelectProps> = ({
           onFocus?.();
           setHighlightedIndex(options.length - 1);
         } else {
-          let prevIndex = highlightedIndex - 1;
-          while (prevIndex >= 0 && options[prevIndex].disabled) {
-            prevIndex--;
-          }
-          if (prevIndex >= 0) {
-            setHighlightedIndex(prevIndex);
-          }
+          let prev = highlightedIndex - 1;
+          while (prev >= 0 && options[prev].disabled) prev--;
+          if (prev >= 0) setHighlightedIndex(prev);
         }
         break;
 
@@ -355,26 +419,18 @@ export const Select: FC<SelectProps> = ({
       case "Home":
         event.preventDefault();
         if (isOpen) {
-          let firstIndex = 0;
-          while (firstIndex < options.length && options[firstIndex].disabled) {
-            firstIndex++;
-          }
-          if (firstIndex < options.length) {
-            setHighlightedIndex(firstIndex);
-          }
+          let first = 0;
+          while (first < options.length && options[first].disabled) first++;
+          if (first < options.length) setHighlightedIndex(first);
         }
         break;
 
       case "End":
         event.preventDefault();
         if (isOpen) {
-          let lastIndex = options.length - 1;
-          while (lastIndex >= 0 && options[lastIndex].disabled) {
-            lastIndex--;
-          }
-          if (lastIndex >= 0) {
-            setHighlightedIndex(lastIndex);
-          }
+          let last = options.length - 1;
+          while (last >= 0 && options[last].disabled) last--;
+          if (last >= 0) setHighlightedIndex(last);
         }
         break;
 
@@ -387,78 +443,64 @@ export const Select: FC<SelectProps> = ({
         break;
 
       default:
-        // type-ahead search support
         if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
           event.preventDefault();
-          const searchChar = event.key.toLowerCase();
-          const startIndex = isOpen ? highlightedIndex + 1 : 0;
+          const char = event.key.toLowerCase();
+          const start = isOpen ? highlightedIndex + 1 : 0;
 
-          // search from current position to end
-          let foundIndex = -1;
-          for (let i = startIndex; i < options.length; i++) {
+          let found = -1;
+          for (let i = start; i < options.length; i++) {
             if (
               !options[i].disabled &&
-              options[i].label.toLowerCase().startsWith(searchChar)
+              options[i].label.toLowerCase().startsWith(char)
             ) {
-              foundIndex = i;
+              found = i;
               break;
             }
           }
-
-          // ff not found, wrap around and search from beginning
-          if (foundIndex === -1) {
-            for (let i = 0; i < startIndex; i++) {
+          if (found === -1) {
+            for (let i = 0; i < start; i++) {
               if (
                 !options[i].disabled &&
-                options[i].label.toLowerCase().startsWith(searchChar)
+                options[i].label.toLowerCase().startsWith(char)
               ) {
-                foundIndex = i;
+                found = i;
                 break;
               }
             }
           }
 
-          if (foundIndex !== -1) {
+          if (found !== -1) {
             if (!isOpen) {
               setIsOpen(true);
               onFocus?.();
             }
-            setHighlightedIndex(foundIndex);
+            setHighlightedIndex(found);
           }
         }
         break;
     }
   };
 
-  const triggerClasses = `
-    w-full rounded-md border-2 bg-white
-    ${SIZE_CLASSES[size]}
-    ${hasError ? "border-red-600 text-red-600 focus:border-red-600 focus:ring-red-600" : COLOR_CLASSES[color]}
-    ${disabled ? "bg-gray-100 cursor-not-allowed opacity-60" : "cursor-pointer"}
-    focus:outline-none focus:ring-2 focus:ring-offset-2
-    transition-colors
-    flex items-center justify-between
-    text-left
-    ${!selectedOption && placeholder ? "text-gray-400" : ""}
-  `;
-
-  // build aria-describedby with both helper and error IDs
   const ariaDescribedBy =
     [helperText && !hasError ? helperId : null, hasError ? errorId : null]
       .filter(Boolean)
       .join(" ") || undefined;
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`} ref={containerRef}>
+    <div
+      ref={containerRef}
+      className={["flex flex-col gap-1.5", className].filter(Boolean).join(" ")}
+    >
       {label && (
         <label
           id={`${selectId}-label`}
           htmlFor={selectId}
-          className={`text-sm font-medium ${LABEL_COLOR_CLASSES[labelTextColor || color]}`}
+          className={[sizeStyles.label, "font-medium", labelClass].join(" ")}
         >
           {label}
           {required && (
-            <span className="text-red-600 ml-1" aria-label="required">
+            <span className="text-red-500 ml-0.5" aria-hidden="true">
               *
             </span>
           )}
@@ -480,21 +522,36 @@ export const Select: FC<SelectProps> = ({
               : undefined
           }
           aria-labelledby={label ? `${selectId}-label` : undefined}
-          aria-label={!label ? placeholder || "Select an option" : undefined}
+          aria-label={!label ? placeholder : undefined}
           aria-required={required}
-          aria-disabled={disabled}
           aria-invalid={hasError}
-          aria-errormessage={hasError ? errorId : undefined}
           aria-describedby={ariaDescribedBy}
           onClick={handleToggle}
           onKeyDown={handleKeyDown}
           disabled={disabled}
-          className={triggerClasses}
+          className={[
+            "w-full rounded-md border bg-white transition-colors",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0",
+            "flex items-center justify-between text-left",
+            sizeStyles.trigger,
+            borderClass,
+            focusRingClass,
+            disabled
+              ? "opacity-50 cursor-not-allowed bg-gray-50"
+              : "cursor-pointer",
+            !selectedOption ? "text-gray-400" : "text-gray-900",
+          ].join(" ")}
           style={style}
         >
           <span className="block truncate">{displayValue}</span>
           <svg
-            className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            className={[
+              "w-5 h-5 transition-transform",
+              chevronClass,
+              isOpen && "rotate-180",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -515,7 +572,10 @@ export const Select: FC<SelectProps> = ({
             id={listboxId}
             role="listbox"
             aria-labelledby={label ? `${selectId}-label` : undefined}
-            className="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none"
+            className={[
+              "absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto",
+              dropdownBorderClass,
+            ].join(" ")}
           >
             {options.map((option, index) => {
               const isSelected = option.value === value;
@@ -529,14 +589,17 @@ export const Select: FC<SelectProps> = ({
                   aria-selected={isSelected}
                   aria-disabled={option.disabled}
                   onClick={() => handleSelect(option)}
-                  className={`
-                    ${OPTION_SIZE_CLASSES[size]}
-                    ${OPTION_COLOR_CLASSES[optionTextColor || color]}
-                    ${isHighlighted ? OPTION_HIGHLIGHT_CLASSES[optionTextColor || color] : ""}
-                    ${option.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-                    ${isSelected ? "font-semibold" : ""}
-                    transition-colors
-                  `}
+                  className={[
+                    sizeStyles.option,
+                    "transition-colors",
+                    option.disabled
+                      ? "opacity-50 cursor-not-allowed text-gray-400"
+                      : `cursor-pointer ${optionClass} hover:bg-gray-50`,
+                    isHighlighted && !option.disabled && highlightClass,
+                    isSelected && "font-semibold",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 >
                   {option.label}
                 </li>
@@ -545,35 +608,26 @@ export const Select: FC<SelectProps> = ({
           </ul>
         )}
 
-        {/* Hidden input for form submission */}
         <input type="hidden" name={name} value={value || ""} />
       </div>
 
       {hasError && (
         <p
           id={errorId}
-          className="text-sm text-red-600"
+          className={[sizeStyles.helper, "text-red-600"].join(" ")}
           role="alert"
-          aria-live="polite"
         >
           {errorMessage}
         </p>
       )}
 
-      {helperText && !hasError && (
-        <p
-          id={helperId}
-          className={`text-sm ${
-            helperTextColor
-              ? HELPER_TEXT_COLOR_CLASSES[helperTextColor]
-              : "text-gray-500"
-          }`}
-        >
+      {!hasError && helperText && (
+        <p id={helperId} className={[sizeStyles.helper, helperClass].join(" ")}>
           {helperText}
         </p>
       )}
     </div>
   );
-};
+}
 
 Select.displayName = "Select";
