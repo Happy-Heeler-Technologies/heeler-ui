@@ -1,104 +1,100 @@
-import { type CSSProperties } from "react";
-import type { RainbowColor } from "../../types";
+"use client";
 
-const spinnerColorMap: Record<RainbowColor, string> = {
-  red: "border-red-600",
-  orange: "border-orange-500",
-  yellow: "border-yellow-500",
-  green: "border-green-600",
-  blue: "border-blue-600",
-  indigo: "border-indigo-600",
-  violet: "border-violet-600",
-};
+import type { CSSProperties } from "react";
 
-const backgroundColorMap: Record<RainbowColor, string> = {
-  red: "bg-red-50",
-  orange: "bg-orange-50",
-  yellow: "bg-yellow-50",
-  green: "bg-green-50",
-  blue: "bg-blue-50",
-  indigo: "bg-indigo-50",
-  violet: "bg-violet-50",
-};
-
-const textColorMap: Record<RainbowColor, string> = {
-  red: "text-red-600",
-  orange: "text-orange-500",
-  yellow: "text-yellow-500",
-  green: "text-green-600",
-  blue: "text-blue-600",
-  indigo: "text-indigo-600",
-  violet: "text-violet-600",
-};
+export type LoadingSize = "small" | "standard" | "large";
+export type LoadingVariant = "spinner" | "contained";
+export type LoadingLayout = "vertical" | "horizontal";
 
 export interface LoadingProps {
   /**
-   * Rainbow color for the background (only applied when withBackground is true)
-   * @default 'blue'
-   */
-  backgroundColor?: RainbowColor;
-  /**
-   * Additional CSS classes for the loading container
+   * Additional CSS classes for the container
    */
   className?: string;
   /**
-   * Optional accessible label for screen readers
-   * @default 'Loading'
+   * Tailwind color name for the spinner, background, and text
+   * Derives: border-{color}-600, bg-{color}-50, text-{color}-600
+   * @default "blue"
    */
-  labelForScreenReaders?: string;
+  color?: string;
+  /**
+   * Accessible label for screen readers
+   * @default "Loading"
+   */
+  label?: string;
+  /**
+   * Layout direction for spinner and text
+   * @default "vertical"
+   */
+  layout?: LoadingLayout;
   /**
    * Size of the spinner
-   * @default 'medium'
+   * @default "standard"
    */
-  size?: "small" | "medium" | "large";
+  size?: LoadingSize;
   /**
-   * Rainbow color for the spinner
-   * @default 'blue'
-   */
-  spinnerColor?: RainbowColor;
-  /**
-   * Inline styles for the loading container
+   * Inline styles for the container
    */
   style?: CSSProperties;
   /**
-   * Optional loading text to display below spinner
+   * Optional loading text to display
    */
   text?: string;
   /**
-   * Rainbow color for the loading text. Defaults to spinnerColor if not specified
+   * Visual variant
+   * @default "spinner"
    */
-  textColor?: RainbowColor;
-  /**
-   * Whether to show a solid background container
-   * @default false
-   */
-  withBackground?: boolean;
+  variant?: LoadingVariant;
 }
 
-const sizeMap = {
-  small: "w-8 h-8 border-2",
-  medium: "w-12 h-12 border-3",
-  large: "w-16 h-16 border-4",
+const SIZE_STYLES: Record<LoadingSize, { spinner: string; text: string }> = {
+  small: { spinner: "w-6 h-6 border-2", text: "text-xs" },
+  standard: { spinner: "w-10 h-10 border-[3px]", text: "text-sm" },
+  large: { spinner: "w-14 h-14 border-4", text: "text-base" },
 };
 
-export const Loading = ({
-  backgroundColor = "blue",
-  className = "",
-  labelForScreenReaders = "Loading",
-  size = "medium",
-  spinnerColor = "blue",
+function deriveSpinnerColor(color: string): string {
+  return `border-${color}-600`;
+}
+
+function deriveBackgroundColor(color: string): string {
+  return `bg-${color}-50`;
+}
+
+function deriveTextColor(color: string): string {
+  return `text-${color}-600`;
+}
+
+export function Loading({
+  className,
+  color = "blue",
+  label = "Loading",
+  layout = "vertical",
+  size = "standard",
   style,
   text,
-  textColor,
-  withBackground = false,
-}: LoadingProps) => {
-  const spinnerClasses = spinnerColorMap[spinnerColor];
-  const bgClasses = withBackground ? backgroundColorMap[backgroundColor] : "";
-  const sizeClasses = sizeMap[size];
-  const textClasses = textColorMap[textColor ?? spinnerColor];
+  variant = "spinner",
+}: LoadingProps) {
+  const { spinner: spinnerSize, text: textSize } = SIZE_STYLES[size];
+  const spinnerColor = deriveSpinnerColor(color);
+  const textColor = deriveTextColor(color);
 
-  // Use visible text for aria-label if available, otherwise use labelForScreenReaders
-  const accessibleLabel = text || labelForScreenReaders;
+  const accessibleLabel = text || label;
+
+  const containerClasses = [
+    "inline-flex items-center justify-center",
+    layout === "vertical" ? "flex-col gap-3" : "flex-row gap-3",
+    variant === "contained" && `${deriveBackgroundColor(color)} rounded-lg p-6`,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const spinnerClasses = [
+    spinnerSize,
+    spinnerColor,
+    "border-t-transparent rounded-full animate-spin",
+  ].join(" ");
 
   return (
     <div
@@ -106,32 +102,22 @@ export const Loading = ({
       aria-live="polite"
       aria-busy="true"
       aria-label={accessibleLabel}
-      className={`
-        flex flex-col items-center justify-center gap-3
-        ${withBackground ? `${bgClasses} rounded-lg p-8` : ""}
-        ${className}
-      `}
+      className={containerClasses}
       style={style}
     >
-      <div
-        className={`
-          ${sizeClasses}
-          ${spinnerClasses}
-          border-t-transparent
-          rounded-full
-          animate-spin
-        `}
-        aria-hidden="true"
-      />
+      <div className={spinnerClasses} aria-hidden="true" />
       {text ? (
-        <p className={`text-sm font-medium ${textClasses}`} aria-hidden="true">
+        <p
+          className={`${textSize} font-medium ${textColor}`}
+          aria-hidden="true"
+        >
           {text}
         </p>
       ) : (
-        <span className="sr-only">{labelForScreenReaders}</span>
+        <span className="sr-only">{label}</span>
       )}
     </div>
   );
-};
+}
 
 Loading.displayName = "Loading";
