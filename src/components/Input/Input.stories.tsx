@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Input } from "./Input";
 import { useState } from "react";
+import { Mail, Search, Eye, Lock } from "../../icons";
+import { Input } from "./Input";
 
-const meta = {
+const meta: Meta<typeof Input> = {
   title: "Components/Input",
   component: Input,
   parameters: {
@@ -10,85 +11,9 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
-    className: {
-      control: "text",
-      description: "Additional CSS classes for the container div",
-    },
-    autoComplete: {
-      control: "text",
-      description: "Autocomplete attribute for better form filling UX",
-    },
-    color: {
-      control: "select",
-      options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
-      description: "Rainbow color for focus ring and border",
-    },
-    disabled: {
-      control: "boolean",
-      description: "Whether the input is disabled",
-    },
-    errorMessage: {
-      control: "text",
-      description: "Error message to display below the input",
-    },
-    helperText: {
-      control: "text",
-      description: "Helper text to display below the input (when no error)",
-    },
-    id: {
-      control: "text",
-      description: "Unique identifier for the input element",
-    },
-    label: {
-      control: "text",
-      description: "Label text for the input",
-    },
-    max: {
-      control: "text",
-      description: "Maximum value (for number, date, time inputs)",
-    },
-    maxLength: {
-      control: "number",
-      description: "Maximum length of input value",
-    },
-    min: {
-      control: "text",
-      description: "Minimum value (for number, date, time inputs)",
-    },
-    minLength: {
-      control: "number",
-      description: "Minimum length of input value",
-    },
-    name: {
-      control: "text",
-      description: "Name attribute for the input (useful for forms)",
-    },
-    placeholder: {
-      control: "text",
-      description: "Placeholder text",
-    },
-    readOnly: {
-      control: "boolean",
-      description: "Whether the input is read-only",
-    },
-    required: {
-      control: "boolean",
-      description: "Whether the input is required",
-    },
     size: {
       control: "select",
-      options: ["sm", "md", "lg"],
-      description: "Size of the input",
-    },
-    style: {
-      control: "object",
-      description: "Inline styles for the input element",
-    },
-    textColor: {
-      control: "select",
-      options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
-      description:
-        "Text color for the input value (defaults to color prop if not specified)",
+      options: ["small", "standard", "large"],
     },
     type: {
       control: "select",
@@ -104,365 +29,227 @@ const meta = {
         "time",
         "datetime-local",
       ],
-      description: "The HTML input type",
-    },
-    value: {
-      control: "text",
-      description: "Input value (controlled component)",
-    },
-    onBlur: {
-      control: false,
-      description: "Blur event handler",
-    },
-    onChange: {
-      control: false,
-      description: "Change handler for controlled component",
-    },
-    onFocus: {
-      control: false,
-      description: "Focus event handler",
-    },
-    onKeyDown: {
-      control: false,
-      description: "Key down event handler",
     },
   },
-} satisfies Meta<typeof Input>;
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
-
-// Wrapper component for controlled inputs
-const ControlledInput = (args: any) => {
-  const [value, setValue] = useState(args.value || "");
-  return (
-    <div style={{ width: "320px" }}>
-      <Input
-        {...args}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-    </div>
-  );
-};
+type Story = StoryObj<typeof Input>;
 
 export const Default: Story = {
   args: {
-    label: "Username",
-    placeholder: "Enter your username",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const WithValue: Story = {
-  args: {
     label: "Email",
-    value: "user@example.com",
+    placeholder: "you@example.com",
     type: "email",
   },
-  render: (args) => <ControlledInput {...args} />,
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-80">
+      <Input size="small" label="Small" placeholder="Small input" />
+      <Input size="standard" label="Standard" placeholder="Standard input" />
+      <Input size="large" label="Large" placeholder="Large input" />
+    </div>
+  ),
+};
+
+export const WithIcons: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-80">
+      <Input label="Email" placeholder="you@example.com" startIcon={<Mail />} />
+      <Input label="Search" placeholder="Search..." startIcon={<Search />} />
+      <Input
+        label="Password"
+        type="password"
+        placeholder="Enter password"
+        startIcon={<Lock />}
+        endIcon={<Eye />}
+      />
+    </div>
+  ),
+};
+
+export const FocusColors: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-80">
+      <Input label="Blue (default)" placeholder="Focus me" focusColor="blue" />
+      <Input label="Green" placeholder="Focus me" focusColor="green" />
+      <Input label="Violet" placeholder="Focus me" focusColor="violet" />
+      <Input label="Orange" placeholder="Focus me" focusColor="orange" />
+    </div>
+  ),
+};
+
+export const WithHelperText: Story = {
+  args: {
+    label: "Username",
+    placeholder: "johndoe",
+    helperText: "Choose a unique username for your account",
+  },
 };
 
 export const WithError: Story = {
   args: {
     label: "Email",
-    type: "email",
+    placeholder: "you@example.com",
+    value: "invalid-email",
     errorMessage: "Please enter a valid email address",
-    placeholder: "email@example.com",
+    startIcon: <Mail />,
   },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const WithHelperText: Story = {
-  args: {
-    label: "Password",
-    type: "password",
-    helperText: "Must be at least 8 characters long",
-    placeholder: "Enter password",
-  },
-  render: (args) => <ControlledInput {...args} />,
 };
 
 export const Required: Story = {
   args: {
     label: "Full Name",
-    required: true,
     placeholder: "John Doe",
+    required: true,
+    helperText: "This field is required",
   },
-  render: (args) => <ControlledInput {...args} />,
 };
 
 export const Disabled: Story = {
   args: {
-    label: "Username",
-    value: "johndoe",
+    label: "Disabled Input",
+    value: "Cannot edit this",
     disabled: true,
   },
-  render: (args) => <ControlledInput {...args} />,
 };
 
-// Size variations
-export const Small: Story = {
+export const ReadOnly: Story = {
   args: {
-    label: "Small Input",
-    size: "sm",
-    placeholder: "Small size",
+    label: "Read Only",
+    value: "This value cannot be changed",
+    readOnly: true,
   },
-  render: (args) => <ControlledInput {...args} />,
 };
 
-export const Medium: Story = {
-  args: {
-    label: "Medium Input",
-    size: "md",
-    placeholder: "Medium size (default)",
-  },
-  render: (args) => <ControlledInput {...args} />,
+export const CustomColors: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-80">
+      <Input
+        label="Custom Label Color"
+        labelColor="text-indigo-600"
+        placeholder="Indigo label"
+        focusColor="indigo"
+      />
+      <Input
+        label="Custom Text Color"
+        textColor="text-blue-700"
+        value="Blue text"
+        focusColor="blue"
+      />
+      <Input
+        label="Custom Border"
+        borderColor="border-violet-400"
+        placeholder="Violet border"
+        focusColor="violet"
+      />
+    </div>
+  ),
 };
 
-export const Large: Story = {
-  args: {
-    label: "Large Input",
-    size: "lg",
-    placeholder: "Large size",
-  },
-  render: (args) => <ControlledInput {...args} />,
+export const InputTypes: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-80">
+      <Input label="Text" type="text" placeholder="Plain text" />
+      <Input label="Email" type="email" placeholder="you@example.com" />
+      <Input label="Password" type="password" placeholder="••••••••" />
+      <Input label="Number" type="number" placeholder="42" min={0} max={100} />
+      <Input label="Tel" type="tel" placeholder="+1 (555) 123-4567" />
+      <Input label="URL" type="url" placeholder="https://example.com" />
+      <Input label="Search" type="search" placeholder="Search..." />
+      <Input label="Date" type="date" />
+      <Input label="Time" type="time" />
+    </div>
+  ),
 };
 
-// Rainbow colors
-export const Red: Story = {
-  args: {
-    label: "Red Theme",
-    color: "red",
-    placeholder: "Focus to see red theme",
+export const Controlled: Story = {
+  render: function ControlledInput() {
+    const [value, setValue] = useState("");
+    const characterLimit = 50;
+    const remaining = characterLimit - value.length;
+
+    return (
+      <div className="w-80">
+        <Input
+          label="Bio"
+          placeholder="Tell us about yourself"
+          value={value}
+          onChange={(e) => setValue(e.target.value.slice(0, characterLimit))}
+          helperText={`${remaining} characters remaining`}
+          errorMessage={
+            remaining < 10 ? "Almost at character limit" : undefined
+          }
+        />
+      </div>
+    );
   },
-  render: (args) => <ControlledInput {...args} />,
 };
 
-export const Orange: Story = {
-  args: {
-    label: "Orange Theme",
-    color: "orange",
-    placeholder: "Focus to see orange theme",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const Yellow: Story = {
-  args: {
-    label: "Yellow Theme",
-    color: "yellow",
-    placeholder: "Focus to see yellow theme",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const Green: Story = {
-  args: {
-    label: "Green Theme",
-    color: "green",
-    placeholder: "Focus to see green theme",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const Blue: Story = {
-  args: {
-    label: "Blue Theme",
-    color: "blue",
-    placeholder: "Focus to see blue theme (default)",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const Indigo: Story = {
-  args: {
-    label: "Indigo Theme",
-    color: "indigo",
-    placeholder: "Focus to see indigo theme",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const Violet: Story = {
-  args: {
-    label: "Violet Theme",
-    color: "violet",
-    placeholder: "Focus to see violet theme",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-// Input types
-export const EmailInput: Story = {
-  args: {
-    label: "Email Address",
-    type: "email",
-    placeholder: "you@example.com",
-    helperText: "We will never share your email",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const PasswordInput: Story = {
-  args: {
-    label: "Password",
-    type: "password",
-    placeholder: "Enter your password",
-    required: true,
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const NumberInput: Story = {
-  args: {
-    label: "Age",
-    type: "number",
-    placeholder: "25",
-    helperText: "Enter your age",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const TelephoneInput: Story = {
-  args: {
-    label: "Phone Number",
-    type: "tel",
-    placeholder: "(555) 123-4567",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const URLInput: Story = {
-  args: {
-    label: "Website",
-    type: "url",
-    placeholder: "https://example.com",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const SearchInput: Story = {
-  args: {
-    label: "Search",
-    type: "search",
-    placeholder: "Search...",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const DateInput: Story = {
-  args: {
-    label: "Birth Date",
-    type: "date",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-export const TimeInput: Story = {
-  args: {
-    label: "Appointment Time",
-    type: "time",
-  },
-  render: (args) => <ControlledInput {...args} />,
-};
-
-// Complex example
-export const ComplexForm: Story = {
-  render: () => {
+export const FormExample: Story = {
+  render: function FormExample() {
     const [formData, setFormData] = useState({
       email: "",
       password: "",
-      confirmPassword: "",
     });
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const [errors, setErrors] = useState({
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
-
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setFormData({ ...formData, email: value });
-
-      if (value && !value.includes("@")) {
-        setErrors({ ...errors, email: "Please enter a valid email address" });
-      } else {
-        setErrors({ ...errors, email: "" });
+    const validate = () => {
+      const newErrors: Record<string, string> = {};
+      if (!formData.email.includes("@")) {
+        newErrors.email = "Please enter a valid email";
       }
-    };
-
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setFormData({ ...formData, password: value });
-
-      if (value && value.length < 8) {
-        setErrors({
-          ...errors,
-          password: "Password must be at least 8 characters",
-        });
-      } else {
-        setErrors({ ...errors, password: "" });
+      if (formData.password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters";
       }
-    };
-
-    const handleConfirmPasswordChange = (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const value = e.target.value;
-      setFormData({ ...formData, confirmPassword: value });
-
-      if (value && value !== formData.password) {
-        setErrors({ ...errors, confirmPassword: "Passwords do not match" });
-      } else {
-        setErrors({ ...errors, confirmPassword: "" });
-      }
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
     };
 
     return (
-      <div
-        style={{
-          width: "400px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "1.5rem",
+      <form
+        className="flex flex-col gap-4 w-80"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (validate()) {
+            alert("Form submitted!");
+          }
         }}
       >
         <Input
           label="Email"
           type="email"
-          value={formData.email}
-          onChange={handleEmailChange}
-          errorMessage={errors.email}
           placeholder="you@example.com"
-          color="violet"
           required
+          startIcon={<Mail />}
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          errorMessage={errors.email}
+          focusColor="blue"
         />
-
         <Input
           label="Password"
           type="password"
+          placeholder="••••••••"
+          required
+          startIcon={<Lock />}
           value={formData.password}
-          onChange={handlePasswordChange}
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
           errorMessage={errors.password}
           helperText="Must be at least 8 characters"
-          placeholder="Enter password"
-          color="violet"
-          required
+          focusColor="blue"
         />
-
-        <Input
-          label="Confirm Password"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleConfirmPasswordChange}
-          errorMessage={errors.confirmPassword}
-          placeholder="Confirm password"
-          color="violet"
-          required
-        />
-      </div>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+        >
+          Sign In
+        </button>
+      </form>
     );
   },
 };

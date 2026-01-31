@@ -1,309 +1,329 @@
+"use client";
+
 import {
-  ChangeEvent,
-  CSSProperties,
-  FC,
-  FocusEvent,
-  KeyboardEvent,
+  cloneElement,
+  forwardRef,
+  isValidElement,
   useId,
+  type ChangeEvent,
+  type CSSProperties,
+  type FocusEvent,
+  type KeyboardEvent,
+  type ReactElement,
 } from "react";
-import type { RainbowColor } from "../../types";
 
-const SIZE_CLASSES = {
-  sm: "text-sm px-3 py-1.5",
-  md: "text-base px-4 py-2",
-  lg: "text-lg px-5 py-3",
-} as const;
+export type InputSize = "small" | "standard" | "large";
 
-// Rainbow color classes for focus rings and borders
-const COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "border-red-500 focus-visible:border-red-600 focus-visible:ring-red-500",
-  orange:
-    "border-orange-500 focus-visible:border-orange-600 focus-visible:ring-orange-500",
-  yellow:
-    "border-yellow-500 focus-visible:border-yellow-600 focus-visible:ring-yellow-500",
-  green:
-    "border-green-500 focus-visible:border-green-600 focus-visible:ring-green-500",
-  blue: "border-blue-500 focus-visible:border-blue-600 focus-visible:ring-blue-500",
-  indigo:
-    "border-indigo-500 focus-visible:border-indigo-600 focus-visible:ring-indigo-500",
-  violet:
-    "border-violet-500 focus-visible:border-violet-600 focus-visible:ring-violet-500",
-};
+export type InputType =
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "tel"
+  | "url"
+  | "search"
+  | "date"
+  | "time"
+  | "datetime-local";
 
-const TEXT_COLOR_CLASSES: Record<RainbowColor, string> = {
-  red: "text-red-600",
-  orange: "text-orange-600",
-  yellow: "text-yellow-600",
-  green: "text-green-600",
-  blue: "text-blue-600",
-  indigo: "text-indigo-600",
-  violet: "text-violet-600",
-};
+export interface InputIconProps {
+  "aria-hidden"?: boolean;
+  width?: number;
+  height?: number;
+}
 
 export interface InputProps {
   /**
-   * Autocomplete attribute for better form filling UX
+   * Autocomplete attribute for browser autofill
    */
   autoComplete?: string;
-
   /**
-   * Additional CSS classes for the container div
+   * Tailwind border color class for the input
+   * @default "border-gray-300"
+   */
+  borderColor?: string;
+  /**
+   * Additional CSS classes for the container
    */
   className?: string;
-
-  /**
-   * Rainbow color for focus ring and border
-   * @default undefined
-   */
-  color?: RainbowColor;
-
   /**
    * Whether the input is disabled
+   * @default false
    */
   disabled?: boolean;
-
   /**
-   * Error message to display below the input
+   * Optional icon at the end of the input
+   */
+  endIcon?: ReactElement;
+  /**
+   * Error message displayed below the input
    */
   errorMessage?: string;
-
   /**
-   * Helper text to display below the input (when no error)
+   * Tailwind color for focus ring (e.g., "blue" derives focus:ring-blue-500)
+   * @default "blue"
+   */
+  focusColor?: string;
+  /**
+   * Helper text displayed below the input
    */
   helperText?: string;
-
   /**
-   * Unique identifier for the input element
+   * Unique identifier for the input
    */
   id?: string;
-
   /**
    * Label text for the input
    */
   label?: string;
-
+  /**
+   * Tailwind text color class for the label
+   * @default "text-gray-700"
+   */
+  labelColor?: string;
   /**
    * Maximum value (for number, date, time inputs)
    */
   max?: number | string;
-
   /**
-   * Maximum length of input value
+   * Maximum character length
    */
   maxLength?: number;
-
   /**
    * Minimum value (for number, date, time inputs)
    */
   min?: number | string;
-
   /**
-   * Minimum length of input value
+   * Minimum character length
    */
   minLength?: number;
-
   /**
-   * Name attribute for the input (useful for forms)
+   * Name attribute for form submission
    */
   name?: string;
-
   /**
    * Blur event handler
    */
   onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-
   /**
-   * Change handler for controlled component
+   * Change event handler
    */
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-
   /**
    * Focus event handler
    */
   onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-
   /**
-   * Key down event handler
+   * Keydown event handler
    */
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
-
   /**
    * Placeholder text
    */
   placeholder?: string;
-
   /**
    * Whether the input is read-only
+   * @default false
    */
   readOnly?: boolean;
-
   /**
    * Whether the input is required
+   * @default false
    */
   required?: boolean;
-
   /**
    * Size of the input
-   * @default 'md'
+   * @default "standard"
    */
-  size?: "sm" | "md" | "lg";
-
+  size?: InputSize;
+  /**
+   * Optional icon at the start of the input
+   */
+  startIcon?: ReactElement;
   /**
    * Inline styles for the input element
    */
   style?: CSSProperties;
-
   /**
-   * Text color for the input value (defaults to color prop if not specified)
+   * Tailwind text color class for input value
+   * @default "text-gray-900"
    */
-  textColor?: RainbowColor;
-
+  textColor?: string;
   /**
-   * The HTML input type
-   * @default 'text'
+   * HTML input type
+   * @default "text"
    */
-  type?:
-    | "text"
-    | "email"
-    | "password"
-    | "number"
-    | "tel"
-    | "url"
-    | "search"
-    | "date"
-    | "time"
-    | "datetime-local";
-
+  type?: InputType;
   /**
-   * Input value (controlled component)
+   * Input value for controlled component
    */
   value?: string | number;
 }
 
-export const Input: FC<InputProps> = ({
-  autoComplete,
-  className = "",
-  color,
-  disabled = false,
-  errorMessage,
-  helperText,
-  id,
-  label,
-  max,
-  maxLength,
-  min,
-  minLength,
-  name,
-  onBlur,
-  onChange,
-  onFocus,
-  onKeyDown,
-  placeholder,
-  readOnly,
-  required = false,
-  size = "md",
-  style,
-  textColor,
-  type = "text",
-  value,
-}) => {
-  // Generate a unique ID if not provided
+const SIZE_STYLES: Record<
+  InputSize,
+  { input: string; iconSize: number; iconPadding: string }
+> = {
+  small: {
+    input: "text-sm py-1.5",
+    iconSize: 16,
+    iconPadding: "px-2.5",
+  },
+  standard: {
+    input: "text-base py-2",
+    iconSize: 18,
+    iconPadding: "px-3",
+  },
+  large: {
+    input: "text-lg py-3",
+    iconSize: 20,
+    iconPadding: "px-4",
+  },
+};
+
+function deriveFocusClasses(color: string): string {
+  return `focus-visible:ring-${color}-500 focus-visible:border-${color}-500`;
+}
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    autoComplete,
+    borderColor = "border-gray-300",
+    className,
+    disabled = false,
+    endIcon,
+    errorMessage,
+    focusColor = "blue",
+    helperText,
+    id,
+    label,
+    labelColor = "text-gray-700",
+    max,
+    maxLength,
+    min,
+    minLength,
+    name,
+    onBlur,
+    onChange,
+    onFocus,
+    onKeyDown,
+    placeholder,
+    readOnly = false,
+    required = false,
+    size = "standard",
+    startIcon,
+    style,
+    textColor = "text-gray-900",
+    type = "text",
+    value,
+  },
+  ref,
+) {
   const generatedId = useId();
-  const inputId = id || `input-${generatedId}`;
+  const inputId = id ?? `input-${generatedId}`;
   const errorId = `${inputId}-error`;
   const helperId = `${inputId}-helper`;
 
+  const { input: sizeClasses, iconSize, iconPadding } = SIZE_STYLES[size];
   const hasError = Boolean(errorMessage);
+  const hasStartIcon = Boolean(startIcon);
+  const hasEndIcon = Boolean(endIcon);
 
-  const baseClasses =
-    "w-full rounded-md border bg-white transition-colors duration-200";
-  const focusClasses =
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
-  const disabledClasses = disabled
-    ? "opacity-50 cursor-not-allowed bg-gray-50"
-    : "";
-  const errorClasses = hasError
-    ? "border-red-500 focus-visible:border-red-600 focus-visible:ring-red-500"
-    : "";
+  const focusClasses = hasError
+    ? "focus-visible:ring-red-500 focus-visible:border-red-500"
+    : deriveFocusClasses(focusColor);
 
-  // Standard gray border when no color is specified
-  const standardClasses =
-    "border-gray-300 focus-visible:border-gray-400 focus-visible:ring-gray-400";
+  const scaleIcon = (icon: ReactElement | undefined) =>
+    icon && isValidElement<InputIconProps>(icon)
+      ? cloneElement(icon, {
+          "aria-hidden": true,
+          width: iconSize,
+          height: iconSize,
+        })
+      : null;
 
-  // Determine which color classes to use
-  const selectedColorClasses = hasError
-    ? ""
-    : color
-      ? COLOR_CLASSES[color]
-      : standardClasses;
+  const scaledStartIcon = scaleIcon(startIcon);
+  const scaledEndIcon = scaleIcon(endIcon);
 
-  // Determine text color (use textColor if specified, otherwise use color, otherwise default gray)
-  const selectedTextColor = hasError
-    ? "text-gray-900"
-    : textColor
-      ? TEXT_COLOR_CLASSES[textColor]
-      : color
-        ? TEXT_COLOR_CLASSES[color]
-        : "text-gray-900";
-
-  // Build the final input class string
-  const inputClasses =
-    `${baseClasses} ${SIZE_CLASSES[size]} ${focusClasses} ${disabledClasses} ${errorClasses} ${selectedColorClasses} ${selectedTextColor}`.trim();
-
-  // Build aria-describedby with both helper and error IDs
   const ariaDescribedBy =
     [helperText && !hasError ? helperId : null, hasError ? errorId : null]
       .filter(Boolean)
       .join(" ") || undefined;
 
+  const inputPaddingLeft = hasStartIcon ? "pl-10" : iconPadding;
+  const inputPaddingRight = hasEndIcon ? "pr-10" : iconPadding;
+
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div
+      className={["flex flex-col gap-1.5", className].filter(Boolean).join(" ")}
+    >
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
+        <label
+          htmlFor={inputId}
+          className={["text-sm font-medium", labelColor].join(" ")}
+        >
           {label}
           {required && (
-            <span className="text-red-500 ml-1" aria-hidden="true">
+            <span className="text-red-500 ml-0.5" aria-hidden="true">
               *
             </span>
           )}
         </label>
       )}
 
-      <input
-        id={inputId}
-        type={type}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        onKeyDown={onKeyDown}
-        disabled={disabled}
-        readOnly={readOnly}
-        placeholder={placeholder}
-        required={required}
-        name={name}
-        min={min}
-        max={max}
-        minLength={minLength}
-        maxLength={maxLength}
-        autoComplete={autoComplete}
-        aria-required={required}
-        aria-disabled={disabled}
-        aria-readonly={readOnly}
-        aria-invalid={hasError}
-        aria-errormessage={hasError ? errorId : undefined}
-        aria-describedby={ariaDescribedBy}
-        className={inputClasses}
-        style={style}
-      />
+      <div className="relative">
+        {scaledStartIcon && (
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            {scaledStartIcon}
+          </span>
+        )}
+
+        <input
+          ref={ref}
+          id={inputId}
+          type={type}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          onKeyDown={onKeyDown}
+          disabled={disabled}
+          readOnly={readOnly}
+          placeholder={placeholder}
+          required={required}
+          name={name}
+          min={min}
+          max={max}
+          minLength={minLength}
+          maxLength={maxLength}
+          autoComplete={autoComplete}
+          aria-invalid={hasError}
+          aria-describedby={ariaDescribedBy}
+          className={[
+            "w-full rounded-md border bg-white transition-colors",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0",
+            sizeClasses,
+            inputPaddingLeft,
+            inputPaddingRight,
+            hasError ? "border-red-500" : borderColor,
+            focusClasses,
+            textColor,
+            disabled ? "opacity-50 cursor-not-allowed bg-gray-50" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          style={style}
+        />
+
+        {scaledEndIcon && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            {scaledEndIcon}
+          </span>
+        )}
+      </div>
 
       {hasError && (
-        <p
-          id={errorId}
-          className="text-sm text-red-600"
-          role="alert"
-          aria-live="polite"
-        >
+        <p id={errorId} className="text-sm text-red-600" role="alert">
           {errorMessage}
         </p>
       )}
@@ -315,6 +335,6 @@ export const Input: FC<InputProps> = ({
       )}
     </div>
   );
-};
+});
 
 Input.displayName = "Input";
