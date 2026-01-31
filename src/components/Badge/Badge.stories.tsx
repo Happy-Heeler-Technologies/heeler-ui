@@ -1,9 +1,8 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Badge } from "./Badge";
-import { Bell, Check, Fire, Lightning, Star } from "../../icons";
+import { Check, Star, Bell } from "../../icons";
 
-const meta = {
+const meta: Meta<typeof Badge> = {
   title: "Components/Badge",
   component: Badge,
   parameters: {
@@ -11,43 +10,30 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
-    labelForScreenReaders: {
+    backgroundColor: {
       control: "text",
-      description:
-        'Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges',
+      description: 'Tailwind background color class (e.g., "bg-blue-600")',
     },
-    className: {
+    textColor: {
       control: "text",
-      description: "Additional CSS classes for the badge",
+      description: 'Tailwind text color class (e.g., "text-white")',
     },
-    color: {
+    size: {
       control: "select",
-      options: ["red", "orange", "yellow", "green", "blue", "indigo", "violet"],
-      description: "Rainbow color for the badge",
-    },
-    icon: {
-      control: false,
-      description: "Optional icon to display before the text",
-    },
-    style: {
-      control: "object",
-      description: "Inline styles for the badge",
-    },
-    text: {
-      control: "text",
-      description: "Text content of the badge",
+      options: ["small", "standard", "large"],
     },
     variant: {
       control: "select",
       options: ["label", "status"],
-      description:
-        "Semantic variant: 'label' for static info (default), 'status' for live updates",
+    },
+    icon: {
+      control: false,
     },
   },
-} satisfies Meta<typeof Badge>;
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Badge>;
 
 export const Default: Story = {
   args: {
@@ -55,166 +41,95 @@ export const Default: Story = {
   },
 };
 
-export const Red: Story = {
-  args: {
-    color: "red",
-    text: "Error",
-  },
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex items-center gap-3">
+      <Badge size="small" text="Small" backgroundColor="bg-blue-600" />
+      <Badge size="standard" text="Standard" backgroundColor="bg-blue-600" />
+      <Badge size="large" text="Large" backgroundColor="bg-blue-600" />
+    </div>
+  ),
 };
 
-export const Orange: Story = {
+export const WithIcon: Story = {
   args: {
-    color: "orange",
-    text: "Warning",
-  },
-};
-
-export const Yellow: Story = {
-  args: {
-    color: "yellow",
-    text: "Pending",
-  },
-};
-
-export const Green: Story = {
-  args: {
-    color: "green",
-    text: "Success",
-  },
-};
-
-export const Blue: Story = {
-  args: {
-    color: "blue",
-    text: "Info",
-  },
-};
-
-export const Indigo: Story = {
-  args: {
-    color: "indigo",
-    text: "New",
-  },
-};
-
-export const Violet: Story = {
-  args: {
-    color: "violet",
-    text: "Featured",
-  },
-};
-
-export const WithCheckIcon: Story = {
-  args: {
-    color: "green",
     text: "Verified",
+    backgroundColor: "bg-green-600",
     icon: <Check />,
   },
 };
 
-export const WithStarIcon: Story = {
-  args: {
-    color: "yellow",
-    text: "Premium",
-    icon: <Star />,
-  },
+export const IconSizes: Story = {
+  render: () => (
+    <div className="flex items-center gap-3">
+      <Badge
+        size="small"
+        text="Small"
+        backgroundColor="bg-emerald-600"
+        icon={<Check />}
+      />
+      <Badge
+        size="standard"
+        text="Standard"
+        backgroundColor="bg-emerald-600"
+        icon={<Check />}
+      />
+      <Badge
+        size="large"
+        text="Large"
+        backgroundColor="bg-emerald-600"
+        icon={<Check />}
+      />
+    </div>
+  ),
 };
 
-export const WithFireIcon: Story = {
-  args: {
-    color: "orange",
-    text: "Hot",
-    icon: <Fire />,
-  },
-};
-
-export const WithBellIcon: Story = {
-  args: {
-    color: "blue",
-    text: "Notification",
-    icon: <Bell />,
-  },
-};
-
-export const WithLightningIcon: Story = {
-  args: {
-    color: "violet",
-    text: "Fast",
-    icon: <Lightning />,
-  },
-};
-
-export const MultipleVariants: Story = {
-  args: {
-    text: "Multiple",
-  },
+export const CustomColors: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge text="Default" />
-      <Badge color="red" text="Error" icon={<Check />} />
-      <Badge color="orange" text="Warning" />
-      <Badge color="yellow" text="Pending" icon={<Star />} />
-      <Badge color="green" text="Success" icon={<Check />} />
-      <Badge color="blue" text="Info" />
-      <Badge color="indigo" text="New" icon={<Bell />} />
-      <Badge color="violet" text="Featured" icon={<Lightning />} />
+      <Badge text="Blue" backgroundColor="bg-blue-600" />
+      <Badge text="Emerald" backgroundColor="bg-emerald-500" />
+      <Badge text="Rose" backgroundColor="bg-rose-500" />
+      <Badge
+        text="Amber"
+        backgroundColor="bg-amber-500"
+        textColor="text-gray-900"
+      />
+      <Badge text="Cyan" backgroundColor="bg-cyan-500" />
     </div>
   ),
-};
-
-export const WithLabelForScreenReaders: Story = {
-  args: {
-    color: "green",
-    text: "Verified",
-    icon: <Check />,
-    labelForScreenReaders: "Account verified status badge",
-  },
 };
 
 export const StatusVariant: Story = {
-  name: "Status Variant (Live Updates)",
   args: {
-    color: "green",
     text: "Online",
+    backgroundColor: "bg-green-600",
     variant: "status",
   },
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <div>
-        <p className="text-sm mb-2 text-gray-600">
-          Status badges use role="status" to announce changes to screen readers:
-        </p>
-        <Badge {...args} />
-      </div>
-      <div className="flex gap-2">
-        <Badge variant="status" color="green" text="Online" />
-        <Badge variant="status" color="yellow" text="Away" />
-        <Badge variant="status" color="red" text="Offline" />
-      </div>
+};
+
+export const StatusExamples: Story = {
+  render: () => (
+    <div className="flex gap-2">
+      <Badge variant="status" backgroundColor="bg-green-600" text="Online" />
+      <Badge
+        variant="status"
+        backgroundColor="bg-yellow-500"
+        textColor="text-gray-900"
+        text="Away"
+      />
+      <Badge variant="status" backgroundColor="bg-red-600" text="Offline" />
     </div>
   ),
 };
 
-export const LabelVariant: Story = {
-  name: "Label Variant (Static Info)",
-  args: {
-    color: "blue",
-    text: "Admin",
-    variant: "label",
-  },
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <div>
-        <p className="text-sm mb-2 text-gray-600">
-          Label badges are static and don't use ARIA roles:
-        </p>
-        <Badge {...args} />
-      </div>
-      <div className="flex gap-2">
-        <Badge variant="label" color="blue" text="Admin" />
-        <Badge variant="label" color="violet" text="Pro" />
-        <Badge variant="label" color="indigo" text="Beta" />
-      </div>
+export const LabelExamples: Story = {
+  render: () => (
+    <div className="flex gap-2">
+      <Badge backgroundColor="bg-blue-600" text="Admin" icon={<Star />} />
+      <Badge backgroundColor="bg-violet-600" text="Pro" />
+      <Badge backgroundColor="bg-indigo-600" text="Beta" icon={<Bell />} />
     </div>
   ),
 };

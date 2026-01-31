@@ -1,87 +1,132 @@
-import { type CSSProperties, type ReactNode } from "react";
-import type { RainbowColor } from "../../types";
+"use client";
 
-const COLOR_MAP: Record<RainbowColor, string> = {
-  red: "bg-red-600 text-white",
-  orange: "bg-orange-500 text-white",
-  yellow: "bg-yellow-500 text-white",
-  green: "bg-green-600 text-white",
-  blue: "bg-blue-600 text-white",
-  indigo: "bg-indigo-600 text-white",
-  violet: "bg-violet-600 text-white",
-};
+import {
+  cloneElement,
+  isValidElement,
+  type CSSProperties,
+  type ReactElement,
+} from "react";
+
+export type BadgeSize = "small" | "standard" | "large";
+
+export type BadgeVariant = "status" | "label";
+
+export interface BadgeIconProps {
+  "aria-hidden"?: boolean;
+  width?: number;
+  height?: number;
+}
 
 export interface BadgeProps {
   /**
-   * Additional CSS classes for the badge
+   * Tailwind background color class (e.g., "bg-blue-600", "bg-emerald-500")
+   * @default "bg-gray-600"
+   */
+  backgroundColor?: string;
+  /**
+   * Additional CSS classes for the badge container
    */
   className?: string;
   /**
-   * Rainbow color for the badge
-   * @default 'blue'
+   * Optional icon component to display before the text.
+   * Accepts any valid React element (e.g., Lucide icons, custom SVGs).
+   * Icon size is automatically scaled based on the badge size.
    */
-  color?: RainbowColor;
+  icon?: ReactElement;
   /**
-   * Optional icon to display before the text
-   */
-  icon?: ReactNode;
-  /**
-   * Optional accessible label for screen readers. If not provided, defaults to "Status: {text}" for status badges
+   * Accessible label for screen readers.
+   * For status variants, defaults to "Status: {text}" if not provided.
    */
   labelForScreenReaders?: string;
   /**
-   * Inline styles for the badge
+   * Badge size affecting padding, font size, and icon dimensions
+   * @default "standard"
+   */
+  size?: BadgeSize;
+  /**
+   * Inline styles for the badge container
    */
   style?: CSSProperties;
   /**
-   * Text content of the badge
+   * Text content displayed in the badge
    */
   text: string;
   /**
-   * Semantic variant of the badge:
-   * - "status": Live status indicator (uses role="status" for announcements)
-   * - "label": Static informational label (no ARIA role)
-   * @default 'label'
+   * Tailwind text color class (e.g., "text-white", "text-gray-900")
+   * @default "text-white"
    */
-  variant?: "status" | "label";
+  textColor?: string;
+  /**
+   * Semantic variant of the badge:
+   * - "status": Live status indicator (uses role="status" for screen reader announcements)
+   * - "label": Static informational label (no ARIA role)
+   * @default "label"
+   */
+  variant?: BadgeVariant;
 }
 
-export const Badge = ({
-  className = "",
-  color = "blue",
+const SIZE_STYLES: Record<BadgeSize, { container: string; iconSize: number }> =
+  {
+    small: {
+      container: "px-2 py-0.5 text-xs gap-1",
+      iconSize: 12,
+    },
+    standard: {
+      container: "px-2.5 py-0.5 text-sm gap-1.5",
+      iconSize: 14,
+    },
+    large: {
+      container: "px-3 py-1 text-base gap-2",
+      iconSize: 18,
+    },
+  };
+
+export function Badge({
+  backgroundColor = "bg-gray-600",
+  className,
   icon,
   labelForScreenReaders,
+  size = "standard",
   style,
   text,
+  textColor = "text-white",
   variant = "label",
-}: BadgeProps) => {
-  const colorClasses = COLOR_MAP[color];
+}: BadgeProps) {
+  const { container: sizeClasses, iconSize } = SIZE_STYLES[size];
 
-  // For status badges, default aria-label to "Status: {text}" if not provided
-  const computedAriaLabel =
+  const ariaLabel =
     variant === "status" && !labelForScreenReaders
       ? `Status: ${text}`
       : labelForScreenReaders;
 
+  const scaledIcon =
+    icon && isValidElement<BadgeIconProps>(icon)
+      ? cloneElement(icon, {
+          "aria-hidden": true,
+          width: iconSize,
+          height: iconSize,
+        })
+      : null;
+
   return (
     <span
       role={variant === "status" ? "status" : undefined}
-      aria-label={computedAriaLabel}
-      className={`
-        inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
-        ${colorClasses}
-        ${className}
-      `}
+      aria-label={ariaLabel}
+      className={[
+        "inline-flex items-center rounded-full font-medium [&_svg]:fill-current",
+        sizeClasses,
+        backgroundColor,
+        textColor,
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
       style={style}
     >
-      {icon && (
-        <span className="inline-flex items-center" aria-hidden="true">
-          {icon}
-        </span>
-      )}
+      {scaledIcon}
       <span>{text}</span>
     </span>
   );
-};
+}
 
 Badge.displayName = "Badge";
