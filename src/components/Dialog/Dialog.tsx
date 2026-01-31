@@ -1,100 +1,48 @@
-import { type CSSProperties, useEffect, useRef } from "react";
-import type { RainbowColor } from "../../types";
+"use client";
 
-const BORDER_COLOR_MAP: Record<RainbowColor, string> = {
-  red: "border-red-600",
-  orange: "border-orange-500",
-  yellow: "border-yellow-500",
-  green: "border-green-600",
-  blue: "border-blue-600",
-  indigo: "border-indigo-600",
-  violet: "border-violet-600",
-};
-
-const TITLE_COLOR_MAP: Record<RainbowColor, string> = {
-  red: "text-red-600",
-  orange: "text-orange-500",
-  yellow: "text-yellow-500",
-  green: "text-green-600",
-  blue: "text-blue-600",
-  indigo: "text-indigo-600",
-  violet: "text-violet-600",
-};
-
-const BUTTON_COLOR_MAP: Record<RainbowColor, string> = {
-  red: "bg-red-600 hover:bg-red-700 focus-visible:ring-red-600",
-  orange: "bg-orange-500 hover:bg-orange-600 focus-visible:ring-orange-500",
-  yellow: "bg-yellow-500 hover:bg-yellow-600 focus-visible:ring-yellow-500",
-  green: "bg-green-600 hover:bg-green-700 focus-visible:ring-green-600",
-  blue: "bg-blue-600 hover:bg-blue-700 focus-visible:ring-blue-600",
-  indigo: "bg-indigo-600 hover:bg-indigo-700 focus-visible:ring-indigo-600",
-  violet: "bg-violet-600 hover:bg-violet-700 focus-visible:ring-violet-600",
-};
-
-const ICON_BACKGROUND_MAP: Record<RainbowColor, string> = {
-  red: "bg-red-600",
-  orange: "bg-orange-500",
-  yellow: "bg-yellow-500",
-  green: "bg-green-600",
-  blue: "bg-blue-600",
-  indigo: "bg-indigo-600",
-  violet: "bg-violet-600",
-};
-
-export interface DialogButton {
-  /**
-   * Color for the button (only applies to primary buttons)
-   * If not specified, uses the dialog's color
-   */
-  color?: RainbowColor;
-  /**
-   * Text label for the button
-   */
-  label: string;
-  /**
-   * Click handler for the button
-   */
-  onClick: () => void;
-}
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
 export interface DialogProps {
   /**
-   * Override the border color independently
+   * Tailwind background color class for the dialog
+   * @default "bg-white"
    */
-  borderColor?: RainbowColor;
+  backgroundColor?: string;
+  /**
+   * Main content of the dialog body
+   */
+  children?: ReactNode;
   /**
    * Additional CSS classes for the dialog container
    */
   className?: string;
   /**
-   * Rainbow color for the dialog (border, title, and default primary button color)
-   * @default 'blue'
+   * Footer content (typically action buttons)
    */
-  color?: "red" | "orange" | "yellow" | "green" | "blue" | "indigo" | "violet";
+  footer?: ReactNode;
   /**
-   * Dialog description/content
+   * Header content (typically title and optional icon)
    */
-  description: string;
+  header?: ReactNode;
   /**
-   * Override the description text color with a rainbow color
-   */
-  descriptionColor?: RainbowColor;
-  /**
-   * Optional icon component to display next to the title
-   */
-  icon?: React.ReactNode;
-  /**
-   * Whether to show a rounded background behind the icon
-   * @default false
-   */
-  iconBackground?: boolean;
-  /**
-   * Optional accessible label for the dialog
-   * Uses title by default for screen reader announcements
+   * Accessible label for screen readers (uses header text by default)
    */
   labelForScreenReaders?: string;
   /**
-   * Callback when the dialog should close (e.g., clicking backdrop or pressing Escape)
+   * Maximum width of the dialog. Pass a Tailwind max-width class.
+   * @default "max-w-lg"
+   */
+  maxWidth?: string;
+  /**
+   * Callback when dialog requests to close (backdrop click, Escape, or close button)
    */
   onClose: () => void;
   /**
@@ -102,52 +50,83 @@ export interface DialogProps {
    */
   open: boolean;
   /**
-   * Primary action button configuration (e.g., "OK", "Confirm")
+   * Whether to show the X close button in the top-right corner
+   * @default true
    */
-  primaryButton?: DialogButton;
-  /**
-   * Secondary action button configuration (e.g., "Cancel")
-   */
-  secondaryButton?: DialogButton;
+  showCloseButton?: boolean;
   /**
    * Inline styles for the dialog container
    */
   style?: CSSProperties;
-  /**
-   * Dialog title
-   */
-  title: string;
-  /**
-   * Override the title text color independently
-   */
-  titleColor?: RainbowColor;
 }
 
-export const Dialog = ({
-  borderColor,
-  className = "",
-  color = "blue",
-  description,
-  descriptionColor,
-  icon,
-  iconBackground = false,
+function CloseIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+export function Dialog({
+  backgroundColor = "bg-white",
+  children,
+  className,
+  footer,
+  header,
   labelForScreenReaders,
+  maxWidth = "max-w-lg",
   onClose,
   open,
-  primaryButton,
-  secondaryButton,
+  showCloseButton = true,
   style,
-  title,
-  titleColor,
-}: DialogProps) => {
+}: DialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
-  // handle Escape key
+  const generatedId = useId();
+  const titleId = `dialog-title-${generatedId}`;
+  const descriptionId = `dialog-description-${generatedId}`;
+
+  const handleClose = useCallback(() => {
+    setIsAnimating(false);
+    setTimeout(() => {
+      onClose();
+    }, 150);
+  }, [onClose]);
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(true);
+        });
+      });
+    } else {
+      setIsAnimating(false);
+      const timer = setTimeout(() => setShouldRender(false), 150);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && open) {
-        onClose();
+        handleClose();
       }
     };
 
@@ -155,18 +134,16 @@ export const Dialog = ({
       document.addEventListener("keydown", handleEscape);
       return () => document.removeEventListener("keydown", handleEscape);
     }
-  }, [open, onClose]);
+  }, [open, handleClose]);
 
-  // focus management - save previous focus and set initial focus
   useEffect(() => {
     if (open) {
       previousActiveElement.current = document.activeElement as HTMLElement;
 
-      // Focus primary button if exists, otherwise secondary button, otherwise dialog container
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         const focusableElements =
           dialogRef.current?.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
           );
 
         if (focusableElements && focusableElements.length > 0) {
@@ -175,12 +152,13 @@ export const Dialog = ({
           dialogRef.current?.focus();
         }
       }, 0);
+
+      return () => clearTimeout(timer);
     } else if (previousActiveElement.current) {
       previousActiveElement.current.focus();
     }
   }, [open]);
 
-  // focus trap - keep focus within dialog
   useEffect(() => {
     if (!open) return;
 
@@ -189,7 +167,7 @@ export const Dialog = ({
 
       const focusableElements =
         dialogRef.current?.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
 
       if (!focusableElements || focusableElements.length === 0) return;
@@ -198,13 +176,11 @@ export const Dialog = ({
       const lastElement = focusableElements[focusableElements.length - 1];
 
       if (event.shiftKey) {
-        // Shift + Tab
         if (document.activeElement === firstElement) {
           event.preventDefault();
           lastElement.focus();
         }
       } else {
-        // Tab
         if (document.activeElement === lastElement) {
           event.preventDefault();
           firstElement.focus();
@@ -216,123 +192,79 @@ export const Dialog = ({
     return () => document.removeEventListener("keydown", handleTab);
   }, [open]);
 
-  // prevent body scroll when dialog is open
   useEffect(() => {
     if (open) {
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
       return () => {
         document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
       };
     }
   }, [open]);
 
-  if (!open) return null;
-
-  const borderClasses = BORDER_COLOR_MAP[borderColor ?? color];
-  const titleClasses = TITLE_COLOR_MAP[titleColor ?? color];
-  const descriptionClasses = descriptionColor
-    ? TITLE_COLOR_MAP[descriptionColor]
-    : "text-gray-700";
-  const iconColorClasses = TITLE_COLOR_MAP[color];
-  const iconBackgroundClasses = ICON_BACKGROUND_MAP[color];
-
-  const getPrimaryButtonColor = () => {
-    if (primaryButton?.color) {
-      return BUTTON_COLOR_MAP[primaryButton.color];
-    }
-    return BUTTON_COLOR_MAP[color];
-  };
+  if (!shouldRender) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className={[
+          "absolute inset-0 bg-black/60 transition-opacity duration-150",
+          isAnimating ? "opacity-100" : "opacity-0",
+        ].join(" ")}
         aria-hidden="true"
+        onClick={handleClose}
       />
 
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
+        aria-labelledby={header ? titleId : undefined}
+        aria-describedby={children ? descriptionId : undefined}
         aria-label={labelForScreenReaders}
         tabIndex={-1}
-        className={`
-          relative z-10 w-full max-w-lg rounded-lg bg-white shadow-xl
-          border-2 ${borderClasses}
-          ${className}
-        `}
+        className={[
+          "relative z-10 w-full rounded-xl shadow-2xl transition-all duration-150",
+          maxWidth,
+          backgroundColor,
+          isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-95",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
         style={style}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            {icon && (
-              <div
-                className={`
-                  flex items-center justify-center
-                  ${iconBackground ? `${iconBackgroundClasses} rounded-full p-3 text-white [&>svg]:!text-white` : iconColorClasses}
-                `}
-              >
-                {icon}
-              </div>
-            )}
-            <h2
-              id="dialog-title"
-              className={`text-2xl font-bold ${titleClasses}`}
-            >
-              {title}
-            </h2>
-          </div>
-
-          <p
-            id="dialog-description"
-            className={`text-base leading-relaxed mb-6 ${descriptionClasses}`}
+        {showCloseButton && (
+          <button
+            type="button"
+            onClick={handleClose}
+            className="absolute top-4 right-4 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
+            aria-label="Close dialog"
           >
-            {description}
-          </p>
+            <CloseIcon />
+          </button>
+        )}
 
-          {(primaryButton || secondaryButton) && (
-            <div className="flex gap-3 justify-end mt-8">
-              {secondaryButton && (
-                <button
-                  onClick={secondaryButton.onClick}
-                  type="button"
-                  className="
-                    px-5 py-2.5 rounded-md text-sm font-medium
-                    text-gray-700 bg-gray-100 hover:bg-gray-200
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2
-                    transition-colors
-                  "
-                >
-                  {secondaryButton.label}
-                </button>
-              )}
-              {primaryButton && (
-                <button
-                  onClick={primaryButton.onClick}
-                  type="button"
-                  className={`
-                    px-5 py-2.5 rounded-md text-sm font-medium
-                    text-white
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-                    transition-colors
-                    ${getPrimaryButtonColor()}
-                  `}
-                >
-                  {primaryButton.label}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+        {header && (
+          <div id={titleId} className="px-6 pt-6 pr-12">
+            {header}
+          </div>
+        )}
+
+        {children && (
+          <div id={descriptionId} className="px-6 py-4">
+            {children}
+          </div>
+        )}
+
+        {footer && <div className="px-6 pb-6 pt-2">{footer}</div>}
       </div>
     </div>
   );
-};
+}
 
 Dialog.displayName = "Dialog";
